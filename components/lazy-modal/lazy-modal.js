@@ -15,7 +15,7 @@ export default class LazyModal extends Base {
     // fetching from path is skipped if #closeButton is set
     static #closeButtonPath = 'close-button.html';
     // fetching from path is skipped if the #modalCss array is set    
-    static #modalCssPaths = ['lazy-modal.css', 'aria-busy.css'];
+    // static #modalCssPaths = ['lazy-modal.css', 'aria-busy.css'];
 
     static #basePath = import.meta.resolve('./');
     static path = import.meta.resolve('./');
@@ -258,43 +258,6 @@ export default class LazyModal extends Base {
         } catch (error) { console.error('Failed to load html:', error); }
     }
     static #htmlPromiseCache = new Map();
-
-    // Load modal CSS files and cache the stylesheets statically
-    static async #css(...stylesheetPaths) {
-        // skip fetching if CSS is set in the LazyModal.#modalCss array
-        if (LazyModal.#modalCss[0]) {
-            const promises = LazyModal.#modalCss.map(cssText => createStylesheet(cssText));
-            return await Promise.all(promises); // Return an array of stylesheets
-        }
-
-        const stylesheets = [];
-        for (let path of stylesheetPaths) {
-            path = `${LazyModal.#basePath}${path}`;
-
-            // Check if we already have a promise for this stylesheet
-            if (!LazyModal.#cssPromiseCache.has(path)) {
-                // Create and cache the complete stylesheet creation promise
-                const stylesheetPromise = fetch(path)
-                    .then(response => {
-                        if (!response.ok) throw new Error(`Failed to fetch stylesheet: ${path}`);
-                        return response.text();
-                    })
-                    .then(async (cssText) => { return await createStylesheet(cssText); })
-                    .catch(error => {
-                        console.error(`Error loading stylesheet ${path}:`, error);
-                        return new CSSStyleSheet(); // Return empty stylesheet as fallback
-                    });
-
-                LazyModal.#cssPromiseCache.set(path, stylesheetPromise);
-            }
-
-            // Await the cached promise
-            const stylesheet = await LazyModal.#cssPromiseCache.get(path);
-            stylesheets.push(stylesheet);
-        }
-        return stylesheets;
-    }
-    static #cssPromiseCache = new Map();
 
     // Statically define (or rename) the element unless ?define=false is set in the URL
     static {
