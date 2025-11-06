@@ -9,7 +9,6 @@ import {
 import { Base, getHtml, defineElement } from '../base/base.js';
 
 export default class LazyModal extends Base {
-    static #basePath = import.meta.resolve('./');
     static path = import.meta.resolve('./');
     static styles = [
         this.path + 'lazy-modal.css',
@@ -44,7 +43,6 @@ export default class LazyModal extends Base {
     }
     
     connected() {
-        // this.#setupModalUi(); // Modal HTML and CSS
         this.#setupAssetLoading(); // Assets for what's inside the modal
         this.#setupTriggerBehavior();
     }
@@ -142,6 +140,7 @@ export default class LazyModal extends Base {
         // const content = await LazyModal.#html(htmlPath);
         const path = this.constructor.path;
         const content = await getHtml(htmlPath, path);
+        // todo: see init() in base.js
         this.insertAdjacentHTML('beforeend', content);
         this.#executeScripts(); // Execute any scripts in the injected content
     }
@@ -198,8 +197,9 @@ export default class LazyModal extends Base {
      * @returns {Promise<void>} Resolves when the resource is loaded
      * @private
      */
-    async #addResource(path, { tagName, attributes, urlAttribute = 'src' }) {
-        const fullPath = isRemoteUrl(path) ? path : `${LazyModal.#basePath}${path}`;
+    async #addResource(file, { tagName, attributes, urlAttribute = 'src' }) {
+        const path = this.constructor.path;
+        const fullPath = isRemoteUrl(file) ? file : `${path}${file}`;
         // If adding to document.head, check if already exists
         if (this.#assetHost === document.head) {
             const resourceKey = `${tagName}:${fullPath}`;
@@ -213,12 +213,12 @@ export default class LazyModal extends Base {
             const element = document.createElement(tagName);
             Object.assign(element, attributes);
             // Set the href or src attribute
-            element[urlAttribute] = isRemoteUrl(path)
-                ? path
-                : `${LazyModal.#basePath}${path}`;
+            element[urlAttribute] = isRemoteUrl(file)
+                ? file
+                : `${path}${file}`;
             element.onload = () => resolve();
             element.onerror = (error) => {
-                console.warn(`lazy-modal.js failed to load resource: ${path}`, error);
+                console.warn(`lazy-modal.js failed to load resource: ${file}`, error);
                 resolve(); // Still resolve to not block other resources
             };
             this.#assetHost.appendChild(element);
