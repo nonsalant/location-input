@@ -9,13 +9,6 @@ import {
 import { Base, getHtml, defineElement } from '../base/base.js';
 
 export default class LazyModal extends Base {
-    static #closeButton = ``; // won't be used if empty
-    
-    // fetching from path is skipped if #closeButton is set
-    static #closeButtonPath = 'close-button.html';
-    // fetching from path is skipped if the #modalCss array is set    
-    // static #modalCssPaths = ['lazy-modal.css', 'aria-busy.css'];
-
     static #basePath = import.meta.resolve('./');
     static path = import.meta.resolve('./');
     static styles = [
@@ -146,7 +139,9 @@ export default class LazyModal extends Base {
     */
     async addContent(htmlPath) {
         if (!htmlPath) return; // No content to add
-        const content = await LazyModal.#html(htmlPath);
+        // const content = await LazyModal.#html(htmlPath);
+        const path = this.constructor.path;
+        const content = await getHtml(htmlPath, path);
         this.insertAdjacentHTML('beforeend', content);
         this.#executeScripts(); // Execute any scripts in the injected content
     }
@@ -230,40 +225,6 @@ export default class LazyModal extends Base {
         });
     }
 
-    /* Modal HTML and CSS from external files */
-
-    // async #setupModalUi() {
-    //     // const stylesheets = await LazyModal.#css(...LazyModal.#modalCssPaths);
-    //     // this.#host.adoptedStyleSheets.push(...stylesheets); // CSS for the modal
-
-    //     if (this.hasAttribute('close-button')) { // Close button is optional
-    //         const closeButtonHtml = await LazyModal.#html(LazyModal.#closeButtonPath);
-    //         this.insertAdjacentHTML('afterbegin', closeButtonHtml);
-    //     }
-    // }
-
-    // Load and statically cache HTML
-    static async #html(path) {
-        // skip fetching if the HTML is set in LazyModal.#closeButton
-        if (LazyModal.#closeButton) return LazyModal.#closeButton;
-
-        path = `${LazyModal.#basePath}${path}`;
-        try {
-            // Check if we already have a promise for this file
-            if (!LazyModal.#htmlPromiseCache.has(path)) {
-                // Create and cache the fetch promise
-                const fetchPromise = fetch(path).then(response => {
-                    if (!response.ok) throw new Error(`Failed to fetch html: ${path}`);
-                    return response.text()
-                });
-                LazyModal.#htmlPromiseCache.set(path, fetchPromise);
-            }
-            // Await the cached promise
-            const html = await LazyModal.#htmlPromiseCache.get(path);
-            return html ?? '';
-        } catch (error) { console.error('Failed to load html:', error); }
-    }
-    static #htmlPromiseCache = new Map();
 
     // Statically define (or rename) the element unless ?define=false is set in the URL
     static {
