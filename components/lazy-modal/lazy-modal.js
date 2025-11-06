@@ -10,8 +10,7 @@ import { Base, getHtml, defineElement } from '../base/base.js';
 
 export default class LazyModal extends Base {
     static #closeButton = ``; // won't be used if empty
-    static #modalCss = [``, ``]; // if the first item is empty, the array won't be used
-
+    
     // fetching from path is skipped if #closeButton is set
     static #closeButtonPath = 'close-button.html';
     // fetching from path is skipped if the #modalCss array is set    
@@ -52,7 +51,7 @@ export default class LazyModal extends Base {
     }
     
     connected() {
-        this.#setupModalUi(); // Modal HTML and CSS
+        // this.#setupModalUi(); // Modal HTML and CSS
         this.#setupAssetLoading(); // Assets for what's inside the modal
         this.#setupTriggerBehavior();
     }
@@ -63,6 +62,13 @@ export default class LazyModal extends Base {
         if (this.#loadOn === 'visible') this.#triggers.forEach(trigger => {
             unobserveIntersection(this.#triggerObserver, trigger);
         });
+    }
+
+    async render() {
+        const path = this.constructor.path;
+        const closeButton = await getHtml('close-button.html', path);
+
+        return `${closeButton}`;
     }
     
     #setupTriggerBehavior() {
@@ -226,15 +232,15 @@ export default class LazyModal extends Base {
 
     /* Modal HTML and CSS from external files */
 
-    async #setupModalUi() {
-        // const stylesheets = await LazyModal.#css(...LazyModal.#modalCssPaths);
-        // this.#host.adoptedStyleSheets.push(...stylesheets); // CSS for the modal
+    // async #setupModalUi() {
+    //     // const stylesheets = await LazyModal.#css(...LazyModal.#modalCssPaths);
+    //     // this.#host.adoptedStyleSheets.push(...stylesheets); // CSS for the modal
 
-        if (this.hasAttribute('close-button')) { // Close button is optional
-            const closeButtonHtml = await LazyModal.#html(LazyModal.#closeButtonPath);
-            this.insertAdjacentHTML('afterbegin', closeButtonHtml);
-        }
-    }
+    //     if (this.hasAttribute('close-button')) { // Close button is optional
+    //         const closeButtonHtml = await LazyModal.#html(LazyModal.#closeButtonPath);
+    //         this.insertAdjacentHTML('afterbegin', closeButtonHtml);
+    //     }
+    // }
 
     // Load and statically cache HTML
     static async #html(path) {
