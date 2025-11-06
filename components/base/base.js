@@ -12,7 +12,6 @@ export class Base extends HTMLElement {
         // Current shadow root or the first parent shadow root or 'document':
         this.assetHost = this.shadowRoot ?? this.getRootNode();
         this.domRoot = this.shadowRoot ?? this;
-        this.constructed();
     }
 
     disconnectedCallback() { this.disconnected(); }
@@ -33,7 +32,6 @@ export class Base extends HTMLElement {
         this.domRoot.appendChild(fragment);
     }
 
-    constructed() {}
     disconnected() {}
     connected() {}
     render() { return ''; }

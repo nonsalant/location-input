@@ -29,25 +29,25 @@ export default class LazyModal extends Base {
     #abortController; #abortSignal; #loadOn; #triggerObserver;
     #modalContent; #lazyRenderTemplate; #loadingAssetsPromise;
 
-    constructed() {
-        // super();
-        this.host = this.getRootNode(); // 'document' or a shadow root
-        // this.host = this.assetHost;
+    constructor() {
+        super();
+        // this.#host = this.getRootNode(); // 'document' or a shadow root
+        this.#host = this.assetHost;
 
-        this.triggers = this.host.querySelectorAll(this.getAttribute('triggers'));
-        this.abortController = new AbortController();
-        this.abortSignal = { signal: this.abortController.signal };
+        this.#triggers = this.#host.querySelectorAll(this.getAttribute('triggers'));
+        this.#abortController = new AbortController();
+        this.#abortSignal = { signal: this.#abortController.signal };
 
         const supportedLoadOnValues = ['click', 'hover', 'visible', 'load'];
-        this.loadOn = supportedLoadOnValues.includes(this.getAttribute('load-on')) 
+        this.#loadOn = supportedLoadOnValues.includes(this.getAttribute('load-on')) 
             ? this.getAttribute('load-on') 
             : 'hover';
         
-        this.assetHost = this.hasAttribute('in-head') ? document.head : this;
-        this.styles = csvToArray(this.getAttribute('inner-styles'));
-        this.scripts = csvToArray(this.getAttribute('inner-scripts'));
-        this.modalContent = this.getAttribute('inner-content') || '';
-        this.lazyRenderTemplate = this.querySelector('& > template') || null;
+        this.#assetHost = this.hasAttribute('in-head') ? document.head : this;
+        this.#styles = csvToArray(this.getAttribute('inner-styles'));
+        this.#scripts = csvToArray(this.getAttribute('inner-scripts'));
+        this.#modalContent = this.getAttribute('inner-content') || '';
+        this.#lazyRenderTemplate = this.querySelector('& > template') || null;
         this.popover ||= '';
     }
     
@@ -58,26 +58,26 @@ export default class LazyModal extends Base {
     }
     
     disconnected() {
-        if (!this.triggers.length) return;
-        this.abortController.abort(); // Removes all listeners at once
-        if (this.loadOn === 'visible') this.triggers.forEach(trigger => {
+        if (!this.#triggers.length) return;
+        this.#abortController.abort(); // Removes all listeners at once
+        if (this.#loadOn === 'visible') this.#triggers.forEach(trigger => {
             unobserveIntersection(this.#triggerObserver, trigger);
         });
     }
     
     #setupTriggerBehavior() {
-        if (this.loadOn === 'load') this.loadAssets(); // Load assets immediately if 'load' is set
+        if (this.#loadOn === 'load') this.loadAssets(); // Load assets immediately if 'load' is set
 
-        if (!this.triggers.length) return console.warn('LazyModal: No trigger element found');
+        if (!this.#triggers.length) return console.warn('LazyModal: No trigger element found');
 
-        this.triggers.forEach(trigger => {
-            trigger.addEventListener('click', this.handleClick.bind(this), this.abortSignal);
+        this.#triggers.forEach(trigger => {
+            trigger.addEventListener('click', this.handleClick.bind(this), this.#abortSignal);
 
-            if (this.loadOn === 'hover') ['mouseenter', 'focus'].forEach((e) => {
-                trigger.addEventListener(e, () => this.loadAssets(), this.abortSignal);
+            if (this.#loadOn === 'hover') ['mouseenter', 'focus'].forEach((e) => {
+                trigger.addEventListener(e, () => this.loadAssets(), this.#abortSignal);
             });
 
-            if (this.loadOn === 'visible') {
+            if (this.#loadOn === 'visible') {
                 this.#triggerObserver = observeIntersection(trigger, () => this.loadAssets());
             }
         });
@@ -101,16 +101,16 @@ export default class LazyModal extends Base {
     #setupAssetLoading() {
         this.loadAssets = async () => {
             // only run once
-            if (this.loadingAssetsPromise) return this.loadingAssetsPromise;
+            if (this.#loadingAssetsPromise) return this.#loadingAssetsPromise;
 
             this.#lazyRender(); // Lazy render template if provided
-            this.loadingAssetsPromise = Promise.all([
-                this.addContent(this.modalContent), // Optionally inject external content
-                ...this.styles.map(path => this.addStyle(path)),
-                ...this.scripts.map(path => this.addScript(path)),
+            this.#loadingAssetsPromise = Promise.all([
+                this.addContent(this.#modalContent), // Optionally inject external content
+                ...this.#styles.map(path => this.addStyle(path)),
+                ...this.#scripts.map(path => this.addScript(path)),
             ]);
             // console.log('LazyModal: Loading assets');
-            return this.loadingAssetsPromise;
+            return this.#loadingAssetsPromise;
         };
 
         // Load assets when the modal is visible
@@ -124,9 +124,9 @@ export default class LazyModal extends Base {
      * @private
      */
     #lazyRender() {
-        if (this.lazyRenderTemplate) {
+        if (this.#lazyRenderTemplate) {
             // If a template is provided, clone its content and append it
-            const content = this.lazyRenderTemplate.content.cloneNode(true);
+            const content = this.#lazyRenderTemplate.content.cloneNode(true);
             this.appendChild(content);
         }
     }
@@ -200,7 +200,7 @@ export default class LazyModal extends Base {
     async #addResource(path, { tagName, attributes, urlAttribute = 'src' }) {
         const fullPath = isRemoteUrl(path) ? path : `${LazyModal.#basePath}${path}`;
         // If adding to document.head, check if already exists
-        if (this.assetHost === document.head) {
+        if (this.#assetHost === document.head) {
             const resourceKey = `${tagName}:${fullPath}`;
             if (LazyModal.#globalResources.has(resourceKey)) {
                 return Promise.resolve(); // Already loaded
@@ -220,7 +220,7 @@ export default class LazyModal extends Base {
                 console.warn(`lazy-modal.js failed to load resource: ${path}`, error);
                 resolve(); // Still resolve to not block other resources
             };
-            this.assetHost.appendChild(element);
+            this.#assetHost.appendChild(element);
         });
     }
 
