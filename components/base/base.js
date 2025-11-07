@@ -28,16 +28,23 @@ export class Base extends HTMLElement {
 
     async init() {
         this.addCss();
+        
         const markup = await this.render();
         const processedHtml = processPlaceholders(markup, this);
         // or: processedHtml = processPlaceholders(markup, { myValue: 'yoo' });
         const fragment = createFragment(processedHtml);
         this.domRoot.appendChild(fragment);
+
+        const beforeMarkup = await this.renderBefore();
+        const processedBeforeHtml = processPlaceholders(beforeMarkup, this);
+        const fragmentBefore = createFragment(processedBeforeHtml);
+        this.domRoot.prepend(fragmentBefore);
     }
 
     disconnected() {}
     connected() {}
     render() { return ''; }
+    renderBefore() { return ''; }
 
     async addCss() {
         const styles = this.constructor.styles;

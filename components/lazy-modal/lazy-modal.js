@@ -7,7 +7,13 @@ import {
 } from './utils.js';
 
 const componentPath = import.meta.resolve('./');
-const { Base, getHtml, defineElement } = await import(`../base/base.js?path=${encodeURIComponent(componentPath)}`);
+const {
+    Base,
+    getHtml,
+    defineElement,
+    processPlaceholders,
+    createFragment
+} = await import(`../base/base.js?path=${encodeURIComponent(componentPath)}`);
 
 export default class LazyModal extends Base {
     static path = import.meta.resolve('./');
@@ -53,14 +59,6 @@ export default class LazyModal extends Base {
         if (this.#loadOn === 'visible') this.#triggers.forEach(trigger => {
             unobserveIntersection(this.#triggerObserver, trigger);
         });
-    }
-
-    async render() {
-        // const path = this.constructor.path;
-        // const closeButton = await getHtml('close-button.html', path);
-        const closeButton = await getHtml('close-button.html');
-
-        return `${closeButton}`;
     }
     
     #setupTriggerBehavior() {
@@ -129,6 +127,12 @@ export default class LazyModal extends Base {
         }
     }
 
+    async renderBefore() {
+        const closeButton = await getHtml('close-button.html');
+
+        return `${closeButton}`;
+    }
+
     /** 
      * Adds HTML content to the component
      * @param {string} htmlPath - Path to the HTML file to inject
@@ -138,35 +142,10 @@ export default class LazyModal extends Base {
     */
     async addContent(htmlPath) {
         if (!htmlPath) return; // No content to add
-        // const content = await LazyModal.#html(htmlPath);
-        // const path = this.constructor.path;
-        // const content = await getHtml(htmlPath, path);
         const content = await getHtml(htmlPath);
-        // todo: see init() in base.js
-        this.insertAdjacentHTML('beforeend', content);
-        this.#executeScripts(); // Execute any scripts in the injected content
-    }
-
-    /**
-     * Execute any scripts found in the component's innerHTML
-     * This is needed because scripts injected via innerHTML don't execute automatically
-     * @private
-     */
-    #executeScripts(context = this) {
-        context.querySelectorAll('script').forEach(oldScript => {
-            const newScript = document.createElement('script');
-
-            // Copy all attributes
-            Array.from(oldScript.attributes).forEach(attr => {
-                newScript.setAttribute(attr.name, attr.value);
-            });
-
-            // Copy the script content
-            newScript.textContent = oldScript.textContent;
-
-            // Replace the old script with the new one
-            oldScript.parentNode.replaceChild(newScript, oldScript);
-        });
+        const processedContent = processPlaceholders(content, this);
+        const fragment = createFragment(processedContent);
+        this.appendChild(fragment);
     }
 
     /**
