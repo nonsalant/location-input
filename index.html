@@ -12,8 +12,6 @@
 <body>
     <!-- TRIGGERS -->
     <p>
-        <button class="storage-trigger" type="button">Storage Form</button>
-        <button class="table-trigger" type="button">Action Table</button>
         <button class="map-trigger" type="button">Your Location</button>
     </p>
 
@@ -27,25 +25,7 @@
         inner-styles="../map-picker/map-picker.css"
         inner-scripts="../map-picker/map-picker.js"
         inner-content="../map-picker/map-picker.html"
-    >
-    </lazy-modal>
-
-    <!-- storage form demo from: https://github.com/daviddarnes/storage-form -->
-    <lazy-modal popover
-        triggers=".storage-trigger"
-        close-button 
-        inner-content="./storage-form.html"
-        inner-scripts="https://www.unpkg.com/@daviddarnes/storage-form@2.0.1/storage-form.js"
     ></lazy-modal>
 
-    <!-- action table demo from: https://github.com/colinaut/action-table -->
-    <lazy-modal popover
-        triggers=".table-trigger"
-        close-button 
-        inner-content="./action-table.html"
-        inner-styles="https://unpkg.com/@colinaut/action-table/dist/action-table.css" 
-        inner-scripts="https://unpkg.com/@colinaut/action-table/dist/index.js, 
-            https://unpkg.com/@colinaut/action-table/dist/action-table-switch.js"
-    ></lazy-modal>
 </body>
 </html>
