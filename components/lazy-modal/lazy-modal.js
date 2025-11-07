@@ -23,8 +23,7 @@ export default class LazyModal extends Base {
 
     constructor() {
         super();
-        // this.#host = this.getRootNode(); // 'document' or a shadow root
-        this.#host = this.assetHost;
+        this.#host = this.getRootNode(); // 'document' or a shadow root
 
         this.#triggers = this.#host.querySelectorAll(this.getAttribute('triggers'));
         this.#abortController = new AbortController();
