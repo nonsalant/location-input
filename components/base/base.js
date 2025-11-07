@@ -1,3 +1,7 @@
+// Get the component path from the URL query parameter
+const componentPath = new URL(import.meta.url).searchParams.get('path');
+// console.log('Base import path:', componentPath);
+
 export class Base extends HTMLElement {
     static basePath = import.meta.resolve('./');
     static enableShadowRoot = false;
@@ -53,11 +57,13 @@ export class Base extends HTMLElement {
         }
         if (Array.isArray(styles)) {
             // add this.constructor.basePath to each path if it doesn't look like raw CSS
+            // add componentPath to each path if it doesn't look like raw CSS
             styles = styles.map(str => {
                 if (typeof str !== 'string') return console.warn('Base.css: style entry is not a string:', str);
                 // Heuristic: whitespace in a non-URL likely means CSS text
                 if (looksLikeCssText(str)) return str; // raw css text, don't resolve as URL
-                str = new URL(str, this.constructor.basePath).href;
+                // str = new URL(str, this.constructor.basePath).href;
+                str = new URL(str, componentPath).href;
                 return str;
             });
             return await getCss(...styles); // promise that resolves to an array of stylesheets
@@ -90,12 +96,13 @@ globalThis.cssPromiseCache ??= new Map();
  * existing promise rather than making a new request.
  * 
  * @example
- * const html = await getHtml('template.html'); // Fetch from the base path (current module)
+ * const html = await getHtml('template.html'); // Fetch from the componentPath
  * 
  * @example
  * const html = await getHtml('components/header.html', 'https://example.com/'); // Fetch from path
  */
-export async function getHtml(path, basePath = import.meta.resolve('./')) {
+// export async function getHtml(path, basePath = import.meta.resolve('./')) {
+export async function getHtml(path, basePath = componentPath) {
     // const basePath = this.constructor.basePath;
     path = `${basePath}${path}`;
     path = new URL(path, basePath).href; // normalize path

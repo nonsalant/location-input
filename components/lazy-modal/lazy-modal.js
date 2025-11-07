@@ -6,13 +6,16 @@ import {
     createStylesheet,
 } from './utils.js';
 
-import { Base, getHtml, defineElement } from '../base/base.js';
+// import { Base, getHtml, defineElement } from '../base/base.js';
+// const fooUrl = import.meta.url;
+const componentPath = import.meta.resolve('./');
+const { Base, getHtml, defineElement } = await import(`../base/base.js?path=${encodeURIComponent(componentPath)}`);
 
 export default class LazyModal extends Base {
     static path = import.meta.resolve('./');
     static styles = [
-        this.path + 'lazy-modal.css',
-        this.path + 'aria-busy.css',
+        'lazy-modal.css',
+        'aria-busy.css',
         // `h1 { text-decoration: underline; }`,
     ];
 
@@ -56,8 +59,9 @@ export default class LazyModal extends Base {
     }
 
     async render() {
-        const path = this.constructor.path;
-        const closeButton = await getHtml('close-button.html', path);
+        // const path = this.constructor.path;
+        // const closeButton = await getHtml('close-button.html', path);
+        const closeButton = await getHtml('close-button.html');
 
         return `${closeButton}`;
     }
@@ -138,8 +142,9 @@ export default class LazyModal extends Base {
     async addContent(htmlPath) {
         if (!htmlPath) return; // No content to add
         // const content = await LazyModal.#html(htmlPath);
-        const path = this.constructor.path;
-        const content = await getHtml(htmlPath, path);
+        // const path = this.constructor.path;
+        // const content = await getHtml(htmlPath, path);
+        const content = await getHtml(htmlPath);
         // todo: see init() in base.js
         this.insertAdjacentHTML('beforeend', content);
         this.#executeScripts(); // Execute any scripts in the injected content
@@ -198,7 +203,8 @@ export default class LazyModal extends Base {
      * @private
      */
     async #addResource(file, { tagName, attributes, urlAttribute = 'src' }) {
-        const path = this.constructor.path;
+        // const path = this.constructor.path;
+        const path = componentPath;
         const fullPath = isRemoteUrl(file) ? file : `${path}${file}`;
         // If adding to document.head, check if already exists
         if (this.#assetHost === document.head) {
