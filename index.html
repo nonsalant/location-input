@@ -5,15 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script type="module" src="./components/lazy-modal/lazy-modal.js"></script>
+
+    <!-- <link rel="stylesheet" href="./components/map-picker/map-picker.css">
+    <script type="module" src="./components/map-picker/map-picker.js"></script> -->
 </head>
 <body>
     <!-- TRIGGERS -->
     <p>
         <button class="storage-trigger" type="button">Storage Form</button>
         <button class="table-trigger" type="button">Action Table</button>
+        <button class="map-trigger" type="button">Your Location</button>
     </p>
 
     <!-- MODALS -->
+
+    <!-- map-picker https://github.com/nonsalant/map-picker/ -->
+    <lazy-modal popover
+        id="map-wrapper"
+        triggers=".map-trigger"
+        close-button
+        inner-styles="../map-picker/map-picker.css"
+        inner-scripts="../map-picker/map-picker.js"
+        inner-content="../map-picker/map-picker.html"
+    >
+    </lazy-modal>
 
     <!-- storage form demo from: https://github.com/daviddarnes/storage-form -->
     <lazy-modal popover
