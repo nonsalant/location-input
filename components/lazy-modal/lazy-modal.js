@@ -6,8 +6,6 @@ import {
     createStylesheet,
 } from './utils.js';
 
-// import { Base, getHtml, defineElement } from '../base/base.js';
-// const fooUrl = import.meta.url;
 const componentPath = import.meta.resolve('./');
 const { Base, getHtml, defineElement } = await import(`../base/base.js?path=${encodeURIComponent(componentPath)}`);
 
@@ -203,7 +201,6 @@ export default class LazyModal extends Base {
      * @private
      */
     async #addResource(file, { tagName, attributes, urlAttribute = 'src' }) {
-        // const path = this.constructor.path;
         const path = componentPath;
         const fullPath = isRemoteUrl(file) ? file : `${path}${file}`;
         // If adding to document.head, check if already exists

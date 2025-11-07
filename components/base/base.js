@@ -1,6 +1,5 @@
 // Get the component path from the URL query parameter
 const componentPath = new URL(import.meta.url).searchParams.get('path');
-// console.log('Base import path:', componentPath);
 
 export class Base extends HTMLElement {
     static basePath = import.meta.resolve('./');
@@ -56,7 +55,6 @@ export class Base extends HTMLElement {
             styles = [styles]; // if styles is a string make it an array
         }
         if (Array.isArray(styles)) {
-            // add this.constructor.basePath to each path if it doesn't look like raw CSS
             // add componentPath to each path if it doesn't look like raw CSS
             styles = styles.map(str => {
                 if (typeof str !== 'string') return console.warn('Base.css: style entry is not a string:', str);
@@ -101,9 +99,7 @@ globalThis.cssPromiseCache ??= new Map();
  * @example
  * const html = await getHtml('components/header.html', 'https://example.com/'); // Fetch from path
  */
-// export async function getHtml(path, basePath = import.meta.resolve('./')) {
 export async function getHtml(path, basePath = componentPath) {
-    // const basePath = this.constructor.basePath;
     path = `${basePath}${path}`;
     path = new URL(path, basePath).href; // normalize path
     try {
