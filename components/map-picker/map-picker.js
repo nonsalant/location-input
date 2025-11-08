@@ -10,6 +10,8 @@ const LEAFLET_STYLESHEET = 'leaflet.min.css';
 // const LEAFLET_SCRIPT = 'leaflet-src.esm.js';
 // const LEAFLET_STYLESHEET = 'leaflet.css';
 
+const { defineElement } = await import(`../base/base.js`);
+
 export default class MapPicker extends HTMLElement {
     static get observedAttributes() { return ['marker-coordinates']; }
 
@@ -264,19 +266,10 @@ export default class MapPicker extends HTMLElement {
             >Leaflet</a>`
     }
 
-    // Statically define the element unless ?define=false is set as an URL param
-    static tag = "map-picker";
-    static define(tag = this.tag) {
-        this.tag = tag;
-        const name = customElements.getName(this);
-        if (name) return console.warn(`${this.name} already defined as <${name}>!`);
-        const ce = customElements.get(tag);
-        if (Boolean(ce) && ce !== this) return console.warn(`<${tag}> already defined as ${ce.name}!`);
-        customElements.define(tag, this);
-    }
+    // Statically define (or rename) the element unless ?define=false is set in the URL
     static {
-        const tag = new URL(import.meta.url).searchParams.get("define") || this.tag;
-        if (tag !== "false") this.define(tag);
+        const tag = new URL(import.meta.url).searchParams.get('define');
+        defineElement(tag, this);
     }
 }
 
