@@ -28,7 +28,7 @@ export class Base extends HTMLElement {
 
     async init() {
         this.addCss();
-        
+
         const markup = await this.render();
         const processedHtml = processPlaceholders(markup, this);
         // or: processedHtml = processPlaceholders(markup, { myValue: 'yoo' });
@@ -241,9 +241,10 @@ export function processPlaceholders(html, context) {
             return toStr(context.constructor[prop]);
         }
 
-        // not found -> empty string
+        // not found -> empty string // ! breaks string literals (eg: in js in html)
         console.warn(`Property '${prop}' not found in context: ${context}`);
-        return '';
+        // return '';
+        return _;
     });
 }
 
