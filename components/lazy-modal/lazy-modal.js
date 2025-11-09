@@ -16,7 +16,6 @@ const {
 } = await import(`../base/base.js?path=${encodeURIComponent(componentPath)}`);
 
 export default class LazyModal extends Base {
-    static path = import.meta.resolve('./');
     static styles = [
         'lazy-modal.css',
         'aria-busy.css',
