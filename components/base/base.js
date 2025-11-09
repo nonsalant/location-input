@@ -1,5 +1,6 @@
 // Get the component path from the URL query parameter
 const componentPath = new URL(import.meta.url).searchParams.get('path');
+console.log('Base componentPath:', componentPath);
 
 export class Base extends HTMLElement {
     static basePath = import.meta.resolve('./');
@@ -39,10 +40,13 @@ export class Base extends HTMLElement {
         const processedBeforeHtml = processPlaceholders(beforeMarkup, this);
         const fragmentBefore = createFragment(processedBeforeHtml);
         this.domRoot.prepend(fragmentBefore);
+
+        this.afterRender();
     }
 
     disconnected() {}
     connected() {}
+    afterRender() {}
     render() { return ''; }
     renderBefore() { return ''; }
 
@@ -52,8 +56,8 @@ export class Base extends HTMLElement {
         for (const cssText of cssTexts) {
             const processedCssText = processPlaceholders(cssText, this);
             const stylesheet = await createStylesheet(processedCssText);
-            // console.log(this.assetHost.adoptedStyleSheets);
-            this.assetHost.adoptedStyleSheets.push(stylesheet);
+            // console.log(this.assetHost);
+            this.assetHost.adoptedStyleSheets?.push(stylesheet);
         }
     }
 

@@ -7,33 +7,36 @@ const {
     createFragment
 } = await import(`../base/base.js?path=${encodeURIComponent(componentPath)}`);
 
-class MarkerDataEvent extends Event {
-  constructor(eventName, lat, lng, address) {
-    super(eventName, { bubbles: true, composed: true });
-    this.lat = lat;
-    this.lng = lng;
-    this.address = address;
-  }
-}
+// class MarkerDataEvent extends Event {
+//   constructor(eventName, lat, lng, address) {
+//     super(eventName, { bubbles: true, composed: true });
+//     this.lat = lat;
+//     this.lng = lng;
+//     this.address = address;
+//   }
+// }
 
 export default class LocationInput extends Base {
-    constructor() {
-        super();
+    // constructor() {
+    //     super();
+    // }
+
+    async render() {
+        return await getHtml('location-input.html');
     }
 
-    connected() {
-
-        this.querySelectorAll('.geo-locate').forEach(button => {
-            button.addEventListener('click', () => {
-                // this.handleClientLocation();
-                requestClientLocation().then(coords => {
-                    this.querySelector('#map-wrapper').setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
-                    this.querySelector('map-picker')?.setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
-                    // document.dispatchEvent(new MarkerDataEvent('map-picker-confirm', coords.lat, coords.lng, null));
-                }).catch(error => console.error(error) );
-            });
-        });
-    }
+    // afterRender() {
+    //     this.querySelectorAll('.geo-locate').forEach(button => {
+    //         button.addEventListener('click', () => {
+    //             // this.handleClientLocation();
+    //             requestClientLocation().then(coords => {
+    //                 this.querySelector('#map-wrapper').setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
+    //                 this.querySelector('map-picker')?.setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
+    //                 // document.dispatchEvent(new MarkerDataEvent('map-picker-confirm', coords.lat, coords.lng, null));
+    //             }).catch(error => console.error(error) );
+    //         });
+    //     });
+    // }
 
     // handleClientLocation() {
     //     requestClientLocation().then(coords => {
