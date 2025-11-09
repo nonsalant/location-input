@@ -7,6 +7,15 @@ const {
     createFragment
 } = await import(`../base/base.js?path=${encodeURIComponent(componentPath)}`);
 
+class MarkerDataEvent extends Event {
+  constructor(eventName, lat, lng, address) {
+    super(eventName, { bubbles: true, composed: true });
+    this.lat = lat;
+    this.lng = lng;
+    this.address = address;
+  }
+}
+
 export default class LocationInput extends Base {
     constructor() {
         super();
@@ -14,14 +23,13 @@ export default class LocationInput extends Base {
 
     connected() {
 
-
         this.querySelectorAll('.geo-locate').forEach(button => {
             button.addEventListener('click', () => {
                 // this.handleClientLocation();
                 requestClientLocation().then(coords => {
-                    // todo: map-picker may not be present yet -- set coordinates on the location-input itself(?)
-                    this.querySelector('map-picker').setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
-                    // dispatchEvent('map-picker-confirm', { detail: coords });
+                    this.querySelector('#map-wrapper').setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
+                    this.querySelector('map-picker')?.setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
+                    // document.dispatchEvent(new MarkerDataEvent('map-picker-confirm', coords.lat, coords.lng, null));
                 }).catch(error => console.error(error) );
             });
         });
