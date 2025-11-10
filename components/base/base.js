@@ -1,9 +1,7 @@
 // Get the component path from the URL query parameter
 const componentPath = new URL(import.meta.url).searchParams.get('path');
-// console.log('Base componentPath:', componentPath);
 
 export class Base extends HTMLElement {
-    static basePath = import.meta.resolve('./');
     static enableShadowRoot = false;
     static styles = [];
 
@@ -75,7 +73,6 @@ export class Base extends HTMLElement {
                 if (typeof str !== 'string') return console.warn('Base.css: style entry is not a string:', str);
                 // Heuristic: whitespace in a non-URL likely means CSS text
                 if (looksLikeCssText(str)) return str; // raw css text, don't resolve as URL
-                // str = new URL(str, this.constructor.basePath).href;
                 str = new URL(str, componentPath).href;
                 return str;
             });
@@ -98,7 +95,7 @@ globalThis.cssPromiseCache ??= new Map();
  * @async
  * @function getHtml
  * @param {string} path - The relative path to the HTML file
- * @param {string} [basePath=import.meta.resolve('./')] - The base path to resolve the file from
+ * @param {string} [basePath] - The base path to resolve the file from
  * @returns {Promise<string|undefined>} The HTML content as a string, or undefined if fetch fails
  * @throws {Error} Throws an error if the fetch request fails
  * 
@@ -134,16 +131,12 @@ export async function getHtml(path, basePath = componentPath) {
 
 /**
  * Fetch and cache CSS stylesheets.
- * @param {string} basePath - The base path for resolving stylesheet URLs.
  * @param {...string} stylesheetPaths - The paths to the stylesheets to fetch.
  * @returns {Promise<string[]>} A promise that resolves to an array of CSS stylesheets.
  */
 export async function getCss(...stylesheetPaths) {
     const stylesheets = [];
     for (let path of stylesheetPaths) {
-        // path = `${basePath}${path}`;
-        // path = new URL(path, basePath).href; // normalize path
-        // console.log(path);
 
         // If it's not a string just skip/fallback
         if (typeof path !== 'string') continue;
