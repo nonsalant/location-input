@@ -44,26 +44,9 @@ export class Base extends HTMLElement {
         // this.domRoot.prepend(fragmentBefore);
         this.domRoot.insertAdjacentHTML('afterbegin', processedBeforeHtml);
 
-        this.executeScripts(this.domRoot);
+        executeScripts(this.domRoot);
 
         this.afterRender();
-    }
-
-    executeScripts(context = this) {
-        context.querySelectorAll('script').forEach(oldScript => {
-            const newScript = document.createElement('script');
-
-            // Copy all attributes
-            Array.from(oldScript.attributes).forEach(attr => {
-                newScript.setAttribute(attr.name, attr.value);
-            });
-
-            // Copy the script content
-            newScript.textContent = oldScript.textContent;
-
-            // Replace the old script with the new one
-            oldScript.parentNode.replaceChild(newScript, oldScript);
-        });
     }
 
     disconnected() {}
@@ -329,4 +312,32 @@ export function camelToKebab(str) {
  */
 export function looksLikeCssText(str) {
     return /[\n\{;\}]/.test(str) || (/\s/.test(str) && !/^\s*https?:\/\//i.test(str) && !/^\s*(data|blob|file):/i.test(str));
+}
+
+/**
+ * Executes all script elements within a given context by creating and replacing them.
+ * This is necessary because scripts inserted via innerHTML or similar methods don't execute automatically.
+ * 
+ * @param {Element|DocumentFragment|ShadowRoot} context - The DOM context containing script elements to execute
+ * 
+ * @example
+ * const container = document.getElementById('dynamic-content');
+ * container.innerHTML = '<script>console.log("Hello");</script>';
+ * executeScripts(container); // The script will now execute
+ */
+export function executeScripts(context) {
+    context.querySelectorAll('script').forEach(oldScript => {
+        const newScript = document.createElement('script');
+
+        // Copy all attributes
+        Array.from(oldScript.attributes).forEach(attr => {
+            newScript.setAttribute(attr.name, attr.value);
+        });
+
+        // Copy the script content
+        newScript.textContent = oldScript.textContent;
+
+        // Replace the old script with the new one
+        oldScript.parentNode.replaceChild(newScript, oldScript);
+    });
 }
