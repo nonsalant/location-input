@@ -1,6 +1,6 @@
 // Get the component path from the URL query parameter
 const componentPath = new URL(import.meta.url).searchParams.get('path');
-console.log('Base componentPath:', componentPath);
+// console.log('Base componentPath:', componentPath);
 
 export class Base extends HTMLElement {
     static basePath = import.meta.resolve('./');
@@ -15,6 +15,7 @@ export class Base extends HTMLElement {
         if (needsShadow) this.attachShadow({ mode: 'open' });
         // Current shadow root or the first parent shadow root or 'document':
         this.assetHost = this.shadowRoot ?? this.getRootNode();
+        // console.log(this.constructor.name, this.assetHost);
         this.domRoot = this.shadowRoot ?? this;
     }
 
@@ -33,20 +34,41 @@ export class Base extends HTMLElement {
         const markup = await this.render();
         const processedHtml = processPlaceholders(markup, this);
         // or: processedHtml = processPlaceholders(markup, { myValue: 'yoo' });
-        const fragment = createFragment(processedHtml);
-        this.domRoot.appendChild(fragment);
+        // const fragment = createFragment(processedHtml); // ! this registers the elements before they are appended to the DOM
+        // this.domRoot.appendChild(fragment);
+        this.domRoot.insertAdjacentHTML('beforeend', processedHtml);
 
         const beforeMarkup = await this.renderBefore();
         const processedBeforeHtml = processPlaceholders(beforeMarkup, this);
-        const fragmentBefore = createFragment(processedBeforeHtml);
-        this.domRoot.prepend(fragmentBefore);
+        // const fragmentBefore = createFragment(processedBeforeHtml);
+        // this.domRoot.prepend(fragmentBefore);
+        this.domRoot.insertAdjacentHTML('afterbegin', processedBeforeHtml);
 
-        this.afterRender();
+        this.executeScripts(this.domRoot);
+
+        // this.afterRender();
+    }
+
+    executeScripts(context = this) {
+        context.querySelectorAll('script').forEach(oldScript => {
+            const newScript = document.createElement('script');
+
+            // Copy all attributes
+            Array.from(oldScript.attributes).forEach(attr => {
+                newScript.setAttribute(attr.name, attr.value);
+            });
+
+            // Copy the script content
+            newScript.textContent = oldScript.textContent;
+
+            // Replace the old script with the new one
+            oldScript.parentNode.replaceChild(newScript, oldScript);
+        });
     }
 
     disconnected() {}
     connected() {}
-    afterRender() {}
+    // afterRender() {}
     render() { return ''; }
     renderBefore() { return ''; }
 

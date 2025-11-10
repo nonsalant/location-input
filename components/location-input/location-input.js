@@ -17,25 +17,26 @@ const {
 // }
 
 export default class LocationInput extends Base {
-    // constructor() {
-    //     super();
-    // }
+    constructor() {
+        super();
+
+        this.querySelectorAll('.geo-locate').forEach(button => {
+            button.addEventListener('click', () => {
+                // this.handleClientLocation();
+                requestClientLocation().then(coords => {
+                    this.querySelector('#map-wrapper').setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
+                    this.querySelector('map-picker')?.setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
+                    // document.dispatchEvent(new MarkerDataEvent('map-picker-confirm', coords.lat, coords.lng, null));
+                }).catch(error => console.error(error) );
+            });
+        });
+    }
 
     async render() {
         return await getHtml('location-input.html');
     }
 
     // afterRender() {
-    //     this.querySelectorAll('.geo-locate').forEach(button => {
-    //         button.addEventListener('click', () => {
-    //             // this.handleClientLocation();
-    //             requestClientLocation().then(coords => {
-    //                 this.querySelector('#map-wrapper').setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
-    //                 this.querySelector('map-picker')?.setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
-    //                 // document.dispatchEvent(new MarkerDataEvent('map-picker-confirm', coords.lat, coords.lng, null));
-    //             }).catch(error => console.error(error) );
-    //         });
-    //     });
     // }
 
     // handleClientLocation() {
