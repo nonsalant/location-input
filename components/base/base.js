@@ -31,17 +31,18 @@ export class Base extends HTMLElement {
 
         const markup = await this.render();
         const processedHtml = processPlaceholders(markup, this); // or: processPlaceholders(markup, { myValue: 'yoo' });
-        // const fragment = createFragment(processedHtml); // note: this registers custom elements too early
+        // const fragment = createFragment(processedHtml); // ! note: this registers custom elements too early
         // this.domRoot.appendChild(fragment);
         this.domRoot.insertAdjacentHTML('beforeend', processedHtml); // note: this doesn't execute scripts
 
         const beforeMarkup = await this.renderBefore();
         const processedBeforeHtml = processPlaceholders(beforeMarkup, this);
-        // const fragmentBefore = createFragment(processedBeforeHtml); // note: this registers custom elements too early
+        // const fragmentBefore = createFragment(processedBeforeHtml); // ! note: this registers custom elements too early
         // this.domRoot.prepend(fragmentBefore);
         this.domRoot.insertAdjacentHTML('afterbegin', processedBeforeHtml); // note: this doesn't execute scripts
 
-        executeScripts(this.domRoot);
+        executeScripts(this.domRoot); // ! this will re-execute existing scripts
+        // todo: put scripts in a container and only execute those
 
         this.afterRender();
     }

@@ -3,8 +3,6 @@ const {
     Base,
     getHtml,
     defineElement,
-    processPlaceholders,
-    createFragment
 } = await import(`../base/base.js?path=${encodeURIComponent(COMPONENT_PATH)}`);
 
 // class MarkerDataEvent extends Event {
