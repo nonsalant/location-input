@@ -32,17 +32,16 @@ export class Base extends HTMLElement {
         this.addCss();
 
         const markup = await this.render();
-        const processedHtml = processPlaceholders(markup, this);
-        // or: processedHtml = processPlaceholders(markup, { myValue: 'yoo' });
-        // const fragment = createFragment(processedHtml); // ! this registers the elements before they are appended to the DOM
+        const processedHtml = processPlaceholders(markup, this); // or: processPlaceholders(markup, { myValue: 'yoo' });
+        // const fragment = createFragment(processedHtml); // note: this registers custom elements too early
         // this.domRoot.appendChild(fragment);
-        this.domRoot.insertAdjacentHTML('beforeend', processedHtml);
+        this.domRoot.insertAdjacentHTML('beforeend', processedHtml); // note: this doesn't execute scripts
 
         const beforeMarkup = await this.renderBefore();
         const processedBeforeHtml = processPlaceholders(beforeMarkup, this);
-        // const fragmentBefore = createFragment(processedBeforeHtml);
+        // const fragmentBefore = createFragment(processedBeforeHtml); // note: this registers custom elements too early
         // this.domRoot.prepend(fragmentBefore);
-        this.domRoot.insertAdjacentHTML('afterbegin', processedBeforeHtml);
+        this.domRoot.insertAdjacentHTML('afterbegin', processedBeforeHtml); // note: this doesn't execute scripts
 
         executeScripts(this.domRoot);
 
@@ -87,7 +86,7 @@ export class Base extends HTMLElement {
 
 
 // Utils
-// import { createFragment, processPlaceholders, getCss, createStylesheet } from "./utils.js";
+// import { processPlaceholders, getCss, createStylesheet } from "./utils.js";
 
 globalThis.htmlPromiseCache ??= new Map();
 globalThis.cssPromiseCache ??= new Map();
@@ -203,6 +202,7 @@ export function createFragment(html) {
     if (typeof html !== 'string') {
         throw new TypeError('createFragment(html): expected a string');
     }
+    // note: this registers custom elements before they they are added to the DOM
     return document.createRange().createContextualFragment(html);
 }
 
