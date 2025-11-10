@@ -17,13 +17,16 @@ const {
 // }
 
 export default class LocationInput extends Base {
-    constructor() {
-        super();
+    async render() {
+        return await getHtml('location-input.html');
+    }
 
+    afterRender() {
         this.querySelectorAll('.geo-locate').forEach(button => {
             button.addEventListener('click', () => {
                 // this.handleClientLocation();
                 requestClientLocation().then(coords => {
+                    // console.log('Client coordinates:', coords.lat, coords.lng);
                     this.querySelector('#map-wrapper').setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
                     this.querySelector('map-picker')?.setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
                     // document.dispatchEvent(new MarkerDataEvent('map-picker-confirm', coords.lat, coords.lng, null));
@@ -31,13 +34,6 @@ export default class LocationInput extends Base {
             });
         });
     }
-
-    async render() {
-        return await getHtml('location-input.html');
-    }
-
-    // afterRender() {
-    // }
 
     // handleClientLocation() {
     //     requestClientLocation().then(coords => {

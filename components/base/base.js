@@ -46,7 +46,7 @@ export class Base extends HTMLElement {
 
         this.executeScripts(this.domRoot);
 
-        // this.afterRender();
+        this.afterRender();
     }
 
     executeScripts(context = this) {
@@ -68,7 +68,7 @@ export class Base extends HTMLElement {
 
     disconnected() {}
     connected() {}
-    // afterRender() {}
+    afterRender() {}
     render() { return ''; }
     renderBefore() { return ''; }
 
