@@ -35,20 +35,6 @@ export default class LocationInput extends Base {
         });
     }
 
-    // handleClientLocation() {
-    //     requestClientLocation().then(coords => {
-    //         const { lat, lng } = coords;
-    //         console.log('Client coordinates:', lat, lng);
-    //         // this.findStation(lat, lng);
-    //         // // 'marker-coordinates' may be used in the map-picker component (if opened)
-    //         // const element = this.shadowRoot.querySelector('map-picker') ?? this.mapWrapper;
-    //         // element.setAttribute('marker-coordinates', `${lat},${lng}`);
-    //     }).catch(error => console.error(error)
-    //     ).finally(() => {
-    //         // this.geoLocate.ariaBusy = null; // reset aria-busy state
-    //     });
-    // }
-
     // Statically define (or rename) the element unless ?define=false is set in the URL
     static {
         const tag = new URL(import.meta.url).searchParams.get('define');
