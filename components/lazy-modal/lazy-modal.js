@@ -6,14 +6,14 @@ import {
     createStylesheet,
 } from './utils.js';
 
-const componentPath = import.meta.resolve('./');
+const COMPONENT_PATH = import.meta.resolve('./');
 const {
     Base,
     getHtml,
     defineElement,
     processPlaceholders,
     createFragment
-} = await import(`../base/base.js?path=${encodeURIComponent(componentPath)}`);
+} = await import(`../base/base.js?path=${encodeURIComponent(COMPONENT_PATH)}`);
 
 export default class LazyModal extends Base {
     static styles = [
@@ -178,7 +178,7 @@ export default class LazyModal extends Base {
      * @private
      */
     async #addResource(file, { tagName, attributes, urlAttribute = 'src' }) {
-        const path = componentPath;
+        const path = COMPONENT_PATH;
         const fullPath = isRemoteUrl(file) ? file : `${path}${file}`;
         // If adding to document.head, check if already exists
         if (this.#assetHost === document.head) {

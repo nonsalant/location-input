@@ -1,11 +1,11 @@
-const componentPath = import.meta.resolve('./');
+const COMPONENT_PATH = import.meta.resolve('./');
 const {
     Base,
     getHtml,
     defineElement,
     processPlaceholders,
     createFragment
-} = await import(`../base/base.js?path=${encodeURIComponent(componentPath)}`);
+} = await import(`../base/base.js?path=${encodeURIComponent(COMPONENT_PATH)}`);
 
 // class MarkerDataEvent extends Event {
 //   constructor(eventName, lat, lng, address) {

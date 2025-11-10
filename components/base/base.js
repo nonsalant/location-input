@@ -1,5 +1,5 @@
 // Get the component path from the URL query parameter
-const componentPath = new URL(import.meta.url).searchParams.get('path');
+const COMPONENT_PATH = new URL(import.meta.url).searchParams.get('path');
 
 export class Base extends HTMLElement {
     static enableShadowRoot = false;
@@ -68,12 +68,12 @@ export class Base extends HTMLElement {
             styles = [styles]; // if styles is a string make it an array
         }
         if (Array.isArray(styles)) {
-            // add componentPath to each path if it doesn't look like raw CSS
+            // add COMPONENT_PATH to each path if it doesn't look like raw CSS
             styles = styles.map(str => {
                 if (typeof str !== 'string') return console.warn('Base.css: style entry is not a string:', str);
                 // Heuristic: whitespace in a non-URL likely means CSS text
                 if (looksLikeCssText(str)) return str; // raw css text, don't resolve as URL
-                str = new URL(str, componentPath).href;
+                str = new URL(str, COMPONENT_PATH).href;
                 return str;
             });
             return await getCss(...styles); // promise that resolves to an array of stylesheets
@@ -106,12 +106,12 @@ globalThis.cssPromiseCache ??= new Map();
  * existing promise rather than making a new request.
  * 
  * @example
- * const html = await getHtml('template.html'); // Fetch from the componentPath
+ * const html = await getHtml('template.html'); // Fetch from the COMPONENT_PATH
  * 
  * @example
  * const html = await getHtml('components/header.html', 'https://example.com/'); // Fetch from path
  */
-export async function getHtml(path, basePath = componentPath) {
+export async function getHtml(path, basePath = COMPONENT_PATH) {
     path = `${basePath}${path}`;
     path = new URL(path, basePath).href; // normalize path
     try {
