@@ -5,16 +5,38 @@ const {
     defineElement,
 } = await import(`../base/base.js?path=${encodeURIComponent(COMPONENT_PATH)}`);
 
-class MarkerDataEvent extends Event {
-  constructor(eventName, lat, lng, address) {
-    super(eventName, { bubbles: true, composed: true });
-    this.lat = lat;
-    this.lng = lng;
-    this.address = address;
-  }
-}
+// class MarkerDataEvent extends Event {
+//   constructor(eventName, lat, lng, address) {
+//     super(eventName, { bubbles: true, composed: true });
+//     this.lat = lat;
+//     this.lng = lng;
+//     this.address = address;
+//   }
+// }
+
+import { MarkerDataEvent, getAddressFromCoordinates } from '../map-picker/map-picker.js';
 
 export default class LocationInput extends Base {
+    constructor() {
+        super();
+
+        // demo implementation
+        const outputEl = document.querySelector('output');
+
+        // Inject coordinates and address when 'map-picker-confirm' custom event is fired
+        document.addEventListener('map-picker-confirm', (e) => {
+            console.log(`[${e.lat}, ${e.lng}]: ${e.address}`);
+            outputEl.innerHTML = `<ul>
+                <li>latitude: ${e.lat}</li>
+                <li>longitude: ${e.lng}</li>
+                <li>address: ${e.address}</li>
+            </ul>`;
+        });
+        
+        // Clear the <output> element when the 'map-picker-reset' custom event is fired
+        document.addEventListener('map-picker-reset', () => { outputEl.innerText=''; });
+    }
+
     async render() {
         return await getHtml('location-input.html');
     }
@@ -23,11 +45,12 @@ export default class LocationInput extends Base {
         this.querySelectorAll('.geo-locate').forEach(button => {
             button.addEventListener('click', () => {
                 // this.handleClientLocation();
-                requestClientLocation().then(coords => {
+                requestClientLocation().then(async coords => {
                     // console.log('Client coordinates:', coords.lat, coords.lng);
+                    const address = await getAddressFromCoordinates(coords.lat, coords.lng);
                     this.querySelector('#map-wrapper').setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
                     this.querySelector('map-picker')?.setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
-                    document.dispatchEvent(new MarkerDataEvent('map-picker-confirm', coords.lat, coords.lng, null));
+                    document.dispatchEvent(new MarkerDataEvent('map-picker-confirm', coords.lat, coords.lng, address));
                 }).catch(error => console.error(error) );
             });
         });

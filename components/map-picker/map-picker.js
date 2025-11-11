@@ -275,7 +275,7 @@ export default class MapPicker extends HTMLElement {
 
 
 // Custom event to encapsulate marker data
-class MarkerDataEvent extends Event {
+export class MarkerDataEvent extends Event {
   constructor(eventName, lat, lng, address) {
     super(eventName, { bubbles: true, composed: true });
     this.lat = lat;
@@ -475,7 +475,12 @@ class ReverseGeocoder {
 // Export a singleton instance of ReverseGeocoder
 const geocoder = new ReverseGeocoder();
 export const getAddressFromCoordinates = geocoder.getAddressFromCoordinates.bind(geocoder);
-
+// Usage example:
+// getAddressFromCoordinates(40.748817, -73.985428).then(address => {
+//     console.log(address);
+// }).catch(error => console.error(error));
+// or
+// const address = await getAddressFromCoordinates(40.748817, -73.985428);
 
 /**
  * Sets up keyboard controls for a Leaflet map
