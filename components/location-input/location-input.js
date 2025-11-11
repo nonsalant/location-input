@@ -25,7 +25,7 @@ export default class LocationInput extends Base {
         });
 
         // Clear the <output> element when the 'map-picker-reset' custom event is fired
-        document.addEventListener('map-picker-reset', () => { outputEl.innerText=''; });
+        document.addEventListener('map-picker-reset', () => { outputEl.innerText = ''; });
     }
 
     async render() {
@@ -33,6 +33,8 @@ export default class LocationInput extends Base {
     }
 
     afterRender() {
+
+        // Handle geolocation when .geo-locate button is clicked
         this.querySelectorAll('.geo-locate').forEach(button => {
             button.addEventListener('click', () => {
                 // this.handleClientLocation();
@@ -43,6 +45,14 @@ export default class LocationInput extends Base {
                     this.querySelector('map-picker')?.setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
                     document.dispatchEvent(new MarkerDataEvent('map-picker-confirm', coords.lat, coords.lng, address));
                 }).catch(error => console.error(error) );
+            });
+        });
+
+        // Reset location when any .reset-location element is clicked
+        this.querySelectorAll('.reset-location')?.forEach(el => {
+            el.addEventListener('click', (e) => {
+                // 📡 Dispatch a 'map-picker-reset' event
+                document.dispatchEvent(new Event('map-picker-reset'));
             });
         });
     }

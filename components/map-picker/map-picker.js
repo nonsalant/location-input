@@ -148,12 +148,12 @@ export default class MapPicker extends HTMLElement {
             el.addEventListener('click', (e) => this.handleConfirm(e));
         });
     
-        this.resetLocation?.forEach(el => {
-            el.addEventListener('click', (e) => {
-                // 📡 Dispatch a 'map-picker-reset' event
-                this.host.dispatchEvent(new Event('map-picker-reset'));
-            });
-        });
+        // this.resetLocation?.forEach(el => {
+        //     el.addEventListener('click', (e) => {
+        //         // 📡 Dispatch a 'map-picker-reset' event
+        //         this.host.dispatchEvent(new Event('map-picker-reset'));
+        //     });
+        // });
 
         // 📡 Listen for the map-picker-reset event
         this.host.addEventListener('map-picker-reset', () => { this.resetMap() });
