@@ -5,10 +5,10 @@
     triggers=".location-trigger"
     close-button
 >
-    <button class="geo-locate" onclick="this.closest('[popover]')?.hidePopover()" type="button">
+    <button class="geo-locate map-trigger" onclick="this.closest('[popover]')?.hidePopover()" type="button">
         Auto-detect
     </button>
-    <button class="map-trigger" popovertarget="map-wrapper" onclick="this.closest('[popover]')?.hidePopover()" type="button">
+    <button class="map-trigger" --popovertarget="map-wrapper" onclick="this.closest('[popover]')?.hidePopover()" type="button">
         Pick manually
     </button>
     <!-- <button class="reset-location" onclick="this.closest('[popover]')?.hidePopover(); document.dispatchEvent(new Event('map-picker-reset'));" type="button"> -->
@@ -26,19 +26,3 @@
     inner-scripts="../map-picker/map-picker.js"
     inner-content="../map-picker/map-picker.html"
 ></lazy-modal>
-
-<!-- Demo implementation -->
-<!-- <script type="module">
-    const outputEl = document.querySelector('output');
-    // Inject coordinates and address when 'map-picker-confirm' custom event is fired
-    document.addEventListener('map-picker-confirm', (e) => {
-        console.log(`[${e.lat}, ${e.lng}]: ${e.address}`);
-        outputEl.innerHTML = `<ul>
-            <li>latitude: ${e.lat}</li>
-            <li>longitude: ${e.lng}</li>
-            <li>address: ${e.address}</li>
-        </ul>`;
-    });
-    // Clear the <output> element when the 'map-picker-reset' custom event is fired
-    document.addEventListener('map-picker-reset', () => { outputEl.innerText=''; });
-</script> -->
