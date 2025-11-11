@@ -5,15 +5,6 @@ const {
     defineElement,
 } = await import(`../base/base.js?path=${encodeURIComponent(COMPONENT_PATH)}`);
 
-// class MarkerDataEvent extends Event {
-//   constructor(eventName, lat, lng, address) {
-//     super(eventName, { bubbles: true, composed: true });
-//     this.lat = lat;
-//     this.lng = lng;
-//     this.address = address;
-//   }
-// }
-
 import { MarkerDataEvent, getAddressFromCoordinates } from '../map-picker/map-picker.js';
 
 export default class LocationInput extends Base {
@@ -32,7 +23,7 @@ export default class LocationInput extends Base {
                 <li>address: ${e.address}</li>
             </ul>`;
         });
-        
+
         // Clear the <output> element when the 'map-picker-reset' custom event is fired
         document.addEventListener('map-picker-reset', () => { outputEl.innerText=''; });
     }
