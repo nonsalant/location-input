@@ -143,11 +143,9 @@ export default class LazyModal extends Base {
         if (!htmlPath) return; // No content to add
         const content = await getHtml(htmlPath);
         const processedContent = processPlaceholders(content, this);
-        // const fragment = createFragment(processedContent); // ! this registers custom elements too early
-        // this.appendChild(fragment);
+        // this.appendChild(createFragment(processedContent)); // registers custom elements too early
         this.insertAdjacentHTML('beforeend', processedContent); // note: this doesn't execute scripts
-        executeScripts(this); // ! this will re-execute existing scripts
-        // todo: put scripts in a container and only execute those
+        executeScripts(this);
     }
 
     /**

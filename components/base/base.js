@@ -31,19 +31,15 @@ export class Base extends HTMLElement {
 
         const markup = await this.render();
         const processedHtml = processPlaceholders(markup, this); // or: processPlaceholders(markup, { myValue: 'yoo' });
-        // const fragment = createFragment(processedHtml); // ! note: this registers custom elements too early
-        // this.domRoot.appendChild(fragment);
+        // this.domRoot.appendChild(createFragment(processedHtml)); // registers custom elements too early
         this.domRoot.insertAdjacentHTML('beforeend', processedHtml); // note: this doesn't execute scripts
 
         const beforeMarkup = await this.renderBefore();
         const processedBeforeHtml = processPlaceholders(beforeMarkup, this);
-        // const fragmentBefore = createFragment(processedBeforeHtml); // ! note: this registers custom elements too early
-        // this.domRoot.prepend(fragmentBefore);
+        // this.domRoot.prepend(createFragment(processedBeforeHtml)); // registers custom elements too early
         this.domRoot.insertAdjacentHTML('afterbegin', processedBeforeHtml); // note: this doesn't execute scripts
 
-        executeScripts(this.domRoot); // ! this will re-execute existing scripts
-        // todo: put scripts in a container and only execute those
-
+        executeScripts(this.domRoot);
         this.afterRender();
     }
 
@@ -186,86 +182,19 @@ export function defineElement(tag, component) {
     customElements.define(tag, component);
 }
 
+// not used
 /**
  * Create a DocumentFragment from an HTML string.
  * @param {string} html - HTML template string; may contain ${prop} placeholders.
  * @returns {DocumentFragment} DocumentFragment containing parsed nodes from the processed HTML.
  * @throws {TypeError} If `html` is not a string.
  */
-export function createFragment(html) {
+function createFragment(html) {
     if (typeof html !== 'string') {
         throw new TypeError('createFragment(html): expected a string');
     }
     // note: this registers custom elements before they they are added to the DOM
     return document.createRange().createContextualFragment(html);
-}
-
-/**
- * Replace ${prop} placeholders in an HTML template string with resolved values.
- * @param {string} html - HTML template containing ${prop} placeholders.
- * @param {Object|Element} context - The context used to resolve placeholders.
- * @returns {string} Processed HTML string with placeholders replaced.
- * @throws {TypeError} If `html` is not a string or `context` is not an object or Element.
- */
-export function processPlaceholders(html, context) {
-    if (html == null) return '';
-
-    if (typeof html !== 'string') {
-        throw new TypeError('processPlaceholders(html): expected a string');
-    }
-    if (context == null || (!['object', 'function'].includes(typeof context))) {
-        throw new TypeError('processPlaceholders(context): expected an object or Element');
-    }
-
-    const toStr = v => (v == null ? '' : String(v));
-        
-    // Extract script tags and replace with placeholders
-    const scriptTagRegex = /<script(\s[^>]*)?>[\s\S]*?<\/script>/gi;
-    const scripts = [];
-    let workingHtml = html.replace(scriptTagRegex, (match) => {
-        scripts.push(match);
-        return `<!--SCRIPT_PLACEHOLDER_${scripts.length - 1}-->`;
-    });
-    
-    // Process placeholders only in non-script content
-    const propRegex = /\$\{([^}]+)\}/g; // matches ${prop} placeholders
-
-    workingHtml = workingHtml.replace(propRegex, (_, raw) => {
-        const prop = String(raw).trim();
-        // Using != null preserves falsy values like 0, false and '' while excluding null/undefined.
-        // 1) dataset (attributes from data-*, automatic kebab-case conversion)
-        if (context.dataset && context.dataset[prop] != null) {
-            return context.dataset[prop];
-        }
-
-        // 2) attribute (Element-like API), convert camel to kebab for attribute names
-        if (typeof context.getAttribute === 'function') {
-            const attr = context.getAttribute(camelToKebab(prop));
-            if (attr != null) return attr;
-        }
-
-        // 3) direct property lookup (supports plain objects and instances)
-        if (context[prop] != null) {
-            return toStr(context[prop]);
-        }
-
-        // 4) fallback to static prop
-        if (context.constructor && context.constructor[prop] != null) {
-            return toStr(context.constructor[prop]);
-        }
-
-        // not found -> empty string // ! breaks string literals (eg: in js in html)
-        console.warn(`Property '${prop}' not found in context: ${context}`);
-        // return '';
-        return _;
-    });
-    
-    // Restore script tags
-    scripts.forEach((script, index) => {
-        workingHtml = workingHtml.replace(`<!--SCRIPT_PLACEHOLDER_${index}-->`, script);
-    });
-
-    return workingHtml;
 }
 
 /**
@@ -309,18 +238,106 @@ export function looksLikeCssText(str) {
 }
 
 /**
+ * Replace ${prop} placeholders in an HTML template string with resolved values and mark script tags.
+ * @param {string} html - HTML template containing ${prop} placeholders.
+ * @param {Object|Element} context - The context used to resolve placeholders.
+ * @param {boolean} [markScripts=true] - Whether to mark script tags with a data attribute.
+ * @returns {string} Processed HTML string with placeholders replaced.
+ * @throws {TypeError} If `html` is not a string or `context` is not an object or Element.
+ */
+export function processPlaceholders(html, context, markScripts = true) {
+    if (html == null) return '';
+
+    if (typeof html !== 'string') {
+        throw new TypeError('processPlaceholders(html): expected a string');
+    }
+    if (context == null || (!['object', 'function'].includes(typeof context))) {
+        throw new TypeError('processPlaceholders(context): expected an object or Element');
+    }
+
+    const toStr = v => (v == null ? '' : String(v));
+        
+    // Extract script tags and replace with placeholders
+    const scriptTagRegex = /<script(\s[^>]*)?>[\s\S]*?<\/script>/gi;
+    const scripts = [];
+    let workingHtml = html.replace(scriptTagRegex, (match) => {
+        scripts.push(match);
+        return `<!--SCRIPT_PLACEHOLDER_${scripts.length - 1}-->`;
+    });
+    
+    // Process placeholders only in non-script content
+    const propRegex = /\$\{([^}]+)\}/g; // matches ${prop} placeholders
+    workingHtml = workingHtml.replace(propRegex, (_, raw) => {
+        const prop = String(raw).trim();
+        // Using != null preserves falsy values like 0, false and '' while excluding null/undefined.
+        // 1) dataset (attributes from data-*, automatic kebab-case conversion)
+        if (context.dataset && context.dataset[prop] != null) {
+            return context.dataset[prop];
+        }
+
+        // 2) attribute (Element-like API), convert camel to kebab for attribute names
+        if (typeof context.getAttribute === 'function') {
+            const attr = context.getAttribute(camelToKebab(prop));
+            if (attr != null) return attr;
+        }
+
+        // 3) direct property lookup (supports plain objects and instances)
+        if (context[prop] != null) {
+            return toStr(context[prop]);
+        }
+
+        // 4) fallback to static prop
+        if (context.constructor && context.constructor[prop] != null) {
+            return toStr(context.constructor[prop]);
+        }
+
+        // not found -> empty string // ! breaks string literals (eg: in js in html)
+        console.warn(`Property '${prop}' not found in context: ${context}`);
+        // return '';
+        return _;
+    });
+    
+    // Restore script tags
+    scripts.forEach((script, index) => {
+        if (markScripts) script = script.replace('<script', '<script data-not-executed');
+        workingHtml = workingHtml.replace(`<!--SCRIPT_PLACEHOLDER_${index}-->`, script);
+    });
+
+    return workingHtml;
+}
+
+/**
+ * Marks all script tags in the given markup with a data attribute
+ * @param {string} markup - The HTML markup containing script tags
+ * @returns {string} The modified HTML markup with script tags marked
+ * @example
+ * const markedMarkup = markScripts('<script></script>'); // => '<script data-not-executed></script>'
+ */
+export function markScripts(markup) {
+    // replace all instances
+    return markup.replace(/<script/g, '<script data-not-executed');
+}
+
+/**
  * Executes all script elements within a given context by creating and replacing them.
  * This is necessary because scripts inserted via innerHTML or similar methods don't execute automatically.
  * 
- * @param {Element|DocumentFragment|ShadowRoot} context - The DOM context containing script elements to execute
+ * @param {Element|DocumentFragment|ShadowRoot} context - The DOM context containing script elements to execute.
+ * @param {boolean} [markedScriptsOnly=true] - If true, only scripts with the 'data-not-executed' attribute will be executed.
  * 
  * @example
  * const container = document.getElementById('dynamic-content');
  * container.innerHTML = '<script>console.log("Hello");</script>';
  * executeScripts(container); // The script will now execute
  */
-export function executeScripts(context) {
-    context.querySelectorAll('script').forEach(oldScript => {
+export function executeScripts(context, markedScriptsOnly = true) {
+    let selector = 'script';
+    if (markedScriptsOnly) {
+        selector = 'script[data-not-executed]';
+    }
+    context.querySelectorAll(selector).forEach(oldScript => {
+        oldScript.removeAttribute('data-not-executed');
+
         const newScript = document.createElement('script');
 
         // Copy all attributes
