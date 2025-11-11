@@ -5,14 +5,14 @@ const {
     defineElement,
 } = await import(`../base/base.js?path=${encodeURIComponent(COMPONENT_PATH)}`);
 
-// class MarkerDataEvent extends Event {
-//   constructor(eventName, lat, lng, address) {
-//     super(eventName, { bubbles: true, composed: true });
-//     this.lat = lat;
-//     this.lng = lng;
-//     this.address = address;
-//   }
-// }
+class MarkerDataEvent extends Event {
+  constructor(eventName, lat, lng, address) {
+    super(eventName, { bubbles: true, composed: true });
+    this.lat = lat;
+    this.lng = lng;
+    this.address = address;
+  }
+}
 
 export default class LocationInput extends Base {
     async render() {
@@ -27,7 +27,7 @@ export default class LocationInput extends Base {
                     // console.log('Client coordinates:', coords.lat, coords.lng);
                     this.querySelector('#map-wrapper').setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
                     this.querySelector('map-picker')?.setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
-                    // document.dispatchEvent(new MarkerDataEvent('map-picker-confirm', coords.lat, coords.lng, null));
+                    document.dispatchEvent(new MarkerDataEvent('map-picker-confirm', coords.lat, coords.lng, null));
                 }).catch(error => console.error(error) );
             });
         });
