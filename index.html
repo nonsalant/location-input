@@ -11,14 +11,23 @@
         body { width: 90%; max-width: min(700px, 100%); margin-inline: auto; }
         [popover] { max-width: calc(100dvw - 4lh); max-height: calc(100dvh - 4lh); padding: 1lh; border-radius: .5lh; }
         /* hide reset button if it follows an empty output */
-        body:has(output:empty) .reset-location { display: none; }
+        body:has(output:empty) {
+            .reset-location { display: none; }
+            .location-trigger span:last-child { display: none; }
+        }
+        body:has(output:not(:empty)) {
+            .location-trigger span:first-child { display: none; }
+        }
     </style>
 </head>
 <body>
     <h2><span aria-hidden="true">📌</span> Location Input web component</h2>
 
     <location-input>
-        <button type="button" class="location-trigger">Set location</button>
+        <button type="button" class="location-trigger">
+            <span>Set location</span>
+            <span>Edit location</span>
+        </button>
         <p><output></output></p>
     </location-input>
 
