@@ -95,7 +95,7 @@ export function requestClientLocation(decimals = 6) {
             }),
             error => {
                 if (error.code === 2) {
-                    alert('Position unavailable: Network or hardware issues preventing location detection.');
+                    alert('Location detection unavailable due to network or hardware issues.');
                 }
                 reject(`Error occurred. Error code: ${error.code}`);
             }
