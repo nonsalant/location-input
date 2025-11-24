@@ -37,12 +37,13 @@ export default class LocationInput extends Base {
             button.addEventListener('click', (event) => {
                 // this.handleClientLocation();
                 requestClientLocation().then(async coords => {
-                    event.target.setAttribute('aria-busy', 'true'); // gets removed in map-picker after processing
+                    const target = event.target;
+                    target.setAttribute('aria-busy', 'true'); // gets removed in map-picker after processing
                     const { MarkerDataEvent, getAddressFromCoordinates } = await import('../map-picker/map-picker.js');
 
                     const address = await getAddressFromCoordinates(coords.lat, coords.lng);
-                    event.target.removeAttribute('aria-busy');
-                    event.target.closest('[popover]')?.hidePopover()
+                    target.removeAttribute('aria-busy');
+                    target.closest('[popover]')?.hidePopover()
 
                     this.querySelector('#map-wrapper').setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
                     this.querySelector('map-picker')?.setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
@@ -50,12 +51,13 @@ export default class LocationInput extends Base {
                 }).catch(error => console.error(error) );
             });
         });
-
-        // when .map-trigger button is clicked add an event listener to close popover (on the map-picker-confirm event) 
+ 
+        // 📡 When a .map-trigger is clicked add a 'map-picker-confirm' event listener to close popover
         this.querySelectorAll('.map-trigger').forEach(button => {
             button.addEventListener('click', (event) => {
+                const popover = event.target.closest('[popover]');
                 document.addEventListener('map-picker-confirm', () => {
-                    event.target.closest('[popover]')?.hidePopover();
+                    popover?.hidePopover();
                 }, { once: true });
             });
         });
