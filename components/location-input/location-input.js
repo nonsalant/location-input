@@ -65,6 +65,8 @@ export default class LocationInput extends Base {
             el.addEventListener('click', (e) => {
                 // 📡 Dispatch a 'map-picker-reset' event
                 document.dispatchEvent(new Event('map-picker-reset'));
+                this.querySelector('#map-wrapper').removeAttribute('marker-coordinates');
+                this.querySelector('map-picker')?.removeAttribute('marker-coordinates');
             });
         });
     }
