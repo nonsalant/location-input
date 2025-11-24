@@ -6,17 +6,10 @@ import {
     // createStylesheet,
 } from './utils.js';
 
-import {
-    defineElement,
-    processPlaceholders,
-    executeScripts,
-} from '../base/utils.js';
+import { defineElement, processPlaceholders, executeScripts, } from '../base/utils.js';
 
 const COMPONENT_PATH = import.meta.resolve('./');
-const {
-    Base,
-    getHtml,
-} = await import(`../base/base.js?path=${encodeURIComponent(COMPONENT_PATH)}`);
+const { Base, getHtml, } = await import(`../base/base.js?path=${encodeURIComponent(COMPONENT_PATH)}`);
 
 export default class LazyModal extends Base {
     static styles = [

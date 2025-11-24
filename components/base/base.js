@@ -1,9 +1,4 @@
-import {
-    createStylesheet,
-    looksLikeCssText,
-    processPlaceholders,
-    executeScripts,
-} from "./utils.js";
+import { createStylesheet, looksLikeCssText, processPlaceholders, executeScripts, } from "./utils.js";
 
 // Get the component path from the URL query parameter
 const COMPONENT_PATH = new URL(import.meta.url).searchParams.get('path');

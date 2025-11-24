@@ -1,12 +1,7 @@
-import {
-    defineElement,
-} from '../base/utils.js';
+import { defineElement, } from '../base/utils.js';
 
 const COMPONENT_PATH = import.meta.resolve('./');
-const {
-    Base,
-    getHtml,
-} = await import(`../base/base.js?path=${encodeURIComponent(COMPONENT_PATH)}`);
+const { Base, getHtml, } = await import(`../base/base.js?path=${encodeURIComponent(COMPONENT_PATH)}`);
 
 // import { MarkerDataEvent, getAddressFromCoordinates } from '../map-picker/map-picker.js';
 
