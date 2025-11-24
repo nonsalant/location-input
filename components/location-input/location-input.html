@@ -5,15 +5,44 @@
     triggers=".location-trigger"
     close-button
 >
-    <button class="geo-locate" type="button">
+    <!-- <button class="geo-locate" type="button">
         Auto-detect
     </button>
     <button class="map-trigger" type="button">
         Pick manually
-    </button>
-    <button class="reset-location" onclick="this.closest('[popover]')?.hidePopover();" type="button">
-        <span aria-hidden="true">❌</span> <span>Reset Location</span>
-    </button>
+    </button> -->
+
+    <location-cards>
+        <location-card class="automatic | clickable-parent">
+            <card-content>
+                <big>Auto-detect</big>
+                <small>Grant location permission</small>
+            </card-content>
+            <card-action>
+                <button class="geo-locate | clickable-element button" type="button">
+                    <span aria-hidden="true">✅</span><span>Allow</span>
+                </button>
+            </card-action>
+        </location-card>
+        <p class="separator">— OR —</p>
+        <location-card class="manual | clickable-parent">
+            <card-content>
+                <big>Manually</big>
+                <small>Pick from the map</small>
+            </card-content>
+            <card-action>
+                <button class="map-trigger | clickable-element button" type="button">
+                    <span aria-hidden="true">📌</span><span>Map</span>
+                </button>
+            </card-action>
+        </location-card>
+    </location-cards>
+
+    <p>
+        <button class="reset-location" onclick="this.closest('[popover]')?.hidePopover();" type="button">
+            <span aria-hidden="true">❌</span> <span>Reset Location</span>
+        </button>
+    </p>
 </lazy-modal>
 
 <!-- map-picker https://github.com/nonsalant/map-picker/ -->
@@ -25,3 +54,281 @@
     inner-styles="../map-picker/map-picker.css"
     inner-scripts="../map-picker/map-picker.js"
 ></lazy-modal>
+
+
+<style>
+kbd {
+	font-size: 0.9em;
+    font-size: 90%;
+	/* font-weight: bold; */
+	border: solid 1px #88888880;
+	padding-inline: 0.5ch;
+	border-radius: 3px;
+}
+
+/**/
+
+button, .button {
+    cursor: pointer;
+    touch-action: manipulation;
+    font-size: .9rem;
+    font-size: 90%;
+    transition: scale .2s ease-out;
+    /* &:hover:not(:disabled) { filter: contrast(1.25); } */
+    &:active:not(:disabled) { scale: 0.98; }
+    &:disabled {
+        opacity: .5;
+        filter: brightness(0.9);
+        pointer-events: none;
+    }
+}
+
+/* Button */
+.button {
+	/* 	width: clamp(1rem, 11lh, 100%); */
+    height: fit-content;
+	display: block;
+	cursor: pointer;
+	display: block;
+	text-decoration: none;
+	font-family: inherit;
+    -webkit-font-smoothing: antialiased;
+	font-weight: normal;
+	font-weight: bold;
+	/* font-size: inherit; */
+	font-size: 85%;
+	line-height: 1.2;
+	appearance: none;
+	color: inherit;
+	background: #efefef;
+	border: solid 1px #aaa;
+    border: solid 1px #00000060;
+	border-radius: 5px;
+    box-shadow: var(--surface-inset);
+	padding: 0.5lh 0.75lh;
+	transition: scale 0.3s var(--back-out, ease-in-out), background 0.2s ease-out;
+
+	&:hover:not(:disabled) {
+		background: #fff;
+        background: #fafafa;
+	}
+
+	&:active:not(:disabled) {
+		background: #f0f0f0;
+		transform: scale(0.98);
+	}
+	&:focus-visible {
+		outline-width: 2px;
+		outline-offset: -5px;
+		outline-style: dotted;
+	}
+
+    &:disabled {
+        opacity: .5;
+        filter: brightness(0.9);
+    }
+
+	/* Button has icon */
+	&:has(> [aria-hidden]:where(:first-child, :last-child)) {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.25lh;
+		align-items: center;
+		justify-content: center;
+		text-align: center;
+		/* text-align: start; */
+	}
+
+    &[aria-busy=true] [aria-hidden] {
+        display: none;
+    }
+}
+
+.button-container {
+	display: inline grid;
+	grid-auto-flow: column;
+	grid-auto-columns: 1fr;
+	justify-content: space-between;
+	width: 100%;
+	gap: .5lh;
+}
+
+@media not print {
+    .print-only { display: none; }
+}
+@media print {
+    .no-print { display: none; }
+}
+
+/* Clickable parent */
+clickable-parent,
+.clickable-parent { 
+    /* --back-out: linear(...); */
+
+    position: relative;
+    isolation: isolate;
+    cursor: pointer;
+
+    /* Parent filters & transitions */
+    /**/
+    transition: scale 0.4s var(--back-out), filter 0.3s var(--back-out);
+    &:has(.clickable-element:hover) {
+        filter: brightness(1.015);
+        filter: brightness(1.025);
+        /* scale: 1.01; */
+        transition-duration: .1s;
+    }
+    &:has(.clickable-element:active) {
+        filter: brightness(.98);
+        scale: .99;
+    }
+    /**/
+
+    /* Child element */
+    .clickable-element {
+        &::after {
+            content: "";
+            display: block;
+            position: absolute;
+            inset: 0;
+            /* This makes text selectable but un-clickable: */
+            /* z-index: -1; */
+            touch-action: manipulation;
+        }
+
+        /* &:hover:not(:has(::after:hover)) {
+            outline: solid 1px red !important;
+        } */
+
+        /* Any filters applied to this element will
+             cause bugs: no click event + hover glitch */
+        /* (You can filter the parent instead—see above) */
+        & {
+            filter: none !important; 
+            transform: none !important; scale: none !important;
+            translate: none !important; rotate: none !important;
+        }
+    }
+
+}
+
+/**/
+
+location-input {
+    display: block;
+    container: freeze-dates / inline-size;
+}
+
+/* Cards */
+
+/* Container of the Cards Wrapper */
+*:has(> * > location-card) {
+	container: cards / inline-size;
+}
+
+/* Cards Wrapper */
+:where(:has(> location-card)) {
+	display: flex;
+	gap: 1lh;
+
+	@container cards (width < 600px) {
+		flex-wrap: wrap;
+	}
+}
+
+/* Location Cards (specific Cards Wrapper) */
+location-cards {
+    -webkit-font-smoothing: antialiased;
+    padding-inline: 1.5lh;
+    padding-inline: .25lh;
+    transition: all .3s var(--back-out);
+    /* outline: dashed 2px transparent; */
+    outline-offset: .25lh; 
+    gap: .5lh;
+}
+
+location-card {
+    /* min-height: 3.75lh; */
+	background-color: #eaeaea;
+	background-color: #eaeaeaa0;
+
+    /* shiny cursor */
+    background-attachment: fixed;
+    background-image: radial-gradient(
+        circle at var(--x, 0%) var(--y, -100%),
+        #ffffffbf,
+        #ffffff40 5rem
+    );
+    /**/
+
+	border: solid 1px #dadada;
+	border: solid 1px #dadada80;
+	border-radius: 5px;
+	padding: 0.5lh 0.75lh;
+	gap: 0.5lh;
+	width: 100%;
+    width: 100%;
+	max-width: 20em;
+    margin-inline: auto;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+    box-shadow: var(--surface-inset-200);
+
+    @container cards (650px < width) {
+        text-align: right;
+        &:nth-child(1){
+            .button { flex-direction: row-reverse; }
+        } 
+        &:nth-child(3) {
+            flex-direction: row-reverse;
+            text-align: left;
+        }
+    }
+
+	@container cards (600px < width < 900px) {
+		flex-wrap: wrap;
+	}
+
+	@container cards (width < 600px) {
+		flex-wrap: wrap;
+        & + .separator { width: 100%; }
+	}
+
+    & + .separator {
+        display: grid; 
+        align-items: center; 
+        text-wrap: nowrap; 
+        font-weight: bold; 
+        justify-content: center;
+        margin-block: 0;
+    }
+
+    &[data-variation=no-card] {
+        background: none;
+        padding: 0;
+        border: 0;
+        display: grid;
+        /* align-content: center; */
+		/* justify-content: end; */
+    }
+
+	& > :first-child {
+        flex: 1;
+		display: grid;
+        gap: .1lh;
+	}
+
+    ul {
+        margin: 0;
+        font-size: 80%;
+        font-size: smaller;
+        padding-inline-start: .75lh;
+    }
+}
+
+/* Last child (location-card) takes up whole space if total items is odd */
+/* location-card:nth-child(2n + 1):last-child {
+	grid-column: 1 / -1;
+} */
+</style>
