@@ -182,21 +182,6 @@ export function defineElement(tag, component) {
     customElements.define(tag, component);
 }
 
-// not used
-/**
- * Create a DocumentFragment from an HTML string.
- * @param {string} html - HTML template string; may contain ${prop} placeholders.
- * @returns {DocumentFragment} DocumentFragment containing parsed nodes from the processed HTML.
- * @throws {TypeError} If `html` is not a string.
- */
-function createFragment(html) {
-    if (typeof html !== 'string') {
-        throw new TypeError('createFragment(html): expected a string');
-    }
-    // note: this registers custom elements before they they are added to the DOM
-    return document.createRange().createContextualFragment(html);
-}
-
 /**
  * Creates a CSSStyleSheet from CSS text
  * @param {string} cssText - The CSS text to create a stylesheet from
@@ -351,4 +336,19 @@ export function executeScripts(context, markedScriptsOnly = true) {
         // Replace the old script with the new one
         oldScript.parentNode.replaceChild(newScript, oldScript);
     });
+}
+
+// not used
+/**
+ * Create a DocumentFragment from an HTML string.
+ * @param {string} html - HTML template string; may contain ${prop} placeholders.
+ * @returns {DocumentFragment} DocumentFragment containing parsed nodes from the processed HTML.
+ * @throws {TypeError} If `html` is not a string.
+ */
+function createFragment(html) {
+    if (typeof html !== 'string') {
+        throw new TypeError('createFragment(html): expected a string');
+    }
+    // note: this registers custom elements before they they are added to the DOM
+    return document.createRange().createContextualFragment(html);
 }
