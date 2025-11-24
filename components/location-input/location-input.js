@@ -79,7 +79,7 @@ export default class LocationInput extends Base {
 
 // utils.js
 
-export function requestClientLocation() {
+export function requestClientLocation(decimals = 6) {
     return new Promise((resolve, reject) => {
         if (!navigator.geolocation) {
             reject('Geolocation is not supported by this browser.');
@@ -87,10 +87,13 @@ export function requestClientLocation() {
         }
 
         navigator.geolocation.getCurrentPosition(
-            position => resolve({ lat: position.coords.latitude, lng: position.coords.longitude }),
+            position => resolve({
+                lat: position.coords.latitude.toFixed(decimals),
+                lng: position.coords.longitude.toFixed(decimals)
+            }),
             error => {
                 if (error.code === 2) {
-                    alert('Position unavailable: Network or hardware issues are preventing location detection.');
+                    alert('Position unavailable: Network or hardware issues preventing location detection.');
                 }
                 reject(`Error occurred. Error code: ${error.code}`);
             }
