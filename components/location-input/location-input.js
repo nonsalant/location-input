@@ -16,7 +16,7 @@ export default class LocationInput extends Base {
 
         // Inject coordinates and address when 'map-picker-confirm' custom event is fired
         document.addEventListener('map-picker-confirm', (e) => {
-            console.log(`[${e.lat}, ${e.lng}]: ${e.address}`);
+            // console.log(`[${e.lat}, ${e.lng}]: ${e.address}`);
             outputEl.innerHTML = `<ul>
                 <li>latitude: ${e.lat}</li>
                 <li>longitude: ${e.lng}</li>
@@ -48,6 +48,15 @@ export default class LocationInput extends Base {
                     this.querySelector('map-picker')?.setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
                     document.dispatchEvent(new MarkerDataEvent('map-picker-confirm', coords.lat, coords.lng, address));
                 }).catch(error => console.error(error) );
+            });
+        });
+
+        // when .map-trigger button is clicked add an event listener to close popover (on the map-picker-confirm event) 
+        this.querySelectorAll('.map-trigger').forEach(button => {
+            button.addEventListener('click', (event) => {
+                document.addEventListener('map-picker-confirm', () => {
+                    event.target.closest('[popover]')?.hidePopover();
+                }, { once: true });
             });
         });
 
