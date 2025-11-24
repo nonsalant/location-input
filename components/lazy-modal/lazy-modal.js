@@ -3,16 +3,19 @@ import {
     isRemoteUrl,
     observeIntersection,
     unobserveIntersection,
-    createStylesheet,
+    // createStylesheet,
 } from './utils.js';
+
+import {
+    defineElement,
+    processPlaceholders,
+    executeScripts,
+} from '../base/utils.js';
 
 const COMPONENT_PATH = import.meta.resolve('./');
 const {
     Base,
     getHtml,
-    defineElement,
-    processPlaceholders,
-    executeScripts,
 } = await import(`../base/base.js?path=${encodeURIComponent(COMPONENT_PATH)}`);
 
 export default class LazyModal extends Base {

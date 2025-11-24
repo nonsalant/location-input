@@ -10,7 +10,7 @@ const LEAFLET_STYLESHEET = 'leaflet.min.css';
 // const LEAFLET_SCRIPT = 'leaflet-src.esm.js';
 // const LEAFLET_STYLESHEET = 'leaflet.css';
 
-const { defineElement } = await import(`../base/base.js`);
+const { defineElement } = await import(`../base/utils.js`);
 
 export default class MapPicker extends HTMLElement {
     static get observedAttributes() { return ['marker-coordinates']; }
