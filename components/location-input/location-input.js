@@ -5,7 +5,7 @@ const {
     defineElement,
 } = await import(`../base/base.js?path=${encodeURIComponent(COMPONENT_PATH)}`);
 
-import { MarkerDataEvent, getAddressFromCoordinates } from '../map-picker/map-picker.js';
+// import { MarkerDataEvent, getAddressFromCoordinates } from '../map-picker/map-picker.js';
 
 export default class LocationInput extends Base {
     constructor() {
@@ -28,19 +28,22 @@ export default class LocationInput extends Base {
         document.addEventListener('map-picker-reset', () => { outputEl.innerText = ''; });
     }
 
-    async render() {
-        return await getHtml('location-input.html');
-    }
+    async render() { return await getHtml('location-input.html'); }
 
     afterRender() {
 
         // Handle geolocation when .geo-locate button is clicked
         this.querySelectorAll('.geo-locate').forEach(button => {
-            button.addEventListener('click', () => {
+            button.addEventListener('click', (event) => {
                 // this.handleClientLocation();
                 requestClientLocation().then(async coords => {
-                    // console.log('Client coordinates:', coords.lat, coords.lng);
+                    event.target.setAttribute('aria-busy', 'true'); // gets removed in map-picker after processing
+                    const { MarkerDataEvent, getAddressFromCoordinates } = await import('../map-picker/map-picker.js');
+
                     const address = await getAddressFromCoordinates(coords.lat, coords.lng);
+                    event.target.removeAttribute('aria-busy');
+                    event.target.closest('[popover]')?.hidePopover()
+
                     this.querySelector('#map-wrapper').setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
                     this.querySelector('map-picker')?.setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
                     document.dispatchEvent(new MarkerDataEvent('map-picker-confirm', coords.lat, coords.lng, address));

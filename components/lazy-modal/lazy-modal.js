@@ -90,6 +90,10 @@ export default class LazyModal extends Base {
         catch (error) { console.error('Failed to handle click:', error); }
         finally {
             trigger.ariaBusy = null;
+            // document.querySelector('#location-wrapper')?.hidePopover();
+            // if (trigger.classList.contains('map-trigger')) {
+                // document.querySelector('#location-wrapper')?.hidePopover();
+            // }
         }
     }
 
