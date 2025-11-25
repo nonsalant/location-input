@@ -16,6 +16,9 @@
     <button popovertarget="map-wrapper" popovertargetaction="hide" type="button">
         Cancel
     </button>
+    <button class="reset-location" onclick="this.closest('[popover]')?.hidePopover();" type="button">
+        <span aria-hidden="true">❌</span> <span>Reset</span>
+    </button>
     <button class="confirm-location" type="button">
         <span aria-hidden="true">✅</span> <span>Confirm Location</span>
     </button>

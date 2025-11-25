@@ -186,7 +186,7 @@ location-cards {
     /* outline: dashed 2px transparent; */
     outline-offset: .25lh; 
     gap: .5lh;
-    margin-block: 1lh;
+    /* margin-block: 1lh; */
 }
 
 location-card {

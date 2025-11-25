@@ -14,6 +14,12 @@
 
     <h2>Input Your Location</h2>
 
+    <p>
+        <button class="reset-location" onclick="this.closest('[popover]')?.hidePopover();" type="button">
+            <span aria-hidden="true">❌</span> <span>Reset Location</span>
+        </button>
+    </p>
+
     <location-cards>
         <location-card class="automatic | clickable-parent">
             <card-content>
@@ -39,12 +45,6 @@
             </card-action>
         </location-card>
     </location-cards>
-
-    <p>
-        <button class="reset-location" onclick="this.closest('[popover]')?.hidePopover();" type="button">
-            <span aria-hidden="true">❌</span> <span>Reset Location</span>
-        </button>
-    </p>
 
 </lazy-modal>
 
