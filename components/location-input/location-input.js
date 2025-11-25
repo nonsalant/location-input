@@ -6,6 +6,8 @@ const { Base, getHtml, } = await import(`../base/base.js?path=${encodeURICompone
 // import { MarkerDataEvent, getAddressFromCoordinates } from '../map-picker/map-picker.js';
 
 export default class LocationInput extends Base {
+    static styles = ['style.css',];
+    
     constructor() {
         super();
 
@@ -50,12 +52,14 @@ export default class LocationInput extends Base {
             });
         });
  
-        // 📡 When a .map-trigger is clicked add a 'map-picker-confirm' event listener to close popover
+        // 📡 When a .map-trigger is clicked add a 'map-picker-confirm' event listener to close the popover
         this.querySelectorAll('.map-trigger').forEach(button => {
             button.addEventListener('click', (event) => {
                 const popover = event.target.closest('[popover]');
                 document.addEventListener('map-picker-confirm', () => {
-                    popover?.hidePopover();
+                    // closes the #location-wrapper popover:
+                    popover?.hidePopover(); // but also closes the #map-wrapper popover on top
+                    // console.log(popover);
                 }, { once: true });
             });
         });
