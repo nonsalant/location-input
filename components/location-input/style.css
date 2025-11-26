@@ -221,8 +221,8 @@ location-card {
     );
     background-image: radial-gradient(
         circle at var(--x, 0%) var(--y, -100%),
-        light-dark(#ffffffbf, #ffffff20),
-        light-dark(#ffffff40, #ffffff10) 5rem
+        light-dark(#ffffffff, #ffffff20),
+        light-dark(#ffffff80, #ffffff10) 5rem
     );
     /**/
 

@@ -75,7 +75,7 @@ export default class LocationInput extends Base {
         });
 
         // Initialize shiny cursor effect
-        this.cleanupShinyCursor = initShinyCursor(this);
+        this.cleanupShinyCursor = initShinyCursor(this.querySelector('#location-wrapper'));
     }
 
     // Statically define (or rename) the element unless ?define=false is set in the URL
