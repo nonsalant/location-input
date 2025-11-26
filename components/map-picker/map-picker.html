@@ -16,7 +16,10 @@
     <button popovertarget="map-wrapper" popovertargetaction="hide" type="button">
         Cancel
     </button>
-    <button class="reset-location" onclick="this.closest('[popover]')?.hidePopover();" type="button">
+    <button class="reset-location" onclick="
+        document.dispatchEvent(new Event('map-picker-reset'));
+        document.querySelector('#location-wrapper')?.hidePopover();
+    " type="button">
         <span aria-hidden="true">❌</span> <span>Reset</span>
     </button>
     <button class="confirm-location" type="button">

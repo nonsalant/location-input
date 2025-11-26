@@ -58,8 +58,7 @@ export default class LocationInput extends Base {
                 const popover = event.target.closest('[popover]');
                 document.addEventListener('map-picker-confirm', () => {
                     // closes the #location-wrapper popover:
-                    popover?.hidePopover(); // but also closes the #map-wrapper popover on top
-                    // console.log(popover);
+                    popover?.hidePopover(); // but also closes the #map-wrapper popover on top of it
                 }, { once: true });
             });
         });
