@@ -73,6 +73,9 @@ export default class LocationInput extends Base {
                 this.querySelector('map-picker')?.removeAttribute('marker-coordinates');
             });
         });
+
+        // Initialize shiny cursor effect
+        this.cleanupShinyCursor = initShinyCursor(this);
     }
 
     // Statically define (or rename) the element unless ?define=false is set in the URL
@@ -110,3 +113,18 @@ export function requestClientLocation(decimals = 6) {
 // requestClientLocation().then(coords => {
 //     console.log(coords.lat, coords.lng);
 // }).catch(error => console.error(error) );
+
+
+export function initShinyCursor(surface) {
+    const handleMouseMove = (e) => {
+        surface.style.setProperty('--x', e.x + 'px');
+        surface.style.setProperty('--y', e.y + 'px');
+    };
+
+    surface.addEventListener('mousemove', handleMouseMove);
+
+    // Return cleanup function to remove event listener
+    return () => {
+        surface.removeEventListener('mousemove', handleMouseMove);
+    };
+}
