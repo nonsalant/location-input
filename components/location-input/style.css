@@ -206,6 +206,7 @@ location-input {
         background-color: #eaeaea;
         background-color: #eaeaeaa0;
         background-color: light-dark(#eaeaeaa0, #2a2a2aa0);
+        background-color: light-dark(#dadadaf0, #2a2a2aa0);
 
         /* shiny cursor */
         background-attachment: fixed;
@@ -216,8 +217,8 @@ location-input {
         );
         background-image: radial-gradient(
             circle at var(--x, 0%) var(--y, -100%),
-            light-dark(#ffffffff, #ffffff20),
-            light-dark(#ffffff80, #ffffff10) 5rem
+            light-dark(#ffffffbf, #ffffff20),
+            light-dark(#ffffff40, #ffffff10) 5rem
         );
         /**/
 
