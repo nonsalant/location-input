@@ -6,7 +6,7 @@ const { Base, getHtml, } = await import(`../base/base.js?path=${encodeURICompone
 // import { MarkerDataEvent, getAddressFromCoordinates } from '../map-picker/map-picker.js';
 
 export default class LocationInput extends Base {
-    static styles = ['style.css',];
+    // static styles = ['style.css',];
     
     constructor() {
         super();
