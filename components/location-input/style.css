@@ -308,6 +308,7 @@ location-input {
     lazy-modal button {
         border-width: .5px;
         padding-inline: 1lh;
+        padding: 0.5lh 0.75lh;
     }
 
     lazy-modal :is(location-card, button) {
