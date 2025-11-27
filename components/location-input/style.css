@@ -63,7 +63,7 @@ location-input {
         border: solid 1px #aaa;
         border: solid 1px #00000060;
         border: solid 1px light-dark(#00000060, #ffffff40);
-        border-radius: 5px;
+        /* border-radius: 5px; */
         box-shadow: var(--surface-inset);
         padding: 0.5lh 0.75lh;
         transition: scale 0.3s var(--back-out, ease-in-out), background 0.2s ease-out;
@@ -192,8 +192,7 @@ location-input {
     /* Location Cards (specific Cards Wrapper) */
     location-cards {
         -webkit-font-smoothing: antialiased;
-        padding-inline: 1.5lh;
-        padding-inline: .25lh;
+        /* padding-inline: .25lh; */
         transition: all .3s var(--back-out);
         /* outline: dashed 2px transparent; */
         outline-offset: .25lh; 
@@ -225,7 +224,7 @@ location-input {
         border: solid 1px #dadada;
         border: solid 1px #dadada80;
         border: solid 1px light-dark(#dadada80, #3a3a3a80);
-        border-radius: 5px;
+        /* border-radius: 5px; */
         padding: 0.5lh 0.75lh;
         gap: 0.5lh;
         width: 100%;
@@ -293,5 +292,30 @@ location-input {
     /* location-card:nth-child(2n + 1):last-child {
         grid-column: 1 / -1;
     } */
+
+    .close-button {
+        margin-block-start: -.75lh;
+		margin-inline-end: -.75lh;
+        corner-shape: unset;
+        location-input &:active:not(:disabled) { scale: .8; }
+    }
+
+    lazy-modal, location-card, :where(lazy-modal) button {
+        corner-shape: squircle;
+        border-radius: 2lh;
+    }
+
+    lazy-modal button {
+        border-width: .5px;
+        padding-inline: 1lh;
+    }
+
+    lazy-modal :is(location-card, button) {
+        border-radius: 1lh;
+    }
+
+    lazy-modal location-card button {
+        border-radius: .5lh / .75lh;
+    }
 
 }
