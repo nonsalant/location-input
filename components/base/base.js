@@ -54,10 +54,11 @@ export class Base extends HTMLElement {
     async addCss() {
         const styles = this.constructor.styles;
         const cssTexts = await this.css(styles);
+
         for (const cssText of cssTexts) {
             const processedCssText = processPlaceholders(cssText, this);
             const stylesheet = await createStylesheet(processedCssText);
-            // console.log(this.assetHost);
+            // console.log(this.assetHost.adoptedStyleSheets);
             this.assetHost.adoptedStyleSheets?.push(stylesheet);
         }
     }
