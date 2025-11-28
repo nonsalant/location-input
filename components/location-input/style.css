@@ -311,7 +311,12 @@ location-input {
             location-input &:active:not(:disabled) { scale: .8; }
         }
 
-        lazy-modal, location-card, :where(lazy-modal) button {
+        map-picker {
+            corner-shape: squircle;
+	        border-radius: 1lh;
+        }
+
+        lazy-modal, location-card {
             corner-shape: squircle;
             border-radius: 2lh;
         }
