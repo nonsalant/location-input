@@ -3,6 +3,10 @@ import { createStylesheet, looksLikeCssText, processPlaceholders, executeScripts
 // Get the component path from the URL query parameter
 const COMPONENT_PATH = new URL(import.meta.url).searchParams.get('path');
 
+// Track added stylesheets globally to prevent duplicates across all component instances
+globalThis._addedStylesheets ??= new Map(); // Map of assetHost -> Set of CSS texts
+globalThis._cssLocks ??= new Map(); // Map of assetHost -> Promise (lock)
+
 export class Base extends HTMLElement {
     static enableShadowRoot = false;
     static styles = [];
@@ -17,6 +21,18 @@ export class Base extends HTMLElement {
         this.assetHost = this.shadowRoot ?? this.getRootNode();
         // console.log(this.constructor.name, this.assetHost);
         this.domRoot = this.shadowRoot ?? this;
+        
+        // Use a string key for the Map instead of the object reference
+        const assetHostKey = this.assetHost === document ? 'document' : this.assetHost;
+        // Initialize Set for this assetHost if not present
+        if (!globalThis._addedStylesheets.has(assetHostKey)) {
+            // console.log('Creating new Set for:', assetHostKey);
+            globalThis._addedStylesheets.set(assetHostKey, new Set());
+        } else {
+            // console.log('Using existing Set, current size:', globalThis._addedStylesheets.get(assetHostKey).size);
+        }
+        
+        this._assetHostKey = assetHostKey;
     }
 
     disconnectedCallback() { this.disconnected(); }
@@ -29,17 +45,25 @@ export class Base extends HTMLElement {
     }
 
     async init() {
-        this.addCss();
+        await this.addCss();
 
         const markup = await this.render();
         const processedHtml = processPlaceholders(markup, this); // or: processPlaceholders(markup, { myValue: 'yoo' });
-        // this.domRoot.appendChild(createFragment(processedHtml)); // registers custom elements too early
-        this.domRoot.insertAdjacentHTML('beforeend', processedHtml); // note: this doesn't execute scripts
-
         const beforeMarkup = await this.renderBefore();
         const processedBeforeHtml = processPlaceholders(beforeMarkup, this);
-        // this.domRoot.prepend(createFragment(processedBeforeHtml)); // registers custom elements too early
-        this.domRoot.insertAdjacentHTML('afterbegin', processedBeforeHtml); // note: this doesn't execute scripts
+
+        console.log(this.domRoot, 'inserting html:', processedHtml);
+        if (this.constructor.enableShadowRoot) {
+            this.domRoot.innerHTML = `<div id="container"></div>`;
+            this.domRoot.querySelector('#container').insertAdjacentHTML('beforeend', processedHtml);
+            this.domRoot.querySelector('#container').insertAdjacentHTML('afterbegin', processedBeforeHtml);
+        } else {
+            // this.domRoot.appendChild(createFragment(processedHtml)); // registers custom elements too early
+            this.domRoot.insertAdjacentHTML('beforeend', processedHtml); // note: this doesn't execute scripts
+            // this.domRoot.prepend(createFragment(processedBeforeHtml)); // registers custom elements too early
+            this.domRoot.insertAdjacentHTML('afterbegin', processedBeforeHtml); // note: this doesn't execute scripts
+        }
+
 
         executeScripts(this.domRoot);
         this.afterRender();
@@ -54,12 +78,41 @@ export class Base extends HTMLElement {
     async addCss() {
         const styles = this.constructor.styles;
         const cssTexts = await this.css(styles);
+        
+        // Wait for any pending CSS additions for this assetHost
+        while (globalThis._cssLocks.get(this._assetHostKey)) {
+            await globalThis._cssLocks.get(this._assetHostKey);
+        }
+        
+        // Create a lock promise
+        let releaseLock;
+        const lockPromise = new Promise(resolve => { releaseLock = resolve; });
+        globalThis._cssLocks.set(this._assetHostKey, lockPromise);
+        
+        try {
+            const addedStylesheets = globalThis._addedStylesheets.get(this._assetHostKey);
+            
+            // console.log('addCss:', this.constructor.name, 'Set size:', addedStylesheets.size);
 
-        for (const cssText of cssTexts) {
-            const processedCssText = processPlaceholders(cssText, this);
-            const stylesheet = await createStylesheet(processedCssText);
-            // console.log(this.assetHost.adoptedStyleSheets);
-            this.assetHost.adoptedStyleSheets?.push(stylesheet);
+            for (const cssText of cssTexts) {
+                // Check if this CSS source is already applied BEFORE processing
+                if (addedStylesheets.has(cssText)) {
+                    // console.log('✓ Stylesheet already added, skipping duplicate.');
+                    continue;
+                }
+                
+                // console.log('Adding new stylesheet (first 50 chars):', cssText.substring(0, 50));
+                const processedCssText = processPlaceholders(cssText, this);
+                const stylesheet = await createStylesheet(processedCssText);
+                this.assetHost.adoptedStyleSheets = [...(this.assetHost.adoptedStyleSheets || []), stylesheet];
+                
+                // Track the original CSS source, not the processed version
+                addedStylesheets.add(cssText);
+            }
+        } finally {
+            // Release the lock
+            globalThis._cssLocks.delete(this._assetHostKey);
+            releaseLock();
         }
     }
 

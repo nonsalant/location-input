@@ -17,6 +17,7 @@ export default class LazyModal extends Base {
         'aria-busy.css',
         // `h1 { text-decoration: underline; }`,
     ];
+    static enableShadowRoot = true;
 
     #host; #triggers; #assetHost; #styles; #scripts;
     #abortController; #abortSignal; #loadOn; #triggerObserver;
