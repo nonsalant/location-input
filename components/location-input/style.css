@@ -1,4 +1,25 @@
-location-input {
+/* @layer demo { */
+    [popover] { 
+        width: 720px; 
+        max-width: calc(100dvw - 4lh); 
+        max-height: calc(100dvh - 4lh); 
+        padding: 1lh; 
+        /* border-radius: .5lh;  */
+    }
+    
+    /* location-input:has(output:empty), */
+    :host:has(output:empty) {
+        .reset-location { display: none; } /* hide reset button if there's an empty output */
+        .location-trigger span:last-child { display: none; }
+    }
+    /* location-input:has(output:not(:empty)), */
+    :host:has(output:not(:empty)) {
+        .location-trigger span:first-child { display: none; }
+    }
+/* } */
+
+/* location-input, */
+:host {
     display: block;
     container: location-input / inline-size;
     font-family: system-ui, sans-serif;

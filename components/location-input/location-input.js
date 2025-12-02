@@ -7,7 +7,7 @@ const { Base, getHtml, } = await import(`../base/base.js?path=${encodeURICompone
 
 export default class LocationInput extends Base {
     // static styles = ['style.css',];
-    // static enableShadowRoot = true;
+    static enableShadowRoot = true;
     
     constructor() {
         super();
@@ -38,7 +38,7 @@ export default class LocationInput extends Base {
         this.domRoot.querySelectorAll('.geo-locate').forEach(button => {
             button.addEventListener('click', (event) => {
                 // this.handleClientLocation();
-                console.log('Requesting client location...');
+                // console.log('Requesting client location...');
                 requestClientLocation().then(async coords => {
                     const target = event.target;
                     target.setAttribute('aria-busy', 'true'); // gets removed in map-picker after processing
@@ -46,6 +46,7 @@ export default class LocationInput extends Base {
 
                     const address = await getAddressFromCoordinates(coords.lat, coords.lng);
                     target.removeAttribute('aria-busy');
+                    console.log(button, event.target); // ! bug: event.target is <location-input> instead of the button
                     target.closest('[popover]')?.hidePopover()
 
                     this.domRoot.querySelector('#map-wrapper').setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
