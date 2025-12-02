@@ -67,6 +67,7 @@ export class Base extends HTMLElement {
             const stylesheet = await createStylesheet(processedCssText);
             // console.log(this.assetHost.adoptedStyleSheets);
             this.assetHost.adoptedStyleSheets?.push(stylesheet);
+            // console.log('Base: Added stylesheet to', this.assetHost, stylesheet);
         }
     }
 
