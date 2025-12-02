@@ -12,11 +12,18 @@ export class Base extends HTMLElement {
         super();
         // Attach shadow root if enabled and not already present (via declarative shadow DOM)
         const needsShadow = this.constructor.enableShadowRoot && !this.shadowRoot;
-        if (needsShadow) this.attachShadow({ mode: 'open' });
+        if (needsShadow) {
+            this.attachShadow({ mode: 'open' });
+            this.shadowRoot.innerHTML = `<div class="dom-root"></div>`;
+        }
         // Current shadow root or the first parent shadow root or 'document':
         this.assetHost = this.shadowRoot ?? this.getRootNode();
         // console.log(this.constructor.name, this.assetHost);
-        this.domRoot = this.shadowRoot ?? this;
+        if (this.shadowRoot) {
+            this.domRoot = this.shadowRoot.firstElementChild;
+            this.domRoot.insertAdjacentHTML('beforeend', this.innerHTML);
+        }
+        else this.domRoot = this;
     }
 
     disconnectedCallback() { this.disconnected(); }
@@ -32,12 +39,12 @@ export class Base extends HTMLElement {
         this.addCss();
 
         const markup = await this.render();
+        const beforeMarkup = await this.renderBefore();
         const processedHtml = processPlaceholders(markup, this); // or: processPlaceholders(markup, { myValue: 'yoo' });
+        const processedBeforeHtml = processPlaceholders(beforeMarkup, this);
+
         // this.domRoot.appendChild(createFragment(processedHtml)); // registers custom elements too early
         this.domRoot.insertAdjacentHTML('beforeend', processedHtml); // note: this doesn't execute scripts
-
-        const beforeMarkup = await this.renderBefore();
-        const processedBeforeHtml = processPlaceholders(beforeMarkup, this);
         // this.domRoot.prepend(createFragment(processedBeforeHtml)); // registers custom elements too early
         this.domRoot.insertAdjacentHTML('afterbegin', processedBeforeHtml); // note: this doesn't execute scripts
 

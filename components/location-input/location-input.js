@@ -7,16 +7,18 @@ const { Base, getHtml, } = await import(`../base/base.js?path=${encodeURICompone
 
 export default class LocationInput extends Base {
     // static styles = ['style.css',];
+    // static enableShadowRoot = true;
     
     constructor() {
         super();
 
         // demo implementation
-        const outputEl = document.querySelector('output');
+        // const outputEl = document.querySelector('output');
+        const outputEl = this.domRoot.querySelector('output');
 
         // Inject coordinates and address when 'map-picker-confirm' custom event is fired
         document.addEventListener('map-picker-confirm', (e) => {
-            // console.log(`[${e.lat}, ${e.lng}]: ${e.address}`);
+            console.log(`[${e.lat}, ${e.lng}]: ${e.address}`);
             outputEl.innerHTML = `<ul>
                 <li>latitude: ${e.lat}</li>
                 <li>longitude: ${e.lng}</li>
@@ -33,9 +35,10 @@ export default class LocationInput extends Base {
     afterRender() {
 
         // Handle geolocation when .geo-locate button is clicked
-        this.querySelectorAll('.geo-locate').forEach(button => {
+        this.domRoot.querySelectorAll('.geo-locate').forEach(button => {
             button.addEventListener('click', (event) => {
                 // this.handleClientLocation();
+                console.log('Requesting client location...');
                 requestClientLocation().then(async coords => {
                     const target = event.target;
                     target.setAttribute('aria-busy', 'true'); // gets removed in map-picker after processing
@@ -45,15 +48,15 @@ export default class LocationInput extends Base {
                     target.removeAttribute('aria-busy');
                     target.closest('[popover]')?.hidePopover()
 
-                    this.querySelector('#map-wrapper').setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
-                    this.querySelector('map-picker')?.setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
+                    this.domRoot.querySelector('#map-wrapper').setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
+                    this.domRoot.querySelector('map-picker')?.setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
                     document.dispatchEvent(new MarkerDataEvent('map-picker-confirm', coords.lat, coords.lng, address));
                 }).catch(error => console.error(error) );
             });
         });
  
         // 📡 When a .map-trigger is clicked add a 'map-picker-confirm' event listener to close the popover
-        this.querySelectorAll('.map-trigger').forEach(button => {
+        this.domRoot.querySelectorAll('.map-trigger').forEach(button => {
             button.addEventListener('click', (event) => {
                 const popover = event.target.closest('[popover]');
                 document.addEventListener('map-picker-confirm', () => {
@@ -64,17 +67,17 @@ export default class LocationInput extends Base {
         });
 
         // Reset location when any .reset-location element is clicked
-        this.querySelectorAll('.reset-location')?.forEach(el => {
+        this.domRoot.querySelectorAll('.reset-location')?.forEach(el => {
             el.addEventListener('click', (e) => {
                 // 📡 Dispatch a 'map-picker-reset' event
                 document.dispatchEvent(new Event('map-picker-reset'));
-                this.querySelector('#map-wrapper').removeAttribute('marker-coordinates');
-                this.querySelector('map-picker')?.removeAttribute('marker-coordinates');
+                this.domRoot.querySelector('#map-wrapper').removeAttribute('marker-coordinates');
+                this.domRoot.querySelector('map-picker')?.removeAttribute('marker-coordinates');
             });
         });
 
         // Initialize shiny cursor effect
-        this.cleanupShinyCursor = initShinyCursor(this.querySelector('#location-wrapper'));
+        this.cleanupShinyCursor = initShinyCursor(this.domRoot.querySelector('#location-wrapper'));
     }
 
     // Statically define (or rename) the element unless ?define=false is set in the URL
