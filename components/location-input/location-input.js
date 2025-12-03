@@ -74,6 +74,7 @@ export default class LocationInput extends Base {
                 this.domRoot.querySelector('#map-wrapper').removeAttribute('marker-coordinates');
                 this.domRoot.querySelector('map-picker')?.removeAttribute('marker-coordinates');
                 // console.log('Location reset.');
+                this.domRoot.querySelector('#location-wrapper')?.hidePopover();
             });
         });
 
