@@ -36,17 +36,17 @@ export default class LocationInput extends Base {
 
         // Handle geolocation when .geo-locate button is clicked
         this.domRoot.querySelectorAll('.geo-locate').forEach(button => {
-            button.addEventListener('click', (event) => {
+            button.addEventListener('click', async event => {
                 // this.handleClientLocation();
                 // console.log('Requesting client location...');
+                const target = event.target;
+                target.setAttribute('aria-busy', 'true');
+                const { MarkerDataEvent, getAddressFromCoordinates } = await import('../map-picker/map-picker.js');
+
                 requestClientLocation().then(async coords => {
-                    const target = event.target;
-                    target.setAttribute('aria-busy', 'true'); // gets removed in map-picker after processing
-                    const { MarkerDataEvent, getAddressFromCoordinates } = await import('../map-picker/map-picker.js');
 
                     const address = await getAddressFromCoordinates(coords.lat, coords.lng);
                     target.removeAttribute('aria-busy');
-                    console.log(button, event.target); // ! bug: event.target is <location-input> instead of the button
                     target.closest('[popover]')?.hidePopover()
 
                     this.domRoot.querySelector('#map-wrapper').setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
