@@ -73,7 +73,7 @@ export default class LocationInput extends Base {
                 document.dispatchEvent(new Event('map-picker-reset'));
                 this.domRoot.querySelector('#map-wrapper').removeAttribute('marker-coordinates');
                 this.domRoot.querySelector('map-picker')?.removeAttribute('marker-coordinates');
-                console.log('Location reset.');
+                // console.log('Location reset.');
             });
         });
 
