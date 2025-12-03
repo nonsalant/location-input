@@ -7,12 +7,12 @@
         /* border-radius: .5lh;  */
     }
     
-    /* location-input:has(output:empty), */
+    location-input:has(output:empty),
     :host:has(output:empty) {
         .reset-location { display: none; } /* hide reset button if there's an empty output */
         .location-trigger span:nth-child(3) { display: none; }
     }
-    /* location-input:has(output:not(:empty)), */
+    location-input:has(output:not(:empty)),
     :host:has(output:not(:empty)) {
         .location-trigger span:nth-child(1) { display: none; }
     }
@@ -21,7 +21,7 @@
     }
 /* } */
 
-/* location-input, */
+location-input,
 :host {
     display: block;
     container: location-input / inline-size;
@@ -329,6 +329,7 @@
     @supports (corner-shape: squircle) {
 
         .close-button {
+            padding: 0;
             margin-block-start: -.75lh;
             margin-inline-end: -.75lh;
             corner-shape: unset;
