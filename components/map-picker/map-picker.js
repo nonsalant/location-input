@@ -156,7 +156,8 @@ export default class MapPicker extends HTMLElement {
         // });
 
         // 📡 Listen for the map-picker-reset event
-        this.host.addEventListener('map-picker-reset', () => { this.resetMap() });
+        // this.host.addEventListener('map-picker-reset', () => { this.resetMap() });
+        document.addEventListener('map-picker-reset', () => { this.resetMap() });
     }
 
     handleConfirm(e) {
