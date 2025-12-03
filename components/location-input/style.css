@@ -10,11 +10,14 @@
     /* location-input:has(output:empty), */
     :host:has(output:empty) {
         .reset-location { display: none; } /* hide reset button if there's an empty output */
-        .location-trigger span:last-child { display: none; }
+        .location-trigger span:nth-child(3) { display: none; }
     }
     /* location-input:has(output:not(:empty)), */
     :host:has(output:not(:empty)) {
-        .location-trigger span:first-child { display: none; }
+        .location-trigger span:nth-child(1) { display: none; }
+    }
+    .location-trigger {
+        span:nth-child(2) { display: none; }
     }
 /* } */
 
