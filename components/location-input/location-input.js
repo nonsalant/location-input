@@ -67,7 +67,7 @@ export default class LocationInput extends Base {
         });
 
         // Reset location when any .reset-location element is clicked
-        this.domRoot.querySelectorAll('.reset-location')?.forEach(el => {
+        this.domRoot.querySelectorAll('.reset-location')?.forEach(el => { // ! doesn't reach inside lazy-modal if it didn't load
             el.addEventListener('click', (e) => {
                 // 📡 Dispatch a 'map-picker-reset' event
                 document.dispatchEvent(new Event('map-picker-reset'));
