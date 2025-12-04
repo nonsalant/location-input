@@ -113,7 +113,8 @@ export class Base extends HTMLElement {
                 // console.log('Adding new stylesheet (first 50 chars):', cssText.substring(0, 50));
                 const processedCssText = processPlaceholders(cssText, this);
                 const stylesheet = await createStylesheet(processedCssText);
-                this.assetHost.adoptedStyleSheets = [...(this.assetHost.adoptedStyleSheets || []), stylesheet];
+                // this.assetHost.adoptedStyleSheets = [...(this.assetHost.adoptedStyleSheets || []), stylesheet];
+                this.assetHost.adoptedStyleSheets?.push(stylesheet);
                 
                 // Track the original CSS source, not the processed version
                 addedStylesheets.add(cssText);
