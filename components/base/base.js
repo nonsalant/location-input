@@ -97,7 +97,6 @@ export class Base extends HTMLElement {
         
         try {
             const addedStylesheets = globalThis._addedStylesheets.get(this._assetHostKey);
-            
             // console.log('addCss:', this.constructor.name, 'Set size:', addedStylesheets.size);
 
             for (const cssText of cssTexts) {
@@ -110,7 +109,6 @@ export class Base extends HTMLElement {
                 // console.log('Adding new stylesheet (first 50 chars):', cssText.substring(0, 50));
                 const processedCssText = processPlaceholders(cssText, this);
                 const stylesheet = await createStylesheet(processedCssText);
-                // this.assetHost.adoptedStyleSheets = [...(this.assetHost.adoptedStyleSheets || []), stylesheet];
                 this.assetHost.adoptedStyleSheets?.push(stylesheet);
                 
                 // Track the original CSS source, not the processed version
