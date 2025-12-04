@@ -301,6 +301,11 @@ location-input,
         font-weight: bold;
         font-size: 85%;
         border-radius: 8px;
+        &.close-button {
+            padding: 0;
+            border-radius: 50%;
+            &:active:not(:disabled) { scale: .8; }
+        }
     }
 
     @supports (corner-shape: squircle) {
@@ -310,7 +315,7 @@ location-input,
             margin-block-start: -.75lh;
             margin-inline-end: -.75lh;
             corner-shape: unset;
-            location-input &:active:not(:disabled) { scale: .8; }
+            &:active:not(:disabled) { scale: .8; }
         }
 
         lazy-modal, location-card, map-picker, lazy-modal button {
