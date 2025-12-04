@@ -3,6 +3,10 @@ import { createStylesheet, looksLikeCssText, processPlaceholders, executeScripts
 // Get the component path from the URL query parameter
 const COMPONENT_PATH = new URL(import.meta.url).searchParams.get('path');
 
+// Track added stylesheets globally to prevent duplicates across all component instances
+globalThis._addedStylesheets ??= new Map(); // Map of assetHost -> Set of CSS texts
+globalThis._cssLocks ??= new Map(); // Map of assetHost -> Promise (lock)
+
 export class Base extends HTMLElement {
     static enableShadowRoot = false;
     static styles = [];
@@ -10,20 +14,33 @@ export class Base extends HTMLElement {
     // https://hawkticehurst.com/2024/05/bring-your-own-base-class/#:~:text=class%20BaseElement,-extends%20HTMLElement%20%7Bconstructor
     constructor() {
         super();
+
         // Attach shadow root if enabled and not already present (via declarative shadow DOM)
         const needsShadow = this.constructor.enableShadowRoot && !this.shadowRoot;
         if (needsShadow) {
             this.attachShadow({ mode: 'open' });
             this.shadowRoot.innerHTML = `<div class="dom-root"></div>`;
         }
+
         // Current shadow root or the first parent shadow root or 'document':
         this.assetHost = this.shadowRoot ?? this.getRootNode();
         // console.log(this.constructor.name, this.assetHost);
+
         if (this.shadowRoot) {
             this.domRoot = this.shadowRoot.firstElementChild;
             this.domRoot.insertAdjacentHTML('beforeend', this.innerHTML);
+        } else this.domRoot = this;
+
+        // Use a string key for the Map instead of the object reference
+        const assetHostKey = this.assetHost === document ? 'document' : this.assetHost;
+        // Initialize Set for this assetHost if not present
+        if (!globalThis._addedStylesheets.has(assetHostKey)) {
+            // console.log('Creating new Set for:', assetHostKey);
+            globalThis._addedStylesheets.set(assetHostKey, new Set());
+        } else {
+            // console.log('Using existing Set, current size:', globalThis._addedStylesheets.get(assetHostKey).size);
         }
-        else this.domRoot = this;
+        this._assetHostKey = assetHostKey;
     }
 
     disconnectedCallback() { this.disconnected(); }
@@ -36,7 +53,7 @@ export class Base extends HTMLElement {
     }
 
     async init() {
-        this.addCss();
+        await this.addCss();
 
         const markup = await this.render();
         const beforeMarkup = await this.renderBefore();
@@ -62,12 +79,49 @@ export class Base extends HTMLElement {
         const styles = this.constructor.styles;
         const cssTexts = await this.css(styles);
 
-        for (const cssText of cssTexts) {
-            const processedCssText = processPlaceholders(cssText, this);
-            const stylesheet = await createStylesheet(processedCssText);
-            // console.log(this.assetHost.adoptedStyleSheets);
-            this.assetHost.adoptedStyleSheets?.push(stylesheet);
-            // console.log('Base: Added stylesheet to', this.assetHost, stylesheet);
+        // if (this.shadowRoot) {
+        //     for (const cssText of cssTexts) {
+        //         const processedCssText = processPlaceholders(cssText, this);
+        //         const stylesheet = await createStylesheet(processedCssText);
+        //         this.assetHost.adoptedStyleSheets?.push(stylesheet);
+        //     }
+        //     return;
+        // }
+
+        // Wait for any pending CSS additions for this assetHost
+        while (globalThis._cssLocks.get(this._assetHostKey)) {
+            await globalThis._cssLocks.get(this._assetHostKey);
+        }
+        
+        // Create a lock promise
+        let releaseLock;
+        const lockPromise = new Promise(resolve => { releaseLock = resolve; });
+        globalThis._cssLocks.set(this._assetHostKey, lockPromise);
+        
+        try {
+            const addedStylesheets = globalThis._addedStylesheets.get(this._assetHostKey);
+            
+            // console.log('addCss:', this.constructor.name, 'Set size:', addedStylesheets.size);
+
+            for (const cssText of cssTexts) {
+                // Check if this CSS source is already applied BEFORE processing
+                if (addedStylesheets.has(cssText)) {
+                    // console.log('✓ Stylesheet already added, skipping duplicate.');
+                    continue;
+                }
+                
+                // console.log('Adding new stylesheet (first 50 chars):', cssText.substring(0, 50));
+                const processedCssText = processPlaceholders(cssText, this);
+                const stylesheet = await createStylesheet(processedCssText);
+                this.assetHost.adoptedStyleSheets = [...(this.assetHost.adoptedStyleSheets || []), stylesheet];
+                
+                // Track the original CSS source, not the processed version
+                addedStylesheets.add(cssText);
+            }
+        } finally {
+            // Release the lock
+            globalThis._cssLocks.delete(this._assetHostKey);
+            releaseLock();
         }
     }
 

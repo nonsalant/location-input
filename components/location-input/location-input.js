@@ -7,7 +7,7 @@ const { Base, getHtml, } = await import(`../base/base.js?path=${encodeURICompone
 
 export default class LocationInput extends Base {
     static styles = ['critical.css',];
-    static enableShadowRoot = true;
+    // static enableShadowRoot = true;
     
     constructor() {
         super();
