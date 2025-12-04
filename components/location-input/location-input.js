@@ -13,10 +13,12 @@ export default class LocationInput extends Base {
         super();
 
         // demo implementation
+        // const buttonEl = this.querySelector('.location-trigger');
         const outputEl = this.domRoot.querySelector('output');
 
         // Inject coordinates and address when 'map-picker-confirm' custom event is fired
         document.addEventListener('map-picker-confirm', (e) => {
+            this.setAttribute('has-location', '');
             console.log(`[${e.lat}, ${e.lng}]: ${e.address}`);
             outputEl.innerHTML = `<ul>
                 <li>latitude: ${e.lat}</li>
@@ -26,7 +28,10 @@ export default class LocationInput extends Base {
         });
 
         // Clear the <output> element when the 'map-picker-reset' custom event is fired
-        document.addEventListener('map-picker-reset', () => { outputEl.innerText = ''; });
+        document.addEventListener('map-picker-reset', () => {
+            this.removeAttribute('has-location');
+            outputEl.innerText = '';
+        });
     }
 
     async render() { return await getHtml('location-input.html'); }
