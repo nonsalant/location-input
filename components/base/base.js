@@ -79,13 +79,10 @@ export class Base extends HTMLElement {
         const styles = this.constructor.styles;
         const cssTexts = await this.css(styles);
 
-        // if (this.shadowRoot) {
-        //     for (const cssText of cssTexts) {
-        //         const processedCssText = processPlaceholders(cssText, this);
-        //         const stylesheet = await createStylesheet(processedCssText);
-        //         this.assetHost.adoptedStyleSheets?.push(stylesheet);
-        //     }
-        //     return;
+        // for (const cssText of cssTexts) {
+        //     const processedCssText = processPlaceholders(cssText, this);
+        //     const stylesheet = await createStylesheet(processedCssText);
+        //     this.assetHost.adoptedStyleSheets?.push(stylesheet);
         // }
 
         // Wait for any pending CSS additions for this assetHost
