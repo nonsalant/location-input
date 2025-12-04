@@ -6,16 +6,24 @@
     padding: 1lh; 
 }
 
-:is(location-input, .dom-root):has(output:empty) .reset-location { display: none; }
-:is(location-input, .dom-root):has(output:empty)       .location-trigger {
-    span:nth-child(3) { display: none; } /* doesn't work in Safari */
+
+/* :is(location-input, .dom-root):has(output:empty) .reset-location { display: none; } */
+
+.reset-location { display: none; }
+
+.location-trigger {
     span:nth-child(2) { display: none; }
-    span:nth-child(1) { display: unset; }
+    span:nth-child(3) { display: none; }
 }
-:is(location-input, .dom-root):has(output:not(:empty)) .location-trigger {
-    span:nth-child(1) { display: none; } /* doesn't work in Safari */
-    span:nth-child(2) { display: none; }
-    span:nth-child(3) { display: unset; }
+
+location-input[has-location], 
+:host([has-location]) {
+    .reset-location { display: unset; } 
+    .location-trigger {
+        border: none; /* probably forces a refresh in Safari, otherwise the stuff below doesn't work */
+        span:nth-child(1) { display: none; }
+        span:nth-child(3) { display: unset; }
+    }
 }
 /* :is(location-input, .dom-root) .location-trigger span:nth-child(2) { display: none; } */
 /* } */
