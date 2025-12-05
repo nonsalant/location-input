@@ -13,7 +13,6 @@ export default class LocationInput extends Base {
         super();
 
         // demo implementation
-        // const buttonEl = this.querySelector('.location-trigger');
         const outputEl = this.domRoot.querySelector('output');
 
         // Inject coordinates and address when 'map-picker-confirm' custom event is fired
