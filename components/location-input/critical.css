@@ -1,9 +1,16 @@
 /* @layer demo { */
-[popover] { 
+lazy-modal { 
     width: 720px; 
     max-width: calc(100dvw - 4lh); 
     max-height: calc(100dvh - 4lh); 
     padding: 1lh; 
+}
+
+#location-wrapper {
+    @supports (position-area: bottom) {
+        position-area: bottom; 
+        margin-block: 1lh; 
+    }
 }
 
 
