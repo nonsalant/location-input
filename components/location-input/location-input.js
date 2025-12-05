@@ -37,29 +37,6 @@ export default class LocationInput extends Base {
     async render() { return await getHtml('location-input.html'); }
 
     afterRender() {
-
-        // Handle geolocation when .geo-locate button is clicked
-        this.domRoot.querySelectorAll('.geo-locate').forEach(button => {
-            button.addEventListener('click', async event => {
-                // this.handleClientLocation();
-                // console.log('Requesting client location...');
-                const target = event.target;
-                target.setAttribute('aria-busy', 'true');
-                const { MarkerDataEvent, getAddressFromCoordinates } = await import('../map-picker/map-picker.js');
-
-                requestClientLocation().then(async coords => {
-
-                    const address = await getAddressFromCoordinates(coords.lat, coords.lng);
-                    target.removeAttribute('aria-busy');
-                    target.closest('[popover]')?.hidePopover()
-
-                    this.domRoot.querySelector('#map-wrapper').setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
-                    this.domRoot.querySelector('map-picker')?.setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
-                    document.dispatchEvent(new MarkerDataEvent('map-picker-confirm', coords.lat, coords.lng, address));
-                }).catch(error => console.error(error) );
-            });
-        });
- 
         // 📡 When a .map-trigger is clicked add a 'map-picker-confirm' event listener to close the popover
         this.domRoot.querySelectorAll('.map-trigger').forEach(button => {
             button.addEventListener('click', (event) => {
@@ -72,7 +49,8 @@ export default class LocationInput extends Base {
         });
 
         // Reset location when any .reset-location element is clicked
-        this.domRoot.querySelectorAll('.reset-location')?.forEach(el => { // ! doesn't reach inside lazy-modal if it didn't load
+        this.domRoot.querySelectorAll('.reset-location')?.forEach(el => {
+            // doesn't reach inside lazy-modal if it didn't load
             el.addEventListener('click', (e) => {
                 // 📡 Dispatch a 'map-picker-reset' event
                 document.dispatchEvent(new Event('map-picker-reset'));
@@ -83,6 +61,23 @@ export default class LocationInput extends Base {
             });
         });
 
+        // Handle geolocation when .geo-locate button is clicked
+        this.domRoot.querySelectorAll('.geo-locate').forEach(button => {
+            button.addEventListener('click', async event => {
+                const target = event.target;
+                target.setAttribute('aria-busy', 'true');
+                const { MarkerDataEvent, getAddressFromCoordinates } = await import('../map-picker/map-picker.js');
+                requestClientLocation().then(async coords => {
+                    const address = await getAddressFromCoordinates(coords.lat, coords.lng);
+                    target.removeAttribute('aria-busy');
+                    target.closest('[popover]')?.hidePopover()
+                    this.domRoot.querySelector('#map-wrapper').setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
+                    this.domRoot.querySelector('map-picker')?.setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
+                    document.dispatchEvent(new MarkerDataEvent('map-picker-confirm', coords.lat, coords.lng, address));
+                }).catch(error => console.error(error) );
+            });
+        });
+ 
         // Initialize shiny cursor effect
         this.cleanupShinyCursor = initShinyCursor(this.domRoot.querySelector('#location-wrapper'));
     }
