@@ -27,7 +27,7 @@ location-input,
 
     /**/
 
-    lazy-modal :is(button, .button) {
+    :where(lazy-modal) :is(button, .button) {
         cursor: pointer;
         touch-action: manipulation;
         font-size: .9rem;
@@ -43,7 +43,7 @@ location-input,
     }
 
     /* Button */
-    lazy-modal .button {
+    :where(lazy-modal) :is(.button, button) {
         /* 	width: clamp(1rem, 11lh, 100%); */
         height: fit-content;
         display: block;
@@ -310,11 +310,17 @@ location-input,
 
     @supports (corner-shape: squircle) {
 
-        .close-button {
+        lazy-modal .close-button {
             padding: 0;
+            border: 0;
+            display: grid;
+			place-content: center;
             margin-block-start: -.75lh;
             margin-inline-end: -.75lh;
             corner-shape: unset;
+            &.close-button:hover {
+                background-color: buttonface;
+            }
             &:active:not(:disabled) { scale: .8; }
         }
 
