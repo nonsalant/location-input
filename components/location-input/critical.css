@@ -13,9 +13,6 @@ lazy-modal {
     }
 }
 
-
-/* :is(location-input, .dom-root):has(output:empty) .reset-location { display: none; } */
-
 .reset-location { display: none; }
 
 .location-trigger {
@@ -32,5 +29,3 @@ location-input[has-location],
         span:nth-child(3) { display: unset; }
     }
 }
-/* :is(location-input, .dom-root) .location-trigger span:nth-child(2) { display: none; } */
-/* } */
