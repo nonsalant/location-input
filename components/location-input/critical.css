@@ -13,7 +13,7 @@ lazy-modal {
     }
 }
 
-.reset-location { display: none; }
+.reset-location.reset-location.reset-location { display: none; }
 
 .location-trigger {
     span:nth-child(2) { display: none; }

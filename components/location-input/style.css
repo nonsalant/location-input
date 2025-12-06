@@ -25,6 +25,10 @@ location-input,
         line-height: 1.25;
     }
 
+    .invert {
+        filter: invert(1) hue-rotate(180deg);
+    }
+
     /**/
 
     :where(lazy-modal) :is(button, .button) {
