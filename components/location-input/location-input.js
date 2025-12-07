@@ -36,6 +36,9 @@ export default class LocationInput extends Base {
     async render() { return await getHtml('location-input.html'); }
 
     afterRender() {
+        // Import LazyModal component script
+        import('../lazy-modal/lazy-modal.js');
+
         // 📡 When a .map-trigger is clicked add a 'map-picker-confirm' event listener to close the popover
         this.domRoot.querySelectorAll('.map-trigger').forEach(button => {
             button.addEventListener('click', (event) => {
@@ -131,7 +134,3 @@ export function initShinyCursor(surface) {
         surface.removeEventListener('mousemove', handleMouseMove);
     };
 }
-
-
-// components/lazy-modal/lazy-modal.js
-// import '../lazy-modal/lazy-modal.js';
