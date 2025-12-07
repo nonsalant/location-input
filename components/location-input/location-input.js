@@ -1,3 +1,5 @@
+import '../lazy-modal/lazy-modal.js';
+
 import { defineElement, } from '../base/utils.js';
 
 const COMPONENT_PATH = import.meta.resolve('./');
