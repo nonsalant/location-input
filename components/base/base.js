@@ -61,19 +61,19 @@ export class Base extends HTMLElement {
         const processedBeforeHtml = processPlaceholders(beforeMarkup, this);
 
         // this.domRoot.appendChild(createFragment(processedHtml)); // registers custom elements too early
+        // this.domRoot.prepend(createFragment(processedBeforeHtml));
         this.domRoot.insertAdjacentHTML('beforeend', processedHtml); // note: this doesn't execute scripts
-        // this.domRoot.prepend(createFragment(processedBeforeHtml)); // registers custom elements too early
-        this.domRoot.insertAdjacentHTML('afterbegin', processedBeforeHtml); // note: this doesn't execute scripts
-
+        this.domRoot.insertAdjacentHTML('afterbegin', processedBeforeHtml);
         executeScripts(this.domRoot);
-        this.afterRender();
+        
+        await this.afterRender();
     }
 
     disconnected() {}
     connected() {}
-    afterRender() {}
-    render() { return ''; }
-    renderBefore() { return ''; }
+    async afterRender() {}
+    async render() { return ''; }
+    async renderBefore() { return ''; }
 
     async addCss() {
         const styles = this.constructor.styles;
