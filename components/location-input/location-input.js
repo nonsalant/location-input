@@ -82,9 +82,10 @@ export default class LocationInput extends Base {
                 requestClientLocation().then(async coords => {
                     const address = await getAddressFromCoordinates(coords.lat, coords.lng);
                     target.removeAttribute('aria-busy');
-                    target.closest('[popover]')?.hidePopover()
+                    target.closest('[popover]')?.hidePopover();
                     this.domRoot.querySelector('#map-wrapper').setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
                     this.domRoot.querySelector('map-picker')?.setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
+                    // 📡 Dispatch a 'map-picker-confirm' event
                     document.dispatchEvent(new MarkerDataEvent('map-picker-confirm', coords.lat, coords.lng, address));
                 }).catch(error => console.error(error) );
             });
