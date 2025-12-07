@@ -8,28 +8,38 @@ const { Base, getHtml, } = await import(`../base/base.js?path=${encodeURICompone
 export default class LocationInput extends Base {
     static styles = ['critical.css',];
     // static enableShadowRoot = true;
+
+    
+    // demo implementation
+    onLocationSelected(props) {
+        const outputEl = this.domRoot.querySelector('output');
+        console.log(`[${props.lat}, ${props.lng}]: ${props.address}`);
+        // Inject coordinates and address when 'map-picker-confirm' custom event is fired
+        outputEl.innerHTML = `<ul>
+            <li>latitude: ${props.lat}</li>
+            <li>longitude: ${props.lng}</li>
+            <li>address: ${props.address}</li>
+        </ul>`;
+    }
+    
+    // demo implementation
+    onLocationReset() {
+        const outputEl = this.domRoot.querySelector('output');
+        // Clear the <output> element when the 'map-picker-reset' custom event is fired
+        outputEl.innerText = '';
+    }
     
     constructor() {
         super();
 
-        // demo implementation
-        const outputEl = this.domRoot.querySelector('output');
-
-        // Inject coordinates and address when 'map-picker-confirm' custom event is fired
         document.addEventListener('map-picker-confirm', (e) => {
             this.setAttribute('has-location', '');
-            console.log(`[${e.lat}, ${e.lng}]: ${e.address}`);
-            outputEl.innerHTML = `<ul>
-                <li>latitude: ${e.lat}</li>
-                <li>longitude: ${e.lng}</li>
-                <li>address: ${e.address}</li>
-            </ul>`;
+            this.onLocationSelected({ lat: e.lat, lng: e.lng, address: e.address });
         });
 
-        // Clear the <output> element when the 'map-picker-reset' custom event is fired
         document.addEventListener('map-picker-reset', () => {
             this.removeAttribute('has-location');
-            outputEl.innerText = '';
+            this.onLocationReset();
         });
     }
 
