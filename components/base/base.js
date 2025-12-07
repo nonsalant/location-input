@@ -62,6 +62,7 @@ export class Base extends HTMLElement {
 
         // this.domRoot.appendChild(createFragment(processedHtml)); // registers custom elements too early
         // this.domRoot.prepend(createFragment(processedBeforeHtml));
+        
         this.domRoot.insertAdjacentHTML('beforeend', processedHtml); // note: this doesn't execute scripts
         this.domRoot.insertAdjacentHTML('afterbegin', processedBeforeHtml);
         executeScripts(this.domRoot);
