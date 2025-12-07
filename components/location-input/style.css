@@ -3,6 +3,8 @@ location-input,
     display: block;
     container: location-input / inline-size;
     font-family: system-ui, sans-serif;
+    -webkit-text-size-adjust: none;
+    text-size-adjust: none;
 
     kbd {
         font-size: 0.9em;
