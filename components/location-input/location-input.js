@@ -82,11 +82,11 @@ export default class LocationInput extends Base {
         // Initialize shiny cursor effect
         this.cleanupShinyCursor = initShinyCursor(this.domRoot.querySelector('#location-wrapper'));
 
-        // 📡 When a .map-trigger is clicked add a 'map-picker-confirm' event listener that closes the popover
+        // 📡 When a .map-trigger is clicked add a 'location-confirm' event listener that closes the popover
         this.domRoot.querySelectorAll('.map-trigger').forEach(button => {
             button.addEventListener('click', (event) => {
                 const popover = event.target.closest('[popover]');
-                document.addEventListener('map-picker-confirm', () => {
+                document.addEventListener('location-confirm', () => {
                     // closes the #location-wrapper popover:
                     popover?.hidePopover(); // but also closes the #map-wrapper popover on top of it
                 }, { once: true });
