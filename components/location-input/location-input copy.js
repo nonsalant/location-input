@@ -3,7 +3,7 @@ import { defineElement, } from '../base/utils.js';
 const COMPONENT_PATH = import.meta.resolve('./');
 const { Base, getHtml, } = await import(`../base/base.js?path=${encodeURIComponent(COMPONENT_PATH)}`);
 
-import { MarkerDataEvent, getAddressFromCoordinates } from "../map-picker/utils.js";
+// import { MarkerDataEvent, getAddressFromCoordinates } from '../map-picker/map-picker.js';
 
 export default class LocationInput extends Base {
     static styles = ['critical.css',];
@@ -11,10 +11,10 @@ export default class LocationInput extends Base {
 
     
     // demo implementation
-    handleLocationConfirm(props) {
+    onLocationSelected(props) {
         const outputEl = this.domRoot.querySelector('output');
         console.log(`[${props.lat}, ${props.lng}]: ${props.address}`);
-        // Inject coordinates and address when 'map-picker-confirm' custom event is fired
+        // Inject coordinates and address when 'location-confirm' custom event is fired
         outputEl.innerHTML = `<ul>
             <li>latitude: ${props.lat}</li>
             <li>longitude: ${props.lng}</li>
@@ -23,7 +23,7 @@ export default class LocationInput extends Base {
     }
     
     // demo implementation
-    handleLocationReset() {
+    onLocationReset() {
         const outputEl = this.domRoot.querySelector('output');
         // Clear the <output> element when the 'map-picker-reset' custom event is fired
         outputEl.innerText = '';
@@ -32,16 +32,22 @@ export default class LocationInput extends Base {
     constructor() {
         super();
 
-        document.addEventListener('location-confirm', async (e) => {
+        document.addEventListener('location-confirm', (e) => {
             this.setAttribute('has-location', '');
-            this.handleLocationConfirm({ lat: e.lat, lng: e.lng, address: e.address });
+            this.onLocationSelected({ lat: e.lat, lng: e.lng, address: e.address });
         });
-        
-        document.addEventListener('location-reset', () => {
+
+        document.addEventListener('map-picker-reset', () => {
             this.removeAttribute('has-location');
-            this.handleLocationReset();
+            this.onLocationReset();
         });
-        
+
+        document.addEventListener('location-confirm', async (e) => {
+            const { MarkerDataEvent } = await import('../map-picker/map-picker.js');
+            // 📡 Dispatch a 'location-confirm' event
+            document.dispatchEvent(new MarkerDataEvent('location-confirm', e.lat, e.lng, e.address));
+        });
+
     }
 
     async render() { return await getHtml('location-input.html'); }
@@ -50,43 +56,11 @@ export default class LocationInput extends Base {
         // Import LazyModal component script
         import('../lazy-modal/lazy-modal.js');
 
-        document.addEventListener('map-picker-confirm', async (e) => {
-            // 📡 Dispatch a 'location-confirm' event
-            // const { MarkerDataEvent } = await import('../map-picker/map-picker.js');
-            document.dispatchEvent(new MarkerDataEvent('location-confirm', e.lat, e.lng, e.address));
-        });
-
-        document.addEventListener('map-picker-reset', () => {
-            // 📡 Dispatch a 'location-reset' event
-            document.dispatchEvent(new Event('location-reset'));
-        });
-
-        // Handle geolocation when .geo-locate button is clicked
-        this.domRoot.querySelectorAll('.geo-locate').forEach(button => {
-            button.addEventListener('click', async event => {
-                const target = event.target;
-                target.setAttribute('aria-busy', 'true');
-                // const { MarkerDataEvent, getAddressFromCoordinates } = await import('../map-picker/map-picker.js');
-                requestClientLocation().then(async coords => {
-                    const address = await getAddressFromCoordinates(coords.lat, coords.lng);
-                    target.removeAttribute('aria-busy');
-                    target.closest('[popover]')?.hidePopover();
-                    this.domRoot.querySelector('#map-wrapper').setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
-                    this.domRoot.querySelector('map-picker')?.setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
-                    // 📡 Dispatch a 'location-confirm' event
-                    document.dispatchEvent(new MarkerDataEvent('location-confirm', coords.lat, coords.lng, address));
-                }).catch(error => console.error(error) );
-            });
-        });
- 
-        // Initialize shiny cursor effect
-        this.cleanupShinyCursor = initShinyCursor(this.domRoot.querySelector('#location-wrapper'));
-
-        // 📡 When a .map-trigger is clicked add a 'map-picker-confirm' event listener that closes the popover
+        // 📡 When a .map-trigger is clicked add a 'location-confirm' event listener to close the popover
         this.domRoot.querySelectorAll('.map-trigger').forEach(button => {
             button.addEventListener('click', (event) => {
                 const popover = event.target.closest('[popover]');
-                document.addEventListener('map-picker-confirm', () => {
+                document.addEventListener('location-confirm', () => {
                     // closes the #location-wrapper popover:
                     popover?.hidePopover(); // but also closes the #map-wrapper popover on top of it
                 }, { once: true });
@@ -106,6 +80,26 @@ export default class LocationInput extends Base {
             });
         });
 
+        // Handle geolocation when .geo-locate button is clicked
+        this.domRoot.querySelectorAll('.geo-locate').forEach(button => {
+            button.addEventListener('click', async event => {
+                const target = event.target;
+                target.setAttribute('aria-busy', 'true');
+                const { MarkerDataEvent, getAddressFromCoordinates } = await import('../map-picker/map-picker.js');
+                requestClientLocation().then(async coords => {
+                    const address = await getAddressFromCoordinates(coords.lat, coords.lng);
+                    target.removeAttribute('aria-busy');
+                    target.closest('[popover]')?.hidePopover();
+                    this.domRoot.querySelector('#map-wrapper').setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
+                    this.domRoot.querySelector('map-picker')?.setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
+                    // 📡 Dispatch a 'location-confirm' event
+                    document.dispatchEvent(new MarkerDataEvent('location-confirm', coords.lat, coords.lng, address));
+                }).catch(error => console.error(error) );
+            });
+        });
+ 
+        // Initialize shiny cursor effect
+        this.cleanupShinyCursor = initShinyCursor(this.domRoot.querySelector('#location-wrapper'));
     }
 
     // Statically define (or rename) the element unless ?define=false is set in the URL
