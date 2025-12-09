@@ -12,9 +12,9 @@ export default class LocationInput extends Base {
     
     // demo implementation
     handleLocationConfirm(props) {
-        const outputEl = this.domRoot.querySelector('output');
+        // Log + inject coordinates and address when 'map-picker-confirm' custom event is fired
         console.log(`[${props.lat}, ${props.lng}]: ${props.address}`);
-        // Inject coordinates and address when 'map-picker-confirm' custom event is fired
+        const outputEl = this.domRoot.querySelector('output');
         outputEl.innerHTML = `<ul>
             <li>latitude: ${props.lat}</li>
             <li>longitude: ${props.lng}</li>
@@ -24,8 +24,8 @@ export default class LocationInput extends Base {
     
     // demo implementation
     handleLocationReset() {
-        const outputEl = this.domRoot.querySelector('output');
         // Clear the <output> element when the 'map-picker-reset' custom event is fired
+        const outputEl = this.domRoot.querySelector('output');
         outputEl.innerText = '';
     }
     
