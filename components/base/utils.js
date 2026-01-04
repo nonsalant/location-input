@@ -182,3 +182,17 @@ function createFragment(html) {
     // note: this registers custom elements before they they are added to the DOM
     return document.createRange().createContextualFragment(html);
 }
+
+/**
+ * Hides elements if keyboard input is not supported.
+ * @param {Element[]} elements - Array of elements to potentially hide.
+ * 
+ * @example
+ * const kbdElements = document.querySelectorAll('.js-hidden-if-no-kbd');
+ * kbdOnly(kbdElements);
+ */
+export function kbdOnly(elements) {
+    elements.forEach(el => {
+        el.hidden = !('keyboard' in navigator);
+    });
+}

@@ -12,7 +12,7 @@ const LEAFLET_STYLESHEET = 'leaflet.min.css';
 // const LEAFLET_SCRIPT = 'leaflet-src.esm.js';
 // const LEAFLET_STYLESHEET = 'leaflet.css';
 
-const { defineElement } = await import(`../base/utils.js`);
+const { defineElement, kbdOnly } = await import(`../base/utils.js`);
 
 export default class MapPicker extends HTMLElement {
     static get observedAttributes() { return ['marker-coordinates']; }
@@ -108,9 +108,8 @@ export default class MapPicker extends HTMLElement {
 
         this.#inheritMarkerCoordinates();
 
-        this.host.querySelectorAll('.js-hidden-if-no-kbd').forEach(el => {
-            el.hidden = !('keyboard' in navigator);
-        });
+        const kbdOnlyElements = this.host.querySelectorAll('.js-hidden-if-no-kbd');
+        kbdOnly(kbdOnlyElements);
     }
 
     #inheritMarkerCoordinates() {
@@ -282,6 +281,5 @@ export default class MapPicker extends HTMLElement {
         defineElement(tag, this);
     }
 }
-
 
 
