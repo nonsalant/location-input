@@ -89,6 +89,9 @@ export default class MapPicker extends HTMLElement {
     }
 
     #setupMap() {
+        const kbdOnlyElements = this.host.querySelectorAll('.js-hidden-if-no-kbd');
+        kbdOnly(kbdOnlyElements);
+
         // Set the default icon path for Leaflet
         Leaflet.Icon.Default.prototype.options.imagePath = `${BASE_URL}images/`;
 
@@ -107,9 +110,6 @@ export default class MapPicker extends HTMLElement {
         this.map.addLayer(tileLayer);
 
         this.#inheritMarkerCoordinates();
-
-        const kbdOnlyElements = this.host.querySelectorAll('.js-hidden-if-no-kbd');
-        kbdOnly(kbdOnlyElements);
     }
 
     #inheritMarkerCoordinates() {
