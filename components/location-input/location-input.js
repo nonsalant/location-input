@@ -9,7 +9,6 @@ export default class LocationInput extends Base {
     static styles = ['critical.css',];
     // static enableShadowRoot = true;
 
-    
     // demo implementation
     handleLocationConfirm(props) {
         // Log + inject coordinates and address when 'map-picker-confirm' custom event is fired

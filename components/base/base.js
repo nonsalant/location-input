@@ -1,4 +1,4 @@
-import { createStylesheet, looksLikeCssText, processPlaceholders, executeScripts, } from "./utils.js";
+import { createStylesheet, looksLikeCssText, processPlaceholders, executeScripts, camelToKebab} from "./utils.js";
 
 // Get the component path from the URL query parameter
 const COMPONENT_PATH = new URL(import.meta.url).searchParams.get('path');
@@ -99,6 +99,7 @@ export class Base extends HTMLElement {
         try {
             const addedStylesheets = globalThis._addedStylesheets.get(this._assetHostKey);
             // console.log('addCss:', this.constructor.name, 'Set size:', addedStylesheets.size);
+            let index = 0;
 
             for (const cssText of cssTexts) {
                 // Check if this CSS source is already applied BEFORE processing
@@ -108,7 +109,23 @@ export class Base extends HTMLElement {
                 }
                 
                 // console.log('Adding new stylesheet (first 50 chars):', cssText.substring(0, 50));
-                const processedCssText = processPlaceholders(cssText, this);
+                const tagName = camelToKebab(this.constructor.name);
+                const filename = styles[index];
+                index++;
+                // if filename ends in .scoped.css
+                let processedCssText = processPlaceholders(cssText, this);
+                // Scoped stylesheet handling
+                if (filename.endsWith('.scoped.css')) {
+                    if (this.shadowRoot) {
+                        // Scoped to shadow root: wrap in :host
+                        processedCssText =  `:host { ${processedCssText} }`;
+                    } else {
+                        // Scoped to tag name: wrap in tag selector
+                        processedCssText =  `${tagName} { ${processedCssText} }`;
+                    }
+                    // processedCssText =  `:where(${filename}, :host) { ${processedCssText}}`;
+                    // console.log(processedCssText);
+                }
                 const stylesheet = await createStylesheet(processedCssText);
                 this.assetHost.adoptedStyleSheets?.push(stylesheet);
                 
