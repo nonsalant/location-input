@@ -45,6 +45,9 @@ export default class MapPicker extends HTMLElement {
         this.map = null;
         this.marker = null;
         this.address = null; // Store the address of the marker
+
+        const kbdOnlyElements = this.host.querySelectorAll('.js-hidden-if-no-kbd');
+        kbdOnly(kbdOnlyElements);
     }
 
     #determineHost() {
@@ -89,9 +92,6 @@ export default class MapPicker extends HTMLElement {
     }
 
     #setupMap() {
-        const kbdOnlyElements = this.host.querySelectorAll('.js-hidden-if-no-kbd');
-        kbdOnly(kbdOnlyElements);
-
         // Set the default icon path for Leaflet
         Leaflet.Icon.Default.prototype.options.imagePath = `${BASE_URL}images/`;
 
