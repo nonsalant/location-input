@@ -95,9 +95,10 @@ export default class MapPicker extends HTMLElement {
         // Set the default icon path for Leaflet
         Leaflet.Icon.Default.prototype.options.imagePath = `${BASE_URL}images/`;
 
-        // Create map without default zoom control
+        // Create map without default zoom control and attribution
         this.map = new Leaflet.Map(this, {
-            zoomControl: false
+            zoomControl: false,
+            attributionControl: false,
         }).setView(this.initialCoords, this.initialZoom);
         // Add zoom control to the right side
         new Leaflet.Control.Zoom({ position: 'topright' }).addTo(this.map);
