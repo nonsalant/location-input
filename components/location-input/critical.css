@@ -6,12 +6,13 @@ lazy-modal {
     padding: 1lh; 
 }
 
-/* #location-wrapper {
+#location-wrapper {
     @supports (position-area: bottom) {
-        position-area: bottom; 
-        margin-block: 1lh; 
+        /* position-area: bottom; */ /* stopped working in Chrome (late 2025) */
+        position-area: none;
+        margin-block: 1lh;
     }
-} */
+}
 
 .reset-location.reset-location.reset-location { display: none; }
 
