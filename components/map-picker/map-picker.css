@@ -18,8 +18,7 @@ map-picker {
     }
 	
     .leaflet-bottom {
-        /* left: 0px; */
-        /* right: auto; */
+        left: 0px; right: auto; /* align to left side */
         color: #666;
         font-size: 75%;
         font-size: 90%;
