@@ -107,6 +107,10 @@ export default class MapPicker extends HTMLElement {
         this.map.addLayer(tileLayer);
 
         this.#inheritMarkerCoordinates();
+
+        this.host.querySelectorAll('.js-hidden-if-no-kbd').forEach(el => {
+            el.hidden = !('keyboard' in navigator);
+        });
     }
 
     #inheritMarkerCoordinates() {
