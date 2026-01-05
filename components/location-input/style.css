@@ -315,7 +315,7 @@ location-input,
         padding: 0.5lh 0.75lh;
         font-weight: bold;
         font-size: 85%;
-        border-radius: 8px;
+        /* border-radius: 8px; */
         &.close-button {
             padding: 0;
             border: 0;
