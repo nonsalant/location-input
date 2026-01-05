@@ -353,5 +353,21 @@ location-input,
         }
 
     }
+    
+    @supports not (corner-shape: squircle) {
+
+        lazy-modal {
+            border-radius: 1lh;
+        }
+
+        lazy-modal :is(location-card, map-picker, button) {
+            border-radius: .5lh;
+        }
+
+        lazy-modal location-card button {
+            border-radius: .25lh;
+        }
+
+    }
 
 }
