@@ -9,36 +9,36 @@ export default class LocationInput extends Base {
     static styles = ['critical.css',];
     // static enableShadowRoot = true;
 
-    // demo implementation
-    handleLocationConfirm(props) {
-        // Log + inject coordinates and address when 'map-picker-confirm' custom event is fired
-        console.log(`[${props.lat}, ${props.lng}]: ${props.address}`);
-        const outputEl = this.domRoot.querySelector('output');
-        outputEl.innerHTML = `<ul>
-            <li>latitude: ${props.lat}</li>
-            <li>longitude: ${props.lng}</li>
-            <li>address: ${props.address}</li>
-        </ul>`;
-    }
+    // // demo implementation
+    // handleLocationConfirm(props) {
+    //     // Log + inject coordinates and address when 'map-picker-confirm' custom event is fired
+    //     console.log(`[${props.lat}, ${props.lng}]: ${props.address}`);
+    //     const outputEl = this.domRoot.querySelector('output');
+    //     outputEl.innerHTML = `<ul>
+    //         <li>latitude: ${props.lat}</li>
+    //         <li>longitude: ${props.lng}</li>
+    //         <li>address: ${props.address}</li>
+    //     </ul>`;
+    // }
     
-    // demo implementation
-    handleLocationReset() {
-        // Clear the <output> element when the 'map-picker-reset' custom event is fired
-        const outputEl = this.domRoot.querySelector('output');
-        outputEl.innerText = '';
-    }
+    // // demo implementation
+    // handleLocationReset() {
+    //     // Clear the <output> element when the 'map-picker-reset' custom event is fired
+    //     const outputEl = this.domRoot.querySelector('output');
+    //     outputEl.innerText = '';
+    // }
     
     constructor() {
         super();
 
         document.addEventListener('location-confirm', async (e) => {
             this.setAttribute('has-location', '');
-            this.handleLocationConfirm({ lat: e.lat, lng: e.lng, address: e.address });
+            // this.handleLocationConfirm({ lat: e.lat, lng: e.lng, address: e.address });
         });
         
         document.addEventListener('location-reset', () => {
             this.removeAttribute('has-location');
-            this.handleLocationReset();
+            // this.handleLocationReset();
         });
         
     }
