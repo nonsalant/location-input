@@ -43,7 +43,13 @@ export default class LocationInput extends Base {
         
     }
 
-    async render() { return await getHtml('location-input.html'); }
+    // async render() { return await getHtml('location-input.html'); }
+
+    async render() {
+        if (this.hasAttribute('inner-contents')) {
+            return await getHtml(this.getAttribute('inner-contents'));
+        }
+    }
 
     afterRender() {
         // Import LazyModal component script
