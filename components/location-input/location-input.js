@@ -33,12 +33,12 @@ export default class LocationInput extends Base {
 
         this.addEventListener('location-confirm', async (e) => {
             this.setAttribute('has-location', '');
-            // this.handleLocationConfirm({ lat: e.lat, lng: e.lng, address: e.address });
+            this.handleLocationConfirm?.({ lat: e.lat, lng: e.lng, address: e.address });
         });
         
         this.addEventListener('location-reset', () => {
             this.removeAttribute('has-location');
-            // this.handleLocationReset();
+            this.handleLocationReset?.();
         });
         
     }
