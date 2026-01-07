@@ -3,7 +3,7 @@ import { defineElement, } from '../base/utils.js';
 const COMPONENT_PATH = import.meta.resolve('./');
 const { Base, getHtml, } = await import(`../base/base.js?path=${encodeURIComponent(COMPONENT_PATH)}`);
 
-import { MarkerDataEvent, getAddressFromCoordinates } from "../map-picker/utils.js";
+import { MarkerDataEvent, getAddressFromCoordinates } from '../map-picker/utils.js';
 
 export default class LocationInput extends Base {
     static styles = ['critical.css',];
@@ -43,17 +43,10 @@ export default class LocationInput extends Base {
         
     }
 
-    // async render() { return await getHtml('location-input.html'); }
-
-    // async render() {
-    //     if (this.hasAttribute('inner-contents')) {
-    //         return await getHtml(this.getAttribute('inner-contents'));
-    //     }
-    // }
-
     async render() {
-        if (this.querySelector('#location-wrapper') && this.querySelector('#map-wrapper')) return '';
-        return await getHtml('location-input.html');
+        const hasBothModals = this.querySelector('#location-wrapper') && this.querySelector('#map-wrapper');
+        if (hasBothModals) return;
+        else return await getHtml('location-input.html');
     }
 
     afterRender() {
