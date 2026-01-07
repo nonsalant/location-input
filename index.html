@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <script type="module" src="./components/location-input/location-input.js"></script>
+    <!-- <script type="module" src="./components/location-input/location-input.js?define=false"></script> -->
     <style>
         /* Demo styles */
         *, *::before, *::after { box-sizing: border-box; }
@@ -26,29 +26,50 @@
         <p><output></output></p>
     </location-input>
 
-    <script>
+    <script type="module">
         // demo implementation
+        import LocationInput from './components/location-input/location-input.js?define=false';
 
-        const locationInput = document.querySelector('location-input');
-        
-        // Log + inject coordinates and address when 'location-confirm' custom event is fired
-        locationInput.addEventListener('location-confirm', async (e) => {
-            console.log(`[${e.lat}, ${e.lng}]: ${e.address}`);
-            const root = locationInput.shadowRoot ?? locationInput; // works in shadowRoot too
-            const outputEl = root.querySelector('output');
-            outputEl.innerHTML = `<ul>
-                <li>latitude: ${e.lat}</li>
-                <li>longitude: ${e.lng}</li>
-                <li>address: ${e.address}</li>
-            </ul>`;
+        Object.assign(LocationInput.prototype, {
+            handleLocationConfirm(props) {
+                // Log + inject coordinates and address when 'map-picker-confirm' custom event is fired
+                console.log(`[${props.lat}, ${props.lng}]: ${props.address}`);
+                const outputEl = this.domRoot.querySelector('output');
+                outputEl.innerHTML = `<ul>
+                    <li>latitude: ${props.lat}</li>
+                    <li>longitude: ${props.lng}</li>
+                    <li>address: ${props.address}</li>
+                </ul>`;
+            },
+            handleLocationReset() {
+                // Clear the <output> element when the 'map-picker-reset' custom event is fired
+                const outputEl = this.domRoot.querySelector('output');
+                outputEl.innerText = '';
+            }
         });
+
+        customElements.define('location-input', LocationInput)
+
+        // const locationInput = document.querySelector('location-input');
         
-        // Clear the <output> element when the 'location-reset' custom event is fired
-        locationInput.addEventListener('location-reset', () => {
-            const root = locationInput.shadowRoot ?? locationInput; // works in shadowRoot too
-            const outputEl = root.querySelector('output');
-            outputEl.innerText = '';
-        });
+        // // Log + inject coordinates and address when 'location-confirm' custom event is fired
+        // locationInput.addEventListener('location-confirm', async (e) => {
+        //     console.log(`[${e.lat}, ${e.lng}]: ${e.address}`);
+        //     const root = locationInput.shadowRoot ?? locationInput; // works in shadowRoot too
+        //     const outputEl = root.querySelector('output');
+        //     outputEl.innerHTML = `<ul>
+        //         <li>latitude: ${e.lat}</li>
+        //         <li>longitude: ${e.lng}</li>
+        //         <li>address: ${e.address}</li>
+        //     </ul>`;
+        // });
+        
+        // // Clear the <output> element when the 'location-reset' custom event is fired
+        // locationInput.addEventListener('location-reset', () => {
+        //     const root = locationInput.shadowRoot ?? locationInput; // works in shadowRoot too
+        //     const outputEl = root.querySelector('output');
+        //     outputEl.innerText = '';
+        // });
     </script>
 
 </body>
