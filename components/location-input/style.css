@@ -128,7 +128,7 @@ location-input,
     /* Clickable parent */
     clickable-parent,
     .clickable-parent { 
-        /* --back-out: linear(...); */
+        /* --back-out: linear(...); already defined in lazy-modal.scoped.css */
 
         position: relative;
         isolation: isolate;
