@@ -22,17 +22,17 @@
             <span>Set</span> <span>/</span> <span>Edit</span> <span>Location</span>
         </button>
         <!-- Demo implementation: location inserted in <output> element -->
-        <!-- see components/location-input/location-input.js: handleLocationConfirm() and handleLocationReset() -->
         <p><output></output></p>
     </location-input>
 
     <script type="module">
-        // demo implementation
         import LocationInput from './components/location-input/location-input.js?define=false';
+        
+        // Demo implementation
+        const locationHandlers = {
 
-        Object.assign(LocationInput.prototype, {
+            // Log + inject coordinates + address when 'location-confirm' custom event is fired
             handleLocationConfirm(props) {
-                // Log + inject coordinates and address when 'map-picker-confirm' custom event is fired
                 console.log(`[${props.lat}, ${props.lng}]: ${props.address}`);
                 const outputEl = this.domRoot.querySelector('output');
                 outputEl.innerHTML = `<ul>
@@ -41,35 +41,18 @@
                     <li>address: ${props.address}</li>
                 </ul>`;
             },
+
+            // Clear the <output> element when the 'location-reset' custom event is fired
             handleLocationReset() {
-                // Clear the <output> element when the 'map-picker-reset' custom event is fired
                 const outputEl = this.domRoot.querySelector('output');
                 outputEl.innerText = '';
             }
-        });
 
-        customElements.define('location-input', LocationInput)
+        }
 
-        // const locationInput = document.querySelector('location-input');
-        
-        // // Log + inject coordinates and address when 'location-confirm' custom event is fired
-        // locationInput.addEventListener('location-confirm', async (e) => {
-        //     console.log(`[${e.lat}, ${e.lng}]: ${e.address}`);
-        //     const root = locationInput.shadowRoot ?? locationInput; // works in shadowRoot too
-        //     const outputEl = root.querySelector('output');
-        //     outputEl.innerHTML = `<ul>
-        //         <li>latitude: ${e.lat}</li>
-        //         <li>longitude: ${e.lng}</li>
-        //         <li>address: ${e.address}</li>
-        //     </ul>`;
-        // });
-        
-        // // Clear the <output> element when the 'location-reset' custom event is fired
-        // locationInput.addEventListener('location-reset', () => {
-        //     const root = locationInput.shadowRoot ?? locationInput; // works in shadowRoot too
-        //     const outputEl = root.querySelector('output');
-        //     outputEl.innerText = '';
-        // });
+        // Apply the demo locationHandlers to LocationInput prototype and define the element
+        Object.assign(LocationInput.prototype, locationHandlers);
+        customElements.define('location-input', LocationInput);
     </script>
 
 </body>

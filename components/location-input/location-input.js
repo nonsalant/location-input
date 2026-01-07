@@ -5,31 +5,40 @@ const { Base, getHtml, } = await import(`../base/base.js?path=${encodeURICompone
 
 import { MarkerDataEvent, getAddressFromCoordinates } from '../map-picker/utils.js';
 
+// Default location event handlers 
+// can be overridden via Object.assign(LocationInput.prototype, locationHandlers);
+// before defining the element with customElements.define('location-input', LocationInput);
+// note: include it like this so it's not auto-defined: import LocationInput from './components/location-input/location-input.js?define=false';
+const locationHandlers = {
+
+    // Log + inject coordinates + address when 'location-confirm' custom event is fired
+    handleLocationConfirm(props) {
+        console.log(`[${props.lat}, ${props.lng}]: ${props.address}`);
+        const outputEl = this.domRoot.querySelector('output');
+        outputEl.innerHTML = `<ul>
+            <li>Latitude: ${props.lat}</li>
+            <li>Longitude: ${props.lng}</li>
+            <li>Address: ${props.address}</li>
+        </ul>`;
+    },
+
+    // Clear the <output> element when the 'location-reset' custom event is fired
+    handleLocationReset() {
+        const outputEl = this.domRoot.querySelector('output');
+        outputEl.innerText = '';
+    }
+
+}
+
 export default class LocationInput extends Base {
     static styles = ['critical.css',];
     // static enableShadowRoot = true;
-
-    // // demo implementation
-    // handleLocationConfirm(props) {
-    //     // Log + inject coordinates and address when 'map-picker-confirm' custom event is fired
-    //     console.log(`[${props.lat}, ${props.lng}]: ${props.address}`);
-    //     const outputEl = this.domRoot.querySelector('output');
-    //     outputEl.innerHTML = `<ul>
-    //         <li>latitude: ${props.lat}</li>
-    //         <li>longitude: ${props.lng}</li>
-    //         <li>address: ${props.address}</li>
-    //     </ul>`;
-    // }
-    
-    // // demo implementation
-    // handleLocationReset() {
-    //     // Clear the <output> element when the 'map-picker-reset' custom event is fired
-    //     const outputEl = this.domRoot.querySelector('output');
-    //     outputEl.innerText = '';
-    // }
     
     constructor() {
         super();
+
+        const needsImplementation = typeof this.handleLocationConfirm === 'undefined' || typeof this.handleLocationReset === 'undefined';
+        if (needsImplementation) Object.assign(this, locationHandlers);
 
         this.addEventListener('location-confirm', async (e) => {
             this.setAttribute('has-location', '');
