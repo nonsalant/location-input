@@ -30,7 +30,7 @@
         // demo implementation
         
         document.addEventListener('location-confirm', async (e) => {
-            // Log + inject coordinates and address when 'map-picker-confirm' custom event is fired
+            // Log + inject coordinates and address when 'location-confirm' custom event is fired
             console.log(`[${e.lat}, ${e.lng}]: ${e.address}`);
             const outputEl = document.querySelector('output');
             outputEl.innerHTML = `<ul>
@@ -41,7 +41,7 @@
         });
         
         document.addEventListener('location-reset', () => {
-            // Clear the <output> element when the 'map-picker-reset' custom event is fired
+            // Clear the <output> element when the 'location-reset' custom event is fired
             const outputEl = document.querySelector('output');
             outputEl.innerText = '';
         });
