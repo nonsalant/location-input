@@ -45,10 +45,15 @@ export default class LocationInput extends Base {
 
     // async render() { return await getHtml('location-input.html'); }
 
+    // async render() {
+    //     if (this.hasAttribute('inner-contents')) {
+    //         return await getHtml(this.getAttribute('inner-contents'));
+    //     }
+    // }
+
     async render() {
-        if (this.hasAttribute('inner-contents')) {
-            return await getHtml(this.getAttribute('inner-contents'));
-        }
+        if (this.querySelector('#location-wrapper') && this.querySelector('#map-wrapper')) return '';
+        return await getHtml('location-input.html');
     }
 
     afterRender() {
