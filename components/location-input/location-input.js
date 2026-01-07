@@ -31,12 +31,12 @@ export default class LocationInput extends Base {
     constructor() {
         super();
 
-        document.addEventListener('location-confirm', async (e) => {
+        this.addEventListener('location-confirm', async (e) => {
             this.setAttribute('has-location', '');
             // this.handleLocationConfirm({ lat: e.lat, lng: e.lng, address: e.address });
         });
         
-        document.addEventListener('location-reset', () => {
+        this.addEventListener('location-reset', () => {
             this.removeAttribute('has-location');
             // this.handleLocationReset();
         });
@@ -53,15 +53,15 @@ export default class LocationInput extends Base {
         // Import LazyModal component script
         import('../lazy-modal/lazy-modal.js');
 
-        document.addEventListener('map-picker-confirm', async (e) => {
+        this.addEventListener('map-picker-confirm', async (e) => {
             // 📡 Dispatch a 'location-confirm' event
             // const { MarkerDataEvent } = await import('../map-picker/map-picker.js');
-            document.dispatchEvent(new MarkerDataEvent('location-confirm', e.lat, e.lng, e.address));
+            this.dispatchEvent(new MarkerDataEvent('location-confirm', e.lat, e.lng, e.address));
         });
 
-        document.addEventListener('map-picker-reset', () => {
+        this.addEventListener('map-picker-reset', () => {
             // 📡 Dispatch a 'location-reset' event
-            document.dispatchEvent(new Event('location-reset'));
+            this.dispatchEvent(new Event('location-reset', { bubbles: true, composed: true }));
         });
 
         // Handle geolocation when .geo-locate button is clicked
@@ -77,7 +77,7 @@ export default class LocationInput extends Base {
                     this.domRoot.querySelector('#map-wrapper').setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
                     this.domRoot.querySelector('map-picker')?.setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
                     // 📡 Dispatch a 'location-confirm' event
-                    document.dispatchEvent(new MarkerDataEvent('location-confirm', coords.lat, coords.lng, address));
+                    this.dispatchEvent(new MarkerDataEvent('location-confirm', coords.lat, coords.lng, address));
                 }).catch(error => console.error(error) );
             });
         });
@@ -89,7 +89,8 @@ export default class LocationInput extends Base {
         this.domRoot.querySelectorAll('.map-trigger').forEach(button => {
             button.addEventListener('click', (event) => {
                 const popover = event.target.closest('[popover]');
-                document.addEventListener('location-confirm', () => {
+                // document.addEventListener('location-confirm', () => {
+                this.addEventListener('location-confirm', () => {
                     // closes the #location-wrapper popover:
                     popover?.hidePopover(); // but also closes the #map-wrapper popover on top of it
                 }, { once: true });
@@ -101,7 +102,8 @@ export default class LocationInput extends Base {
             // doesn't reach inside lazy-modal if it didn't load
             el.addEventListener('click', (e) => {
                 // 📡 Dispatch a 'map-picker-reset' event
-                document.dispatchEvent(new Event('map-picker-reset'));
+                this.dispatchEvent(new Event('map-picker-reset', { bubbles: true, composed: true }));
+                // console.log('Location reset.');
                 this.domRoot.querySelector('#map-wrapper').removeAttribute('marker-coordinates');
                 this.domRoot.querySelector('map-picker')?.removeAttribute('marker-coordinates');
                 // console.log('Location reset.');

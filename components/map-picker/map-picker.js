@@ -35,6 +35,7 @@ export default class MapPicker extends HTMLElement {
     constructor() {
         super();
         this.host = this.#determineHost();
+        // console.log('MapPicker host:', this.host);
         this.mapWrapper = this.closest('[popover]') ?? this.parentElement;
         this.confirmLocation = this.host.querySelectorAll(this.getAttribute('confirm'));
         this.resetLocation = this.host.querySelectorAll(this.getAttribute('reset'));
@@ -157,16 +158,16 @@ export default class MapPicker extends HTMLElement {
         this.resetLocation?.forEach(el => {
             el.addEventListener('click', (e) => {
                 // 📡 Dispatch a 'map-picker-reset' event
-                // this.host.dispatchEvent(new Event('map-picker-reset'));
-                document.dispatchEvent(new Event('map-picker-reset'));
-                document.querySelector('#location-wrapper')?.hidePopover();
-                document.querySelector('location-input')?.shadowRoot?.querySelector('#location-wrapper').hidePopover();
+                this.host.dispatchEvent(new Event('map-picker-reset', { bubbles: true, composed: true }));
+                // document.querySelector('#location-wrapper')?.hidePopover();
+                // document.querySelector('location-input')?.shadowRoot?.querySelector('#location-wrapper').hidePopover();
+                this.host.querySelector('#location-wrapper')?.hidePopover();
             });
         });
 
         // 📡 Listen for the map-picker-reset event
-        // this.host.addEventListener('map-picker-reset', () => { this.resetMap() });
-        document.addEventListener('map-picker-reset', () => { this.resetMap() });
+        this.host.addEventListener('map-picker-reset', () => { this.resetMap() });
+        // document.addEventListener('map-picker-reset', () => { this.resetMap() });
     }
 
     handleConfirm(e) {
