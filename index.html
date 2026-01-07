@@ -31,11 +31,11 @@
 
         const locationInput = document.querySelector('location-input');
         
+        // Log + inject coordinates and address when 'location-confirm' custom event is fired
         locationInput.addEventListener('location-confirm', async (e) => {
-            // Log + inject coordinates and address when 'location-confirm' custom event is fired
             console.log(`[${e.lat}, ${e.lng}]: ${e.address}`);
-            const locationInputRoot = locationInput.shadowRoot ?? locationInput;
-            const outputEl = locationInputRoot.querySelector('output');
+            const root = locationInput.shadowRoot ?? locationInput;
+            const outputEl = root.querySelector('output');
             outputEl.innerHTML = `<ul>
                 <li>latitude: ${e.lat}</li>
                 <li>longitude: ${e.lng}</li>
@@ -43,10 +43,10 @@
             </ul>`;
         });
         
+        // Clear the <output> element when the 'location-reset' custom event is fired
         locationInput.addEventListener('location-reset', () => {
-            // Clear the <output> element when the 'location-reset' custom event is fired
-            const locationInputRoot = locationInput.shadowRoot ?? locationInput;
-            const outputEl = locationInputRoot.querySelector('output');
+            const root = locationInput.shadowRoot ?? locationInput;
+            const outputEl = root.querySelector('output');
             outputEl.innerText = '';
         });
     </script>
