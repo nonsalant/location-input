@@ -27,9 +27,10 @@
 
     <script type="module">
         import LocationInput from './components/location-input/location-input.js?define=false';
-        
-        // Demo implementation
-        const locationHandlers = {
+
+        // Demo implementation for 'location-confirm' and 'location-reset' event handlers
+        // Apply handlers to LocationInput prototype
+        Object.assign(LocationInput.prototype, {
 
             // Log + inject coordinates + address when 'location-confirm' custom event is fired
             handleLocationConfirm(e) {
@@ -48,10 +49,9 @@
                 outputEl.innerText = '';
             }
 
-        }
+        });
 
-        // Apply the demo locationHandlers to LocationInput prototype and define the element
-        Object.assign(LocationInput.prototype, locationHandlers);
+        // Define the element
         customElements.define('location-input', LocationInput);
     </script>
 
