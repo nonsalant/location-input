@@ -1,7 +1,11 @@
 // Default location event handlers 
-// can be overridden via Object.assign(LocationInput.prototype, locationHandlers);
-// before defining the element with customElements.define('location-input', LocationInput);
-// note: import the class like this so it's not auto-defined: import LocationInput from './components/location-input/location-input.js?define=false';
+// - Can be overridden after class definition via Object.assign(LocationInput.prototype, locationHandlers);
+//   before defining the element with customElements.define('location-input', LocationInput);
+//   note: import the class like this so it's not auto-defined: import LocationInput from './components/location-input/location-input.js?define=false';
+// - Can also be overridden in the class (location-input.js) by defining the handler methods directly:
+//   handleLocationConfirm(e) { console.log(`[${e.lat}, ${e.lng}]: ${e.address}`); }
+//   handleLocationReset() {} 
+
 export const defaultLocationHandlers = {
     // Log + inject coordinates + address when 'location-confirm' custom event is fired
     handleLocationConfirm(e) {
