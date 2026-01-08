@@ -33,11 +33,16 @@ const defaultLocationHandlers = {
 export default class LocationInput extends Base {
     static styles = ['critical.css',];
     // static enableShadowRoot = true;
+
+    // handleLocationConfirm(props) { console.log(`[${props.lat}, ${props.lng}]: ${props.address}`); }
+    // handleLocationReset() {} 
     
     constructor() {
         super();
 
-        const needsImplementation = typeof this.handleLocationConfirm === 'undefined' || typeof this.handleLocationReset === 'undefined';
+        const needsImplementation =
+            typeof this.handleLocationConfirm === 'undefined' ||
+            typeof this.handleLocationReset === 'undefined';
         if (needsImplementation) Object.assign(this, defaultLocationHandlers);
 
         this.addEventListener('location-confirm', async (e) => {
