@@ -8,8 +8,8 @@ import { MarkerDataEvent, getAddressFromCoordinates } from '../map-picker/utils.
 // Default location event handlers 
 // can be overridden via Object.assign(LocationInput.prototype, locationHandlers);
 // before defining the element with customElements.define('location-input', LocationInput);
-// note: include it like this so it's not auto-defined: import LocationInput from './components/location-input/location-input.js?define=false';
-const locationHandlers = {
+// note: import the class like this so it's not auto-defined: import LocationInput from './components/location-input/location-input.js?define=false';
+const defaultLocationHandlers = {
 
     // Log + inject coordinates + address when 'location-confirm' custom event is fired
     handleLocationConfirm(props) {
@@ -38,7 +38,7 @@ export default class LocationInput extends Base {
         super();
 
         const needsImplementation = typeof this.handleLocationConfirm === 'undefined' || typeof this.handleLocationReset === 'undefined';
-        if (needsImplementation) Object.assign(this, locationHandlers);
+        if (needsImplementation) Object.assign(this, defaultLocationHandlers);
 
         this.addEventListener('location-confirm', async (e) => {
             this.setAttribute('has-location', '');
