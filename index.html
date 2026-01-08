@@ -32,13 +32,13 @@
         const locationHandlers = {
 
             // Log + inject coordinates + address when 'location-confirm' custom event is fired
-            handleLocationConfirm(props) {
-                console.log(`[${props.lat}, ${props.lng}]: ${props.address}`);
+            handleLocationConfirm(e) {
+                console.log(`[${e.lat}, ${e.lng}]: ${e.address}`);
                 const outputEl = this.domRoot.querySelector('output');
                 outputEl.innerHTML = `<ul>
-                    <li>latitude: ${props.lat}</li>
-                    <li>longitude: ${props.lng}</li>
-                    <li>address: ${props.address}</li>
+                    <li>latitude: ${e.lat}</li>
+                    <li>longitude: ${e.lng}</li>
+                    <li>address: ${e.address}</li>
                 </ul>`;
             },
 

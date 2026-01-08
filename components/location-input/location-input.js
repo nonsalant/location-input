@@ -10,7 +10,7 @@ export default class LocationInput extends Base {
     static styles = ['critical.css',];
     // static enableShadowRoot = true;
 
-    // handleLocationConfirm(props) { console.log(`[${props.lat}, ${props.lng}]: ${props.address}`); }
+    // handleLocationConfirm(e) { console.log(`[${e.lat}, ${e.lng}]: ${e.address}`); }
     // handleLocationReset() {} 
     
     constructor() {

@@ -4,13 +4,13 @@
 // note: import the class like this so it's not auto-defined: import LocationInput from './components/location-input/location-input.js?define=false';
 export const defaultLocationHandlers = {
     // Log + inject coordinates + address when 'location-confirm' custom event is fired
-    handleLocationConfirm(props) {
-        console.log(`[${props.lat}, ${props.lng}]: ${props.address}`);
+    handleLocationConfirm(e) {
+        console.log(`[${e.lat}, ${e.lng}]: ${e.address}`);
         const outputEl = this.domRoot.querySelector('output');
         outputEl.innerHTML = `<ul>
-            <li>Latitude: ${props.lat}</li>
-            <li>Longitude: ${props.lng}</li>
-            <li>Address: ${props.address}</li>
+            <li>Latitude: ${e.lat}</li>
+            <li>Longitude: ${e.lng}</li>
+            <li>Address: ${e.address}</li>
         </ul>`;
     },
 
