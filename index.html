@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <!-- <script type="module" src="./components/location-input/location-input.js?define=false"></script> -->
+    <script type="module" src="./components/location-input/location-input.js"></script>
     <style>
         /* Demo styles */
         *, *::before, *::after { box-sizing: border-box; }
@@ -24,36 +24,6 @@
         <!-- Demo implementation: location inserted in <output> element -->
         <p><output></output></p>
     </location-input>
-
-    <script type="module">
-        import LocationInput from './components/location-input/location-input.js?define=false';
-
-        // Demo implementation for 'location-confirm' and 'location-reset' event handlers
-        // Apply handlers to LocationInput prototype
-        Object.assign(LocationInput.prototype, {
-
-            // Log + inject coordinates and address when 'location-confirm' custom event is fired
-            handleLocationConfirm(e) {
-                console.log(`[${e.lat}, ${e.lng}]: ${e.address}`);
-                const outputEl = this.domRoot.querySelector('output');
-                outputEl.innerHTML = `<ul>
-                    <li>latitude: ${e.lat}</li>
-                    <li>longitude: ${e.lng}</li>
-                    <li>address: ${e.address}</li>
-                </ul>`;
-            },
-
-            // Clear the <output> element when the 'location-reset' custom event is fired
-            handleLocationReset() {
-                const outputEl = this.domRoot.querySelector('output');
-                outputEl.innerText = '';
-            }
-
-        });
-
-        // Define the element
-        customElements.define('location-input', LocationInput);
-    </script>
 
 </body>
 </html>

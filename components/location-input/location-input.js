@@ -15,12 +15,12 @@ export default class LocationInput extends Base {
     constructor() {
         super();
 
-        this.id ||= generateRandomId([3,2]);
+        this.id ||= generateRandomId([3,2]); // generate an ID like 'abc12' if none is set
         this.setAttribute('map-host', `#${this.id}`);
 
         if (!this.handleLocationConfirm || !this.handleLocationReset) {
-            import('./defaultLocationHandlers.js').then(defaultHandlers => {
-                Object.assign(this, defaultHandlers);
+            import('./defaultLocationHandlers.js').then(module => {
+                Object.assign(this, module.defaultLocationHandlers);
             });
         }
 
