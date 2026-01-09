@@ -52,10 +52,10 @@ export default class MapPicker extends HTMLElement {
     }
 
     #determineHost() {
-        const shadowRootHost = this.getAttribute('shadow-root-host');
-        const host = this.getAttribute('host');
-        if (shadowRootHost) return document.querySelector(shadowRootHost)?.shadowRoot;
-        if (host) return document.querySelector(host);
+        const host = this.getAttribute('map-host');
+        if (host)
+            return document.querySelector(host)?.shadowRoot
+            || document.querySelector(host);
         return this.getRootNode();
     }
 
