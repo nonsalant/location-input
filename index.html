@@ -32,7 +32,7 @@
         // Apply handlers to LocationInput prototype
         Object.assign(LocationInput.prototype, {
 
-            // Log + inject coordinates + address when 'location-confirm' custom event is fired
+            // Log + inject coordinates and address when 'location-confirm' custom event is fired
             handleLocationConfirm(e) {
                 console.log(`[${e.lat}, ${e.lng}]: ${e.address}`);
                 const outputEl = this.domRoot.querySelector('output');

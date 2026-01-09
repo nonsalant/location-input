@@ -4,7 +4,6 @@ const COMPONENT_PATH = import.meta.resolve('./');
 const { Base, getHtml, } = await import(`../base/base.js?path=${encodeURIComponent(COMPONENT_PATH)}`);
 
 import { MarkerDataEvent, getAddressFromCoordinates } from '../map-picker/utils.js';
-// import { defaultLocationHandlers } from './defaultLocationHandlers.js';
 
 export default class LocationInput extends Base {
     static styles = ['critical.css',];
@@ -16,11 +15,7 @@ export default class LocationInput extends Base {
     constructor() {
         super();
 
-        const needsImplementation =
-            typeof this.handleLocationConfirm === 'undefined' ||
-            typeof this.handleLocationReset === 'undefined';
-        
-        if (needsImplementation) {
+        if (!this.handleLocationConfirm || !this.handleLocationReset) {
             import('./defaultLocationHandlers.js').then(defaultHandlers => {
                 Object.assign(this, defaultHandlers);
             });
