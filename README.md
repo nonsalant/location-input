@@ -1,5 +1,8 @@
 # location-input
 
+- View demo: [location-input.netlify.app](https://location-input.netlify.app/)
+- View on CodePen (all markup in one place): [codepen.io/nonsalant/pen/XJKdZyB](https://codepen.io/nonsalant/pen/XJKdZyB)
+
 ## Applying handler methods for `location-confirm` and `location-reset` events
 The `location-input` web component fires custom events `location-confirm` and `location-reset` when the user confirms a location or resets the input, respectively.
 By default, the component includes basic implementations for these event handlers (injecting the location in <output> element). However, you can override these handlers in two ways:
@@ -77,6 +80,9 @@ export default class LocationInput extends Base {
 ```
 
 ## Bringing all the HTML markup into one place
+
+[View CodePen demo](https://codepen.io/nonsalant/pen/XJKdZyB)
+
 By default the `<location-input>` component loads its HTML markup from an external file (location-input/location-input.html). And this file in turn loads the contents of the `#map-wrapper` modal from an external file (map-picker/map-picker.html).
 
 If the `<location-input>` component has the `#location-wrapper` and `#map-wrapper` markup already in its shadow DOM or light DOM, it will use that instead of loading the external location-input/location-input.html.
