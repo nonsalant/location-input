@@ -3,6 +3,20 @@
 - View demo: [location-input.netlify.app](https://location-input.netlify.app/)
 - View on CodePen (all markup in one place): [codepen.io/nonsalant/pen/XJKdZyB](https://codepen.io/nonsalant/pen/XJKdZyB)
 
+## Basic usage
+Include the `location-input.js` script and add the `<location-input>` element to your HTML
+
+```html
+<script type="module" src="./components/location-input/location-input.js"></script>
+<location-input>
+    <button type="button" class="location-trigger">
+        <span>Set</span> <span>/</span> <span>Edit</span> <span>Location</span>
+    </button>
+    <!-- Demo implementation: location inserted in <output> element -->
+    <p><output></output></p>
+</location-input>
+```
+
 ## Applying handler methods for `location-confirm` and `location-reset` events
 The `location-input` web component fires custom events `location-confirm` and `location-reset` when the user confirms a location or resets the input, respectively.
 By default, the component includes basic implementations for these event handlers (injecting the location in <output> element). However, you can override these handlers in two ways:
