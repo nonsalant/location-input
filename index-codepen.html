@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- <script type="module" src="./components/location-input/location-input.js?define=false"></script> -->
+    <style>
+        /* Demo styles */
+        *, *::before, *::after { box-sizing: border-box; }
+        html { color-scheme: light dark;  text-wrap: balance; tab-size: 2; }
+        body { width: 90%; max-width: min(700px, 100%); margin-inline: auto; }
+        output > * { transition: all .6s ease-out; @starting-style { background: yellow; } }
+        /* pre { overflow: auto; font-size: .9em; border: solid 1px; padding: 3px; } */
+    </style>
+</head>
+<body>
+    <h2><span aria-hidden="true">📌</span> Location Input web component</h2>
+
+    <location-input>
+        <button type="button" class="location-trigger">
+            <span>Set</span> <span>/</span> <span>Edit</span> <span>Location</span>
+        </button>
+        <!-- Demo implementation: location inserted in <output> element -->
+        <p><output></output></p>
+
+        <lazy-modal popover id="location-wrapper" triggers=".location-trigger" close-button inner-styles="../location-input/style.css">
+            <h2>Input Your Location</h2>
+            <div class="button-container" style="display: grid;">
+                <button class="reset-location invert" type="button" style="margin-inline-end: auto; margin-block-start: 1lh;">
+                    <!-- <span aria-hidden="true" class="invert">❌</span> -->
+                    <span>Reset Location</span>
+                </button>
+            </div>
+            <location-cards style="margin-block-start: 1lh;">
+                <location-card class="automatic | clickable-parent">
+                    <card-content>
+                        <big>Auto-detect</big>
+                        <small>Grant location permission</small>
+                    </card-content>
+                    <card-action>
+                        <button class="geo-locate | clickable-element button" type="button">
+                            <span aria-hidden="true">✅</span><span>Allow</span>
+                        </button>
+                    </card-action>
+                </location-card>
+                <p class="separator">— OR —</p>
+                <location-card class="manual | clickable-parent">
+                    <card-content>
+                        <big>Manually</big>
+                        <small>Pick from the map</small>
+                    </card-content>
+                    <card-action>
+                        <button class="map-trigger | clickable-element button" type="button">
+                            <span aria-hidden="true">📌</span><span>Map</span>
+                        </button>
+                    </card-action>
+                </location-card>
+            </location-cards>
+        </lazy-modal>
+
+        <!-- map-picker https://github.com/nonsalant/map-picker/ -->
+        <lazy-modal popover
+            id="map-wrapper"
+            triggers=".map-trigger"
+            close-button
+            inner-styles="../map-picker/map-picker.css"
+            inner-scripts="../map-picker/map-picker.js"
+        >
+            <h2>Select Your Location</h2>
+            <p class="js-hidden-if-no-kbd">
+                <small>Use the <kbd>+</kbd> and <kbd>-</kbd> keys
+                to zoom in/out. Press <kbd>H</kbd> to view 
+                all keyboard shortcuts</small>
+            </p>
+
+            <map-picker 
+                map-autofocus 
+                confirm=".confirm-location" 
+                reset=".reset-location" 
+                initial-coordinates="39.8283,-98.5795" 
+                initial-zoom="4"
+            ></map-picker>
+
+            <div class="map-controls button-container">
+                <button popovertarget="map-wrapper" popovertargetaction="hide" type="button">
+                    Cancel
+                </button>
+                <button class="reset-location" type="button">
+                    <!-- <span aria-hidden="true">❌</span> -->
+                    <span>Reset</span>
+                </button>
+                <button class="confirm-location invert" type="button">
+                    <!-- <span aria-hidden="true" class="invert">✅</span> -->
+                    <span>Confirm</span>
+                </button>
+            </div>
+
+            <p class="leaflet-attribution">
+                © <a target="_blank" title="OpenStreetMap" href="https://www.openstreetmap.org/copyright">OSM</a> contributors |
+                Geocoding by <a target="_blank" title="Open-source geocoding with OpenStreetMap data" href="https://nominatim.org">Nominatim</a> |
+                <a target="_blank" title="A JavaScript library for interactive maps" href="https://leafletjs.com">Leaflet</a>
+            </p>
+        </lazy-modal>
+
+    </location-input>
+
+    <script type="module">
+        import LocationInput from './components/location-input/location-input.js?define=false';
+
+        // Demo implementation for 'location-confirm' and 'location-reset' event handlers
+        // Apply handlers to LocationInput prototype
+        Object.assign(LocationInput.prototype, {
+
+            // Log + inject coordinates and address when 'location-confirm' custom event is fired
+            handleLocationConfirm(e) {
+                console.log(`[${e.lat}, ${e.lng}]: ${e.address}`);
+                const outputEl = this.domRoot.querySelector('output');
+                outputEl.innerHTML = `<ul>
+                    <li>latitude: ${e.lat}</li>
+                    <li>longitude: ${e.lng}</li>
+                    <li>address: ${e.address}</li>
+                </ul>`;
+            },
+
+            // Clear the <output> element when the 'location-reset' custom event is fired
+            handleLocationReset() {
+                const outputEl = this.domRoot.querySelector('output');
+                outputEl.innerText = '';
+            }
+
+        });
+
+        // Define the element
+        customElements.define('location-input', LocationInput);
+    </script>
+
+</body>
+</html>

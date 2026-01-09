@@ -1,4 +1,4 @@
-import { defineElement, } from '../base/utils.js';
+import { defineElement, generateRandomId, } from '../base/utils.js';
 
 const COMPONENT_PATH = import.meta.resolve('./');
 const { Base, getHtml, } = await import(`../base/base.js?path=${encodeURIComponent(COMPONENT_PATH)}`);
@@ -14,6 +14,9 @@ export default class LocationInput extends Base {
     
     constructor() {
         super();
+
+        this.id ||= generateRandomId([3,2]);
+        this.setAttribute('map-host', `#${this.id}`);
 
         if (!this.handleLocationConfirm || !this.handleLocationReset) {
             import('./defaultLocationHandlers.js').then(defaultHandlers => {
@@ -34,12 +37,19 @@ export default class LocationInput extends Base {
     }
 
     async render() {
-        const hasBothModals = this.querySelector('#location-wrapper') && this.querySelector('#map-wrapper');
-        if (hasBothModals) return;
+        const hasBothModals = this.domRoot.querySelector('#location-wrapper')
+                           && this.domRoot.querySelector('#map-wrapper');
+        if (hasBothModals) {
+            // this.domRoot.innerHTML = processPlaceholders(this.innerHTML, this);  
+            return;
+        }
         else return await getHtml('location-input.html');
     }
 
     afterRender() {
+        this.domRoot.querySelector('#map-wrapper').setAttribute('map-host', this.getAttribute('map-host'));
+        this.domRoot.querySelector('map-picker')?.setAttribute('map-host', this.getAttribute('map-host'));
+
         // Import LazyModal component script
         import('../lazy-modal/lazy-modal.js');
 

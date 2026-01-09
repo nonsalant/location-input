@@ -57,14 +57,15 @@ export class Base extends HTMLElement {
 
         const markup = await this.render();
         const beforeMarkup = await this.renderBefore();
-        const processedHtml = processPlaceholders(markup, this); // or: processPlaceholders(markup, { myValue: 'yoo' });
         const processedBeforeHtml = processPlaceholders(beforeMarkup, this);
+        const processedHtml = processPlaceholders(markup, this); // or: processPlaceholders(markup, { myValue: 'yoo' });
 
-        // this.domRoot.appendChild(createFragment(processedHtml)); // registers custom elements too early
         // this.domRoot.prepend(createFragment(processedBeforeHtml));
+        // this.domRoot.appendChild(createFragment(processedHtml)); // registers custom elements too early
         
-        this.domRoot.insertAdjacentHTML('beforeend', processedHtml); // note: this doesn't execute scripts
         this.domRoot.insertAdjacentHTML('afterbegin', processedBeforeHtml);
+        this.domRoot.insertAdjacentHTML('beforeend', processedHtml); // note: this doesn't execute scripts
+
         executeScripts(this.domRoot);
         
         await this.afterRender();
@@ -114,6 +115,7 @@ export class Base extends HTMLElement {
                 index++;
                 // if filename ends in .scoped.css
                 let processedCssText = processPlaceholders(cssText, this);
+                // let processedCssText = cssText;
                 // Scoped stylesheet handling
                 if (filename.endsWith('.scoped.css')) {
                     if (this.shadowRoot) {
