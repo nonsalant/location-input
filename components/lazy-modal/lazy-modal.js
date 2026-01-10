@@ -98,6 +98,11 @@ export default class LazyModal extends Base {
             // only run once
             if (this.#loadingAssetsPromise) return this.#loadingAssetsPromise;
 
+            if (!this.#lazyRenderTemplate && !this.#modalContent) {
+                // 📡 Dispatch a custom event
+                this.dispatchEvent(new Event('lazy-modal-content-loaded', { bubbles: true, composed: true }));
+            }
+
             this.#lazyRender(); // Lazy render template if provided
             this.#loadingAssetsPromise = Promise.all([
                 this.addContent(this.#modalContent), // Optionally inject external content
@@ -123,7 +128,15 @@ export default class LazyModal extends Base {
             // If a template is provided, clone its content and append it
             const content = this.#lazyRenderTemplate.content.cloneNode(true);
             this.appendChild(content);
+            if (!this.#modalContent) {
+                // 📡 Dispatch a custom event
+                this.dispatchEvent(new Event('lazy-modal-content-loaded', { bubbles: true, composed: true }));
+            }
         }
+        // else if (!this.#modalContent) {
+        //     // 📡 Dispatch a custom event
+        //     this.dispatchEvent(new Event('lazy-modal-content-loaded', { bubbles: true, composed: true }));
+        // }
     }
 
     async renderBefore() {
@@ -146,6 +159,8 @@ export default class LazyModal extends Base {
         // this.appendChild(createFragment(processedContent)); // registers custom elements too early
         this.insertAdjacentHTML('beforeend', processedContent); // note: this doesn't execute scripts
         executeScripts(this);
+        // 📡 Dispatch a custom event
+        this.dispatchEvent(new Event('lazy-modal-content-loaded', { bubbles: true, composed: true }));
     }
 
     /**

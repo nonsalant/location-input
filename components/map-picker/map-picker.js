@@ -179,6 +179,7 @@ export default class MapPicker extends HTMLElement {
 
         // 📡 Dispatch a custom event to notify that the location has been confirmed
         this.#dispatchEventWithMarkerData('map-picker-confirm');
+        console.log('Location confirmed:', lat, lng, this.address);
         // this.confirmLocation?.forEach(el => el.ariaBusy = true);
     }
 
