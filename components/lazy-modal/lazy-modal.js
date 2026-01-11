@@ -44,6 +44,11 @@ export default class LazyModal extends Base {
     }
     
     connected() {
+        if (!this.#lazyRenderTemplate && !this.#modalContent) {
+            // 📡 Dispatch a custom event
+            console.log(this.id, 'dispatching lazy-modal-content-loaded');
+            this.dispatchEvent(new Event('lazy-modal-content-loaded', { bubbles: true, composed: true }));
+        }
         this.#setupAssetLoading(); // Assets for what's inside the modal
         this.#setupTriggerBehavior();
     }
@@ -97,11 +102,6 @@ export default class LazyModal extends Base {
         this.loadAssets = async () => {
             // only run once
             if (this.#loadingAssetsPromise) return this.#loadingAssetsPromise;
-
-            if (!this.#lazyRenderTemplate && !this.#modalContent) {
-                // 📡 Dispatch a custom event
-                this.dispatchEvent(new Event('lazy-modal-content-loaded', { bubbles: true, composed: true }));
-            }
 
             this.#lazyRender(); // Lazy render template if provided
             this.#loadingAssetsPromise = Promise.all([
