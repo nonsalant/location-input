@@ -34,11 +34,10 @@ export default class MapPicker extends HTMLElement {
 
     constructor() {
         super();
-        this.host = this.#determineHost();
-        // console.log('MapPicker host:', this.host);
+        const host = this.#determineHost();
         this.mapWrapper = this.closest('[popover]') ?? this.parentElement;
-        this.confirmLocation = this.host.querySelectorAll(this.getAttribute('confirm'));
-        this.resetLocation = this.host.querySelectorAll(this.getAttribute('reset'));
+        this.confirmLocation = host.querySelectorAll(this.getAttribute('confirm'));
+        this.resetLocation = host.querySelectorAll(this.getAttribute('reset'));
         this.initialCoords = this.hasAttribute('initial-coordinates')
             ? csvToArray(this.getAttribute('initial-coordinates')).map(Number)
             : [39.8283, -98.5795]; // Default to USA center
@@ -47,7 +46,7 @@ export default class MapPicker extends HTMLElement {
         this.marker = null;
         this.address = null; // Store the address of the marker
 
-        const kbdOnlyElements = this.host.querySelectorAll('.js-hidden-if-no-kbd');
+        const kbdOnlyElements = host.querySelectorAll('.js-hidden-if-no-kbd');
         kbdOnly(kbdOnlyElements);
     }
 
@@ -158,15 +157,17 @@ export default class MapPicker extends HTMLElement {
         this.resetLocation?.forEach(el => {
             el.addEventListener('click', (e) => {
                 // 📡 Dispatch a 'map-picker-reset' event
-                this.host.dispatchEvent(new Event('map-picker-reset', { bubbles: true, composed: true }));
+                const host = this.#determineHost();
+                host.dispatchEvent(new Event('map-picker-reset', { bubbles: true, composed: true }));
                 // document.querySelector('#location-wrapper')?.hidePopover();
                 // document.querySelector('location-input')?.shadowRoot?.querySelector('#location-wrapper').hidePopover();
-                this.host.querySelector('#location-wrapper')?.hidePopover();
+                host.querySelector('#location-wrapper')?.hidePopover();
             });
         });
 
         // 📡 Listen for the map-picker-reset event
-        this.host.addEventListener('map-picker-reset', () => { this.resetMap() });
+        const host = this.#determineHost();
+        host.addEventListener('map-picker-reset', () => { this.resetMap() });
         // document.addEventListener('map-picker-reset', () => { this.resetMap() });
     }
 
@@ -179,7 +180,6 @@ export default class MapPicker extends HTMLElement {
 
         // 📡 Dispatch a custom event to notify that the location has been confirmed
         this.#dispatchEventWithMarkerData('map-picker-confirm');
-        console.log('Location confirmed:', lat, lng, this.address);
         // this.confirmLocation?.forEach(el => el.ariaBusy = true);
     }
 
@@ -226,7 +226,7 @@ export default class MapPicker extends HTMLElement {
         if (!this.marker) return;
         const lat = this.marker.getLatLng().lat.toFixed(6);
         const lng = this.marker.getLatLng().lng.toFixed(6);
-        this.host.dispatchEvent(new MarkerDataEvent(
+        this.#determineHost().dispatchEvent(new MarkerDataEvent(
             evName, lat, lng, this.address || null 
         ));
     }

@@ -50,7 +50,6 @@ export default class LocationInput extends Base {
         this.domRoot.querySelector('#map-wrapper').setAttribute('map-host', this.getAttribute('map-host'));
         this.domRoot.querySelector('#map-wrapper').addEventListener('lazy-modal-content-loaded', (e)=> {
             this.domRoot.querySelector('map-picker')?.setAttribute('map-host', this.getAttribute('map-host'));
-            console.log('Map picker ready inside lazy modal.');
         });
 
         // Import LazyModal component script
@@ -59,14 +58,11 @@ export default class LocationInput extends Base {
         this.addEventListener('map-picker-confirm', async (e) => {
             // 📡 Dispatch a 'location-confirm' event
             // const { MarkerDataEvent } = await import('../map-picker/map-picker.js');
-            console.log('Dispatching location-confirm event from map-picker-confirm...');
-            // ! bug: map-picker-confirm doesn't fire sometimes in Chrome
             this.dispatchEvent(new MarkerDataEvent('location-confirm', e.lat, e.lng, e.address));
         });
 
         this.addEventListener('map-picker-reset', () => {
             // 📡 Dispatch a 'location-reset' event
-            // ! bug: map-picker-reset doesn't fire sometimes in Chrome
             this.dispatchEvent(new Event('location-reset', { bubbles: true, composed: true }));
         });
 
