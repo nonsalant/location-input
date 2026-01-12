@@ -46,8 +46,7 @@ export default class LazyModal extends Base {
     connected() {
         if (!this.#lazyRenderTemplate && !this.#modalContent) {
             // 📡 Dispatch a custom event
-            console.log(this.id, 'dispatching lazy-modal-content-loaded');
-            this.dispatchEvent(new Event('lazy-modal-content-loaded', { bubbles: true, composed: true }));
+            this.dispatchContentLoadedEvent();
         }
         this.#setupAssetLoading(); // Assets for what's inside the modal
         this.#setupTriggerBehavior();
@@ -130,13 +129,9 @@ export default class LazyModal extends Base {
             this.appendChild(content);
             if (!this.#modalContent) {
                 // 📡 Dispatch a custom event
-                this.dispatchEvent(new Event('lazy-modal-content-loaded', { bubbles: true, composed: true }));
+                this.dispatchContentLoadedEvent();
             }
         }
-        // else if (!this.#modalContent) {
-        //     // 📡 Dispatch a custom event
-        //     this.dispatchEvent(new Event('lazy-modal-content-loaded', { bubbles: true, composed: true }));
-        // }
     }
 
     async renderBefore() {
@@ -160,6 +155,10 @@ export default class LazyModal extends Base {
         this.insertAdjacentHTML('beforeend', processedContent); // note: this doesn't execute scripts
         executeScripts(this);
         // 📡 Dispatch a custom event
+        this.dispatchContentLoadedEvent();
+    }
+
+    dispatchContentLoadedEvent() {
         this.dispatchEvent(new Event('lazy-modal-content-loaded', { bubbles: true, composed: true }));
     }
 
