@@ -13,7 +13,7 @@ const { Base, getHtml, } = await import(`../base/base.js?path=${encodeURICompone
 
 export default class LazyModal extends Base {
     static styles = [
-        'lazy-modal.scoped.css',
+        'lazy-modal.css',
         'aria-busy.css',
         // `h1 { text-decoration: underline; }`,
     ];
