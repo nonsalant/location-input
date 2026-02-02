@@ -6,8 +6,8 @@ const { Base, getHtml, } = await import(`../base/base.js?path=${encodeURICompone
 import { MarkerDataEvent, getAddressFromCoordinates } from '../map-picker/utils.js';
 
 export default class LocationInput extends Base {
+    static enableShadowRoot = true;
     static styles = ['critical.css',];
-    // static enableShadowRoot = true;
 
     // handleLocationConfirm(e) { console.log(`[${e.lat}, ${e.lng}]: ${e.address}`); }
     // handleLocationReset() {} 

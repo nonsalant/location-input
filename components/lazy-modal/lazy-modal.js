@@ -5,7 +5,7 @@ import { csvToArray, isRemoteUrl, observeIntersection, unobserveIntersection } f
 
 export default class LazyModal extends Base {
     // ! bug with second lazy-modal (around map) getting connected before its trigger
-    static enableShadowRoot = true;
+    // static enableShadowRoot = true;
     static styles = [
         // `h1 { text-decoration: underline; }`,
         // 'lazy-modal.css',
