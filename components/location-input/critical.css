@@ -9,8 +9,15 @@ lazy-modal {
 #location-wrapper {
     @supports (position-area: bottom) {
         /* position-area: bottom; */ /* stopped working in Chrome (late 2025) */
-        position-area: none;
-        margin-block: 1lh;
+        /* position-area: none; */
+        margin-block: .5lh;
+        margin-inline: -1lh;
+        position-area: block-end span-inline-start; 
+        position-try: flip-block, flip-inline, flip-block flip-inline;
+        max-width: min(15lh, 100dvw - 4lh);
+        &::backdrop {
+            backdrop-filter: brightness(.95);
+        }
     }
 }
 
