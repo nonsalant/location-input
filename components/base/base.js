@@ -1,16 +1,18 @@
-import { createStylesheet, looksLikeCssText, processPlaceholders, executeScripts, camelToKebab} from "./utils.js";
+import { createStylesheet, looksLikeCssText, processPlaceholders, executeScripts, camelToKebab, appendHtml, prependHtml } from './utils.js';
 
 // Get the component path from the URL query parameter
 const COMPONENT_PATH = new URL(import.meta.url).searchParams.get('path');
 
-// Track added stylesheets globally to prevent duplicates across all component instances
+// Track added stylesheets to prevent duplicates across all component instances
 globalThis._addedStylesheets ??= new Map(); // Map of assetHost -> Set of CSS texts
 globalThis._cssLocks ??= new Map(); // Map of assetHost -> Promise (lock)
 
 export class Base extends HTMLElement {
     static enableShadowRoot = false;
     static styles = [];
-    static baseStyle = '.dom-root { display: contents; }';
+    static baseStyle = '';
+    static globalStyles = [];
+    static globalBaseStyle = '';
 
     // https://hawkticehurst.com/2024/05/bring-your-own-base-class/#:~:text=class%20BaseElement,-extends%20HTMLElement%20%7Bconstructor
     constructor() {
@@ -20,33 +22,54 @@ export class Base extends HTMLElement {
         const needsShadow = this.constructor.enableShadowRoot && !this.shadowRoot;
         if (needsShadow) {
             this.attachShadow({ mode: 'open' });
-            this.shadowRoot.innerHTML = `<div class="dom-root"></div>`;
         }
 
         // Current shadow root or the first parent shadow root or 'document':
         this.assetHost = this.shadowRoot ?? this.getRootNode();
         // console.log(this.constructor.name, this.assetHost);
 
-        if (this.shadowRoot) {
-            this.domRoot = this.shadowRoot.firstElementChild;
-            this.domRoot.insertAdjacentHTML('beforeend', this.innerHTML);
-        } else this.domRoot = this;
+        // Setup root to the shadow root or 'this'
+        if (this.shadowRoot) this.root = this.shadowRoot;
+        else this.root = this;
 
-        // Use a string key for the Map instead of the object reference
+        // Setup assetHostKey for tracking added stylesheets
         const assetHostKey = this.assetHost === document ? 'document' : this.assetHost;
-        // Initialize Set for this assetHost if not present
+        // Initialize Set for this assetHost if not present, otherwise use existing _addedStylesheets.get(assetHostKey)
         if (!globalThis._addedStylesheets.has(assetHostKey)) {
-            // console.log('Creating new Set for:', assetHostKey);
             globalThis._addedStylesheets.set(assetHostKey, new Set());
-        } else {
-            // console.log('Using existing Set, current size:', globalThis._addedStylesheets.get(assetHostKey).size);
         }
         this._assetHostKey = assetHostKey;
+    }
+
+    moveLightToShadowIfNeeded(processContent = false) {
+        if (this.constructor.enableShadowRoot && !this.shadowRoot.innerHTML) {
+            this.moveLightToShadow(processContent);
+        }
+    }
+
+    moveLightToShadow(processContent = false) {
+        if (processContent) {
+            // note: scripts won't execute, listeners are lost
+            const processedHtml = processPlaceholders(this.innerHTML, this);
+            appendHtml(this.shadowRoot, processedHtml);
+            executeScripts(this.shadowRoot);
+            this.innerHTML = ''; // clear light DOM content
+            return;
+        }
+        while (this.firstChild) {
+            this.shadowRoot.appendChild(this.firstChild);
+        }
+    }
+
+    slotLightToShadow() {
+        const slot = document.createElement('slot');
+        this.shadowRoot.appendChild(slot);
     }
 
     disconnectedCallback() { this.disconnected(); }
 
     connectedCallback() {
+        this.moveLightToShadowIfNeeded();
         this.connected();
         if (this.initialized) return;
         this.initialized = true;
@@ -55,92 +78,98 @@ export class Base extends HTMLElement {
 
     async init() {
         await this.addCss();
+        await this.addGlobalCss();
 
         const markup = await this.render();
         const beforeMarkup = await this.renderBefore();
         const processedBeforeHtml = processPlaceholders(beforeMarkup, this);
         const processedHtml = processPlaceholders(markup, this); // or: processPlaceholders(markup, { myValue: 'yoo' });
 
-        // this.domRoot.prepend(createFragment(processedBeforeHtml));
-        // this.domRoot.appendChild(createFragment(processedHtml)); // registers custom elements too early
-        
-        this.domRoot.insertAdjacentHTML('afterbegin', processedBeforeHtml);
-        this.domRoot.insertAdjacentHTML('beforeend', processedHtml); // note: this doesn't execute scripts
+        // this.root.firstElementChild.before(createFragment(processedBeforeHtml));
+        // this.root.lastElementChild.after(createFragment(processedHtml)); // registers custom elements too early
 
-        executeScripts(this.domRoot);
-        
+        prependHtml(this.root, processedBeforeHtml);
+        appendHtml(this.root, processedHtml);
+
+        executeScripts(this.root);
+
         await this.afterRender();
     }
 
-    disconnected() {}
-    connected() {}
-    async afterRender() {}
+    disconnected() { }
+    connected() { }
+    async afterRender() { }
     async render() { return ''; }
     async renderBefore() { return ''; }
 
-    async addCss() {
-        const styles = [...this.constructor.styles, this.constructor.baseStyle];
-        const cssTexts = await this.css(styles);
+    async _addStylesheetsWithLock(assetHostKey, target, cssTexts, scoper = null) {
 
         // for (const cssText of cssTexts) {
         //     const processedCssText = processPlaceholders(cssText, this);
         //     const stylesheet = await createStylesheet(processedCssText);
         //     this.assetHost.adoptedStyleSheets?.push(stylesheet);
         // }
-
-        // Wait for any pending CSS additions for this assetHost
-        while (globalThis._cssLocks.get(this._assetHostKey)) {
-            await globalThis._cssLocks.get(this._assetHostKey);
-        }
         
+        // Wait for any pending CSS additions for this assetHost
+        while (globalThis._cssLocks.get(assetHostKey)) {
+            await globalThis._cssLocks.get(assetHostKey);
+        }
+
         // Create a lock promise
         let releaseLock;
         const lockPromise = new Promise(resolve => { releaseLock = resolve; });
-        globalThis._cssLocks.set(this._assetHostKey, lockPromise);
-        
-        try {
-            const addedStylesheets = globalThis._addedStylesheets.get(this._assetHostKey);
-            // console.log('addCss:', this.constructor.name, 'Set size:', addedStylesheets.size);
-            let index = 0;
+        globalThis._cssLocks.set(assetHostKey, lockPromise);
 
+        try {
+            // Ensure the Set exists for this assetHostKey
+            if (!globalThis._addedStylesheets.has(assetHostKey)) {
+                globalThis._addedStylesheets.set(assetHostKey, new Set());
+            }
+            const stylesheetSet = globalThis._addedStylesheets.get(assetHostKey);
+            
             for (const cssText of cssTexts) {
-                // Check if this CSS source is already applied BEFORE processing
-                if (addedStylesheets.has(cssText)) {
-                    // console.log('✓ Stylesheet already added, skipping duplicate.');
-                    continue;
-                }
-                
-                // console.log('Adding new stylesheet (first 50 chars):', cssText.substring(0, 50));
-                const tagName = camelToKebab(this.constructor.name);
-                const filename = styles[index];
-                index++;
-                // if filename ends in .scoped.css
+                if (stylesheetSet.has(cssText)) continue;
+
                 let processedCssText = processPlaceholders(cssText, this);
-                // let processedCssText = cssText;
-                // Scoped stylesheet handling
-                if (filename.endsWith('.scoped.css')) {
-                    if (this.shadowRoot) {
-                        // Scoped to shadow root: wrap in :host
-                        processedCssText =  `:host { ${processedCssText} }`;
-                    } else {
-                        // Scoped to tag name: wrap in tag selector
-                        processedCssText =  `${tagName} { ${processedCssText} }`;
-                        // console.log(filename, processedCssText)
-                    }
-                    // processedCssText =  `:where(${filename}, :host) { ${processedCssText}}`;
-                    // console.log(processedCssText);
+                if (scoper) {
+                    processedCssText = scoper(processedCssText);
                 }
+
                 const stylesheet = await createStylesheet(processedCssText);
-                this.assetHost.adoptedStyleSheets?.push(stylesheet);
-                
-                // Track the original CSS source, not the processed version
-                addedStylesheets.add(cssText);
+                target.adoptedStyleSheets?.push(stylesheet);
+                stylesheetSet.add(cssText);
             }
         } finally {
-            // Release the lock
-            globalThis._cssLocks.delete(this._assetHostKey);
+            globalThis._cssLocks.delete(assetHostKey);
             releaseLock();
         }
+    }
+
+    async addGlobalCss() {
+        const styles = [...this.constructor.globalStyles, this.constructor.globalBaseStyle];
+        const cssTexts = await this.css(styles);
+        await this._addStylesheetsWithLock('document', document, cssTexts);
+    }
+
+    async addCss() {
+        const styles = [...this.constructor.styles, this.constructor.baseStyle];
+        const cssTexts = await this.css(styles);
+        
+        let index = 0;
+        const scoper = (processedCssText) => {
+            const filename = styles[index++];
+            
+            // Scoped stylesheet handling
+            if (filename?.endsWith('.scoped.css')) {
+                const tagName = camelToKebab(this.constructor.name);
+                return this.shadowRoot 
+                    ? `:host { ${processedCssText} }`
+                    : `${tagName} { ${processedCssText} }`;
+            }
+            return processedCssText;
+        };
+
+        await this._addStylesheetsWithLock(this._assetHostKey, this.assetHost, cssTexts, scoper);
     }
 
     async css(styles) {
@@ -150,6 +179,7 @@ export class Base extends HTMLElement {
         if (Array.isArray(styles)) {
             // add COMPONENT_PATH to each path if it doesn't look like raw CSS
             styles = styles.map(str => {
+                if (str === '') return; // skip empty strings
                 if (typeof str !== 'string') return console.warn('Base.css: style entry is not a string:', str);
                 // Heuristic: whitespace in a non-URL likely means CSS text
                 if (looksLikeCssText(str)) return str; // raw css text, don't resolve as URL
@@ -163,7 +193,6 @@ export class Base extends HTMLElement {
 
 
 // Utils
-// import { processPlaceholders, getCss, createStylesheet } from "./utils.js";
 
 globalThis.htmlPromiseCache ??= new Map();
 globalThis.cssPromiseCache ??= new Map();

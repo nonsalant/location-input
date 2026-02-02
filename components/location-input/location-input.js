@@ -37,19 +37,19 @@ export default class LocationInput extends Base {
     }
 
     async render() {
-        const hasBothModals = this.domRoot.querySelector('#location-wrapper')
-                           && this.domRoot.querySelector('#map-wrapper');
+        const hasBothModals = this.root.querySelector('#location-wrapper')
+                           && this.root.querySelector('#map-wrapper');
         if (hasBothModals) {
-            // this.domRoot.innerHTML = processPlaceholders(this.innerHTML, this);  
+            // this.root.innerHTML = processPlaceholders(this.innerHTML, this);  
             return;
         }
         else return await getHtml('location-input.html');
     }
 
     afterRender() {
-        this.domRoot.querySelector('#map-wrapper').setAttribute('map-host', this.getAttribute('map-host'));
-        this.domRoot.querySelector('#map-wrapper').addEventListener('lazy-modal-content-loaded', (e)=> {
-            this.domRoot.querySelector('map-picker')?.setAttribute('map-host', this.getAttribute('map-host'));
+        this.root.querySelector('#map-wrapper').setAttribute('map-host', this.getAttribute('map-host'));
+        this.root.querySelector('#map-wrapper').addEventListener('lazy-modal-content-loaded', (e)=> {
+            this.root.querySelector('map-picker')?.setAttribute('map-host', this.getAttribute('map-host'));
         });
 
         // Import LazyModal component script
@@ -67,7 +67,7 @@ export default class LocationInput extends Base {
         });
 
         // Handle geolocation when .geo-locate button is clicked
-        this.domRoot.querySelectorAll('.geo-locate').forEach(button => {
+        this.root.querySelectorAll('.geo-locate').forEach(button => {
             button.addEventListener('click', async event => {
                 const target = event.target;
                 target.setAttribute('aria-busy', 'true');
@@ -76,8 +76,8 @@ export default class LocationInput extends Base {
                     const address = await getAddressFromCoordinates(coords.lat, coords.lng);
                     target.removeAttribute('aria-busy');
                     target.closest('[popover]')?.hidePopover();
-                    this.domRoot.querySelector('#map-wrapper').setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
-                    this.domRoot.querySelector('map-picker')?.setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
+                    this.root.querySelector('#map-wrapper').setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
+                    this.root.querySelector('map-picker')?.setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
                     // 📡 Dispatch a 'location-confirm' event
                     this.dispatchEvent(new MarkerDataEvent('location-confirm', coords.lat, coords.lng, address));
                 }).catch(error => console.error(error) );
@@ -85,10 +85,10 @@ export default class LocationInput extends Base {
         });
  
         // Initialize shiny cursor effect
-        this.cleanupShinyCursor = initShinyCursor(this.domRoot.querySelector('#location-wrapper'));
+        this.cleanupShinyCursor = initShinyCursor(this.root.querySelector('#location-wrapper'));
 
         // 📡 When a .map-trigger is clicked add a 'location-confirm' event listener that closes the popover
-        this.domRoot.querySelectorAll('.map-trigger').forEach(button => {
+        this.root.querySelectorAll('.map-trigger').forEach(button => {
             button.addEventListener('click', (event) => {
                 const popover = event.target.closest('[popover]');
                 // document.addEventListener('location-confirm', () => {
@@ -100,16 +100,16 @@ export default class LocationInput extends Base {
         });
 
         // Reset location when any .reset-location element is clicked
-        this.domRoot.querySelectorAll('.reset-location')?.forEach(el => {
+        this.root.querySelectorAll('.reset-location')?.forEach(el => {
             // doesn't reach inside lazy-modal if it didn't load
             el.addEventListener('click', (e) => {
                 // 📡 Dispatch a 'map-picker-reset' event
                 this.dispatchEvent(new Event('map-picker-reset', { bubbles: true, composed: true }));
                 // console.log('Location reset.');
-                this.domRoot.querySelector('#map-wrapper').removeAttribute('marker-coordinates');
-                this.domRoot.querySelector('map-picker')?.removeAttribute('marker-coordinates');
+                this.root.querySelector('#map-wrapper').removeAttribute('marker-coordinates');
+                this.root.querySelector('map-picker')?.removeAttribute('marker-coordinates');
                 // console.log('Location reset.');
-                this.domRoot.querySelector('#location-wrapper')?.hidePopover();
+                this.root.querySelector('#location-wrapper')?.hidePopover();
             });
         });
 

@@ -1,23 +1,21 @@
-import {
-    csvToArray,
-    isRemoteUrl,
-    observeIntersection,
-    unobserveIntersection,
-    // createStylesheet,
-} from './utils.js';
-
-import { defineElement, processPlaceholders, executeScripts, } from '../base/utils.js';
-
 const COMPONENT_PATH = import.meta.resolve('./');
-const { Base, getHtml, } = await import(`../base/base.js?path=${encodeURIComponent(COMPONENT_PATH)}`);
+const { Base, getHtml } = await import(`../base/base.js?path=${encodeURIComponent(COMPONENT_PATH)}`);
+import { defineElement, processPlaceholders, executeScripts, appendHtml } from '../base/utils.js';
+import { csvToArray, isRemoteUrl, observeIntersection, unobserveIntersection } from './utils.js';
 
 export default class LazyModal extends Base {
+    // ! bug with second lazy-modal (around map) getting connected before its trigger
+    static enableShadowRoot = true;
     static styles = [
+        // `h1 { text-decoration: underline; }`,
         // 'lazy-modal.css',
         'lazy-modal.scoped.css',
         'aria-busy.css',
-        // `h1 { text-decoration: underline; }`,
+        'close-button.css',
     ];
+    static globalStyles = [
+        'aria-busy.css',
+    ]
 
     #host; #triggers; #assetHost; #styles; #scripts;
     #abortController; #abortSignal; #loadOn; #triggerObserver;
@@ -25,25 +23,33 @@ export default class LazyModal extends Base {
 
     constructor() {
         super();
+
+        const closeButtonAttr = this.getAttribute('close-button');
+        this.closeButton = closeButtonAttr === 'false'
+            ? false
+            : (closeButtonAttr !== 'true' && closeButtonAttr) || 'close-button.html';
+
         this.#host = this.getRootNode(); // 'document' or a shadow root
+        console.log(this.#host);
 
         this.#triggers = this.#host.querySelectorAll(this.getAttribute('triggers'));
+
         this.#abortController = new AbortController();
         this.#abortSignal = { signal: this.#abortController.signal };
 
         const supportedLoadOnValues = ['click', 'hover', 'visible', 'load'];
-        this.#loadOn = supportedLoadOnValues.includes(this.getAttribute('load-on')) 
-            ? this.getAttribute('load-on') 
+        this.#loadOn = supportedLoadOnValues.includes(this.getAttribute('load-on'))
+            ? this.getAttribute('load-on')
             : 'hover';
-        
-        this.#assetHost = this.hasAttribute('in-head') ? document.head : this;
+
+        this.#assetHost = this.hasAttribute('in-head') ? document.head : this.root;
         this.#styles = csvToArray(this.getAttribute('inner-styles'));
         this.#scripts = csvToArray(this.getAttribute('inner-scripts'));
         this.#modalContent = this.getAttribute('inner-content') || '';
         this.#lazyRenderTemplate = this.querySelector('& > template') || null;
         this.popover ||= '';
     }
-    
+
     connected() {
         if (!this.#lazyRenderTemplate && !this.#modalContent) {
             // 📡 Dispatch a custom event
@@ -52,7 +58,7 @@ export default class LazyModal extends Base {
         this.#setupAssetLoading(); // Assets for what's inside the modal
         this.#setupTriggerBehavior();
     }
-    
+
     disconnected() {
         if (!this.#triggers.length) return;
         this.#abortController.abort(); // Removes all listeners at once
@@ -60,11 +66,11 @@ export default class LazyModal extends Base {
             unobserveIntersection(this.#triggerObserver, trigger);
         });
     }
-    
-    #setupTriggerBehavior() {
-        if (this.#loadOn === 'load') this.loadAssets(); // Load assets immediately if 'load' is set
 
+    #setupTriggerBehavior() {
         if (!this.#triggers.length) return console.warn('LazyModal: No trigger element found');
+
+        if (this.#loadOn === 'load') this.loadAssets(); // Load assets immediately if 'load' is set
 
         this.#triggers.forEach(trigger => {
             trigger.addEventListener('click', this.handleClick.bind(this), this.#abortSignal);
@@ -93,7 +99,7 @@ export default class LazyModal extends Base {
             trigger.ariaBusy = null;
             // document.querySelector('#location-wrapper')?.hidePopover();
             // if (trigger.classList.contains('map-trigger')) {
-                // document.querySelector('#location-wrapper')?.hidePopover();
+            // document.querySelector('#location-wrapper')?.hidePopover();
             // }
         }
     }
@@ -106,8 +112,8 @@ export default class LazyModal extends Base {
             this.#lazyRender(); // Lazy render template if provided
             this.#loadingAssetsPromise = Promise.all([
                 this.addContent(this.#modalContent), // Optionally inject external content
-                ...this.#styles.map(path => this.addStyle(path)),
                 ...this.#scripts.map(path => this.addScript(path)),
+                ...this.#styles.map(path => this.addStyle(path)),
             ]);
             // console.log('LazyModal: Loading assets');
             return this.#loadingAssetsPromise;
@@ -127,7 +133,7 @@ export default class LazyModal extends Base {
         if (this.#lazyRenderTemplate) {
             // If a template is provided, clone its content and append it
             const content = this.#lazyRenderTemplate.content.cloneNode(true);
-            this.appendChild(content);
+            this.root.appendChild(content);
             if (!this.#modalContent) {
                 // 📡 Dispatch a custom event
                 this.dispatchContentLoadedEvent();
@@ -136,9 +142,13 @@ export default class LazyModal extends Base {
     }
 
     async renderBefore() {
-        const closeButton = await getHtml('close-button.html');
-
+        const closeButton = this.closeButton ? await getHtml(this.closeButton) : '';
         return `${closeButton}`;
+    }
+
+    afterRender() {
+        // Called after the modal is rendered
+        this.root.querySelector('.close-button')?.addEventListener('click', () => this.hidePopover());
     }
 
     /** 
@@ -152,9 +162,9 @@ export default class LazyModal extends Base {
         if (!htmlPath) return; // No content to add
         const content = await getHtml(htmlPath);
         const processedContent = processPlaceholders(content, this);
-        // this.appendChild(createFragment(processedContent)); // registers custom elements too early
-        this.insertAdjacentHTML('beforeend', processedContent); // note: this doesn't execute scripts
-        executeScripts(this);
+        // this.root.lastElementChild.after(createFragment(processedContent)); // registers custom elements too early
+        appendHtml(this.root, processedContent); // this doesn't execute scripts
+        executeScripts(this.root);
         // 📡 Dispatch a custom event
         this.dispatchContentLoadedEvent();
     }
@@ -197,7 +207,7 @@ export default class LazyModal extends Base {
         const path = COMPONENT_PATH;
         const fullPath = isRemoteUrl(file) ? file : `${path}${file}`;
         // If adding to document.head, check if already exists
-        if (this.#assetHost === document.head) {
+        if (this.hasAttribute('in-head')) {
             const resourceKey = `${tagName}:${fullPath}`;
             if (LazyModal.#globalResources.has(resourceKey)) {
                 return Promise.resolve(); // Already loaded
@@ -217,6 +227,7 @@ export default class LazyModal extends Base {
                 console.warn(`lazy-modal.js failed to load resource: ${file}`, error);
                 resolve(); // Still resolve to not block other resources
             };
+
             this.#assetHost.appendChild(element);
         });
     }
