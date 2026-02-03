@@ -159,11 +159,14 @@ export default class MapPicker extends HTMLElement {
         this.resetLocation?.forEach(el => {
             el.addEventListener('click', (e) => {
                 // 📡 Dispatch a 'map-picker-reset' event
-                const host = this.#determineHost();
+                const host = this.#determineHost().host || this.#determineHost(); // Get the host element (document or shadow root)
+                // console.log('Dispatching map-picker-reset event from', host);
                 host.dispatchEvent(new Event('map-picker-reset', { bubbles: true, composed: true }));
                 // document.querySelector('#location-wrapper')?.hidePopover();
                 // document.querySelector('location-input')?.shadowRoot?.querySelector('#location-wrapper').hidePopover();
                 host.querySelector('#location-wrapper')?.hidePopover();
+                host.getRootNode().querySelector('#location-wrapper')?.hidePopover();
+                // this.removeAttribute('marker-coordinates');
             });
         });
 

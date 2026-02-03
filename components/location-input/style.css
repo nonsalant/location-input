@@ -1,6 +1,6 @@
 location-input,
 :host {
-    display: block;
+    /* display: block; */
     container: location-input / inline-size;
     font-family: system-ui, sans-serif;
     -webkit-text-size-adjust: none;

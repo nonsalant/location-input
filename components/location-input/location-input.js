@@ -76,8 +76,10 @@ export default class LocationInput extends Base {
                     const address = await getAddressFromCoordinates(coords.lat, coords.lng);
                     target.removeAttribute('aria-busy');
                     target.closest('[popover]')?.hidePopover();
+                    this.root.querySelector('#location-wrapper')?.hidePopover();
                     this.root.querySelector('#map-wrapper').setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
                     this.root.querySelector('map-picker')?.setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
+                    this.root.querySelector('map-picker')?.shadowRoot?.setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
                     // 📡 Dispatch a 'location-confirm' event
                     this.dispatchEvent(new MarkerDataEvent('location-confirm', coords.lat, coords.lng, address));
                 }).catch(error => console.error(error) );
@@ -90,7 +92,7 @@ export default class LocationInput extends Base {
         // 📡 When a .map-trigger is clicked add a 'location-confirm' event listener that closes the popover
         this.root.querySelectorAll('.map-trigger').forEach(button => {
             button.addEventListener('click', (event) => {
-                const popover = event.target.closest('[popover]');
+                const popover = event.target.closest('[popover]') ?? this.root.querySelector('#location-wrapper');
                 // document.addEventListener('location-confirm', () => {
                 this.addEventListener('location-confirm', () => {
                     // closes the #location-wrapper popover:
@@ -108,6 +110,7 @@ export default class LocationInput extends Base {
                 // console.log('Location reset.');
                 this.root.querySelector('#map-wrapper').removeAttribute('marker-coordinates');
                 this.root.querySelector('map-picker')?.removeAttribute('marker-coordinates');
+                this.root.querySelector('#map-wrapper').shadowRoot?.querySelector('map-picker')?.removeAttribute('marker-coordinates');
                 // console.log('Location reset.');
                 this.root.querySelector('#location-wrapper')?.hidePopover();
             });
