@@ -35,7 +35,9 @@ export default class MapPicker extends HTMLElement {
     constructor() {
         super();
         const host = this.#determineHost();
-        this.mapWrapper = this.closest('[popover]') ?? this.parentElement;
+        
+        this.mapWrapper = this.closest('[popover]') ?? this.parentElement
+            ?? this.getRootNode().host;
         this.confirmLocation = host.querySelectorAll(this.getAttribute('confirm'));
         this.resetLocation = host.querySelectorAll(this.getAttribute('reset'));
         this.initialCoords = this.hasAttribute('initial-coordinates')
@@ -55,7 +57,7 @@ export default class MapPicker extends HTMLElement {
         if (host)
             return document.querySelector(host)?.shadowRoot
             || document.querySelector(host);
-        return this.getRootNode();
+        return this.getRootNode(); // 'document' or a shadow root
     }
 
     connectedCallback() {

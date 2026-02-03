@@ -5,7 +5,7 @@ import { csvToArray, isRemoteUrl, observeIntersection, unobserveIntersection } f
 
 export default class LazyModal extends Base {
     // ! bug with second lazy-modal (around map) getting connected before its trigger
-    // static enableShadowRoot = true;
+    static enableShadowRoot = true;
     static styles = [
         // `h1 { text-decoration: underline; }`,
         // 'lazy-modal.css',
@@ -30,9 +30,12 @@ export default class LazyModal extends Base {
             : (closeButtonAttr !== 'true' && closeButtonAttr) || 'close-button.html';
 
         this.#host = this.getRootNode(); // 'document' or a shadow root
-        console.log(this.#host);
+        // console.log(this.#host);
 
-        this.#triggers = this.#host.querySelectorAll(this.getAttribute('triggers'));
+        // this.#triggers = this.#host.querySelectorAll(this.getAttribute('triggers'));
+        const triggerHost = this.#host.querySelector(this.getAttribute('trigger-host'))?.shadowRoot ?? this.#host;
+        this.#triggers = triggerHost.querySelectorAll(this.getAttribute('triggers'));
+        // console.log(triggerHost, this.#triggers);
 
         this.#abortController = new AbortController();
         this.#abortSignal = { signal: this.#abortController.signal };
