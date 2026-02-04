@@ -4,11 +4,11 @@ import { defineElement, processPlaceholders, executeScripts, appendHtml } from '
 import { csvToArray, isRemoteUrl, observeIntersection, unobserveIntersection } from './utils.js';
 
 export default class LazyModal extends Base {
-    // ! bug with second lazy-modal (around map) getting connected before its trigger
     static enableShadowRoot = true;
     static styles = [
         // `h1 { text-decoration: underline; }`,
         // 'lazy-modal.css',
+        '* { box-sizing: border-box; }',
         'lazy-modal.scoped.css',
         'aria-busy.css',
         'close-button.css',

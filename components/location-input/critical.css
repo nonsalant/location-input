@@ -1,4 +1,7 @@
-/* @layer demo { */
+* {
+    box-sizing: border-box;
+}
+
 lazy-modal { 
     width: 720px; 
     max-width: calc(100dvw - 4lh); 
@@ -8,13 +11,11 @@ lazy-modal {
 
 #location-wrapper {
     @supports (position-area: bottom) {
-        /* position-area: bottom; */ /* stopped working in Chrome (late 2025) */
-        /* position-area: none; */
         margin-block: .5lh;
         margin-inline: -1lh;
-        position-area: block-end span-inline-start; 
+        position-area: block-end span-inline-end; 
         position-try: flip-block, flip-inline, flip-block flip-inline;
-        max-width: min(15lh, 100dvw - 4lh);
+        max-width: min(17lh, 100dvw - 4lh);
         &::backdrop {
             backdrop-filter: brightness(.95);
         }

@@ -1,10 +1,12 @@
 location-input,
 :host {
-    /* display: block; */
+    display: block;
     container: location-input / inline-size;
     font-family: system-ui, sans-serif;
     -webkit-text-size-adjust: none;
     text-size-adjust: none;
+    background: green; /* for debugging */
+
 
     kbd {
         font-size: 0.9em;
@@ -187,12 +189,13 @@ location-input,
     }
 
     /* Cards Wrapper */
-    :where(:has(> location-card)) {
+    location-cards {
         display: flex;
         gap: 1lh;
 
         @container cards (width < 600px) {
             flex-wrap: wrap;
+            background: red;
         }
     }
 
@@ -237,6 +240,7 @@ location-input,
         width: 100%;
         width: 100%;
         max-width: 20em;
+        /* max-width: min(100%, 20em); */
         margin-inline: auto;
         display: flex;
         align-items: center;
