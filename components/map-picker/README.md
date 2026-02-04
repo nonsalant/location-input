@@ -90,14 +90,14 @@ document.addEventListener('map-picker-confirm', (event) => {
 
 | Attribute              | Default Value        | Description                                                             |
 |------------------------|----------------------|-------------------------------------------------------------------------|
-| `confirm`              | `""`                 | CSS selector for the “Confirm Location” button(s).                      |
-| `reset`                | `""`                 | CSS selector for the “Reset Map” button(s).                             |
+| `confirm`              | `".confirm-location"`| CSS selector for the “Confirm Location” button(s).                      |
+| `reset`                | `".reset-location"`  | CSS selector for the “Reset Map” button(s).                             |
+| `cancel`               | `".cancel-location"` | CSS selector for the “Cancel” button(s).                                |
 | `initial-coordinates`  | `"39.8283,-98.5795"` | Initial coordinates to center the map view in the format `latitude,longitude` (no spaces). Defaults to USA. |
 | `initial-zoom`         | `"4"`                | Initial zoom level for the map.                                         |
 | `marker-coordinates`   | `undefined`          | Coordinates for an initial marker in the format `latitude,longitude` (no spaces). If not set, no marker will be initially shown. |
 | `map-autofocus`        | `undefined`          | Doesn't need a value. If this attribute is present the map will be focused when the it becomes visible. Useful when opening the map in a modal. |
-| `shadow-root-host`     | `undefined`          | If this attribute is present, the script will look for the "Confirm Location" and "Reset Map" buttons inside the Shadow DOM of the element with this selector and the events will be dispatched directly on the shadowRoot of that element. |
-| `host`                 | `undefined`          | If this attribute is present, the script will look for the "Confirm Location" and "Reset Map" buttons inside the Light DOM of the element with this selector and the events will be dispatched directly on that element. If not set the button(s) are assumed to be anywhere in the body. Is ignored if `shadow-root-host` is also set. |
+| `map-host`             | `undefined`          | CSS selector to specify a custom host element for the map. By default, the component looks for the `RootNode` (Document or the first Shadow Root). |
 
 
 ## Events
