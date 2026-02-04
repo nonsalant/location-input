@@ -80,7 +80,7 @@ export default class LocationInput extends Base {
                     this.root.querySelector('#location-wrapper')?.hidePopover();
                     this.root.querySelector('#map-wrapper').setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
                     this.root.querySelector('map-picker')?.setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
-                    this.root.querySelector('map-picker')?.shadowRoot?.setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
+                    this.root.querySelector('#map-wrapper').shadowRoot?.querySelector('map-picker')?.setAttribute('marker-coordinates', `${coords.lat},${coords.lng}`);
                     // 📡 Dispatch a 'location-confirm' event
                     this.dispatchEvent(new MarkerDataEvent('location-confirm', coords.lat, coords.lng, address));
                 }).catch(error => console.error(error) );
