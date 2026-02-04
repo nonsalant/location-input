@@ -40,6 +40,7 @@ export default class MapPicker extends HTMLElement {
             ?? this.getRootNode().host;
         this.confirmLocation = host.querySelectorAll(this.getAttribute('confirm'));
         this.resetLocation = host.querySelectorAll(this.getAttribute('reset'));
+        this.cancelLocation = host.querySelectorAll(this.getAttribute('cancel') || '.cancel-location');
         this.initialCoords = this.hasAttribute('initial-coordinates')
             ? csvToArray(this.getAttribute('initial-coordinates')).map(Number)
             : [39.8283, -98.5795]; // Default to USA center
@@ -167,6 +168,12 @@ export default class MapPicker extends HTMLElement {
                 host.querySelector('#location-wrapper')?.hidePopover();
                 host.getRootNode().querySelector('#location-wrapper')?.hidePopover();
                 // this.removeAttribute('marker-coordinates');
+            });
+        });
+
+        this.cancelLocation?.forEach(el => {
+            el.addEventListener('click', (e) => {
+                this.mapWrapper?.hidePopover();
             });
         });
 
