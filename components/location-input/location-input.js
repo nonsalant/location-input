@@ -64,6 +64,7 @@ export default class LocationInput extends Base {
         this.addEventListener('map-picker-reset', () => {
             // 📡 Dispatch a 'location-reset' event
             this.dispatchEvent(new Event('location-reset', { bubbles: true, composed: true }));
+            this.root.querySelector('#map-wrapper').shadowRoot?.querySelector('map-picker')?.resetMap();
         });
 
         // Handle geolocation when .geo-locate button is clicked
@@ -110,8 +111,8 @@ export default class LocationInput extends Base {
                 // console.log('Location reset.');
                 this.root.querySelector('#map-wrapper').removeAttribute('marker-coordinates');
                 this.root.querySelector('map-picker')?.removeAttribute('marker-coordinates');
-                this.root.querySelector('#map-wrapper').shadowRoot?.querySelector('map-picker')?.removeAttribute('marker-coordinates');
-                // console.log('Location reset.');
+                // this.root.querySelector('#map-wrapper').shadowRoot?.querySelector('map-picker')?.removeAttribute('marker-coordinates');
+                // this.root.querySelector('#map-wrapper').shadowRoot?.querySelector('map-picker')?.resetMap();
                 this.root.querySelector('#location-wrapper')?.hidePopover();
             });
         });
