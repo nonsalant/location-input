@@ -38,8 +38,8 @@ export default class MapPicker extends HTMLElement {
         
         this.mapWrapper = this.closest('[popover]') ?? this.parentElement
             ?? this.getRootNode().host;
-        this.confirmLocation = host.querySelectorAll(this.getAttribute('confirm'));
-        this.resetLocation = host.querySelectorAll(this.getAttribute('reset'));
+        this.confirmLocation = host.querySelectorAll(this.getAttribute('confirm') || '.confirm-location');
+        this.resetLocation = host.querySelectorAll(this.getAttribute('reset') || '.reset-location');
         this.cancelLocation = host.querySelectorAll(this.getAttribute('cancel') || '.cancel-location');
         this.initialCoords = this.hasAttribute('initial-coordinates')
             ? csvToArray(this.getAttribute('initial-coordinates')).map(Number)
