@@ -22,7 +22,7 @@ lazy-modal {
     }
 }
 
-.reset-location.reset-location.reset-location { display: none; }
+/* .reset-location.reset-location.reset-location { display: none; } */
 
 .location-trigger {
     span:nth-child(2) { display: none; }
@@ -31,7 +31,7 @@ lazy-modal {
 
 location-input[has-location], 
 :host([has-location]) {
-    .reset-location { display: unset; } 
+    /* .reset-location { display: unset; }  */
     .location-trigger {
         /* border: none; /* probably forces a refresh in Safari, otherwise the stuff below doesn't work */
         span:nth-child(1) { display: none; }

@@ -30,13 +30,15 @@ export default class LocationInput extends Base {
         }
 
         this.addEventListener('location-confirm', async (e) => {
-            this.setAttribute('has-location', '');
             this.handleLocationConfirm?.({ lat: e.lat, lng: e.lng, address: e.address });
+            this.setAttribute('has-location', '');
+            this.hideResetInModals(false);
         });
-        
+
         this.addEventListener('location-reset', () => {
-            this.removeAttribute('has-location');
             this.handleLocationReset?.();
+            this.removeAttribute('has-location');
+            this.hideResetInModals();
         });
         
     }
@@ -52,9 +54,12 @@ export default class LocationInput extends Base {
     }
 
     afterRender() {
+        this.hideResetInModals();
+
         this.root.querySelector('#map-wrapper').setAttribute('map-host', this.getAttribute('map-host'));
         this.root.querySelector('#map-wrapper').addEventListener('lazy-modal-content-loaded', (e)=> {
             this.root.querySelector('map-picker')?.setAttribute('map-host', this.getAttribute('map-host'));
+            if (!this.hasAttribute('has-location')) this.hideResetInModals();
         });
 
         // Import LazyModal component script
@@ -121,6 +126,16 @@ export default class LocationInput extends Base {
             });
         });
 
+    }
+
+    hideResetInModals(hidden = true) {
+        const modals = this.root.querySelectorAll('lazy-modal');
+        modals.forEach(modal => {
+            const resetButton =
+                modal.shadowRoot?.querySelector('.reset-location')
+                ?? modal.querySelector('.reset-location');
+            if (resetButton) resetButton.hidden = hidden;
+        });
     }
 
     // Statically define (or rename) the element unless ?define=false is set in the URL
