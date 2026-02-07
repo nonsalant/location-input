@@ -6,7 +6,7 @@ const { Base, getHtml, } = await import(`../base/base.js?path=${encodeURICompone
 import { MarkerDataEvent, getAddressFromCoordinates } from '../map-picker/utils.js';
 
 export default class LocationInput extends Base {
-    // static enableShadowRoot = true;
+    static enableShadowRoot = true;
     static styles = ['critical.css',];
 
     // handleLocationConfirm(e) { console.log(`[${e.lat}, ${e.lng}]: ${e.address}`); }
@@ -63,8 +63,11 @@ export default class LocationInput extends Base {
 
         this.addEventListener('map-picker-reset', () => {
             // 📡 Dispatch a 'location-reset' event
+            this.root.querySelector('#map-wrapper').removeAttribute('marker-coordinates');
+            this.root.querySelector('map-picker')?.resetMap();
+            this.root.querySelector('#map-wrapper')?.shadowRoot?.querySelector('map-picker')?.resetMap();
+            this.root.querySelector('#location-wrapper')?.hidePopover();
             this.dispatchEvent(new Event('location-reset', { bubbles: true, composed: true }));
-            this.root.querySelector('#map-wrapper').shadowRoot?.querySelector('map-picker')?.resetMap();
         });
 
         // Handle geolocation when .geo-locate button is clicked
@@ -108,12 +111,8 @@ export default class LocationInput extends Base {
             el.addEventListener('click', (e) => {
                 // 📡 Dispatch a 'map-picker-reset' event
                 this.dispatchEvent(new Event('map-picker-reset', { bubbles: true, composed: true }));
-                // console.log('Location reset.');
-                this.root.querySelector('#map-wrapper').removeAttribute('marker-coordinates');
-                this.root.querySelector('map-picker')?.removeAttribute('marker-coordinates');
-                // this.root.querySelector('#map-wrapper').shadowRoot?.querySelector('map-picker')?.removeAttribute('marker-coordinates');
-                // this.root.querySelector('#map-wrapper').shadowRoot?.querySelector('map-picker')?.resetMap();
-                this.root.querySelector('#location-wrapper')?.hidePopover();
+                // this.root.querySelector('#map-wrapper').removeAttribute('marker-coordinates');
+                // this.root.querySelector('map-picker')?.removeAttribute('marker-coordinates');
             });
         });
 
