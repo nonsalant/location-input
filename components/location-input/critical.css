@@ -16,13 +16,9 @@ lazy-modal {
         position-area: block-end span-inline-end;
         position-try: flip-block, flip-inline, flip-block flip-inline;
         max-width: min(17lh, 100dvw - 4lh);
-        &::backdrop {
-            backdrop-filter: brightness(.95);
-        }
+        &::backdrop { backdrop-filter: brightness(.95); }
     }
 }
-
-/* .reset-location.reset-location.reset-location { display: none; } */
 
 .location-trigger {
     span:nth-child(2) { display: none; }
@@ -31,9 +27,7 @@ lazy-modal {
 
 location-input[has-location], 
 :host([has-location]) {
-    /* .reset-location { display: unset; }  */
     .location-trigger {
-        /* border: none; /* probably forces a refresh in Safari, otherwise the stuff below doesn't work */
         span:nth-child(1) { display: none; }
         span:nth-child(3) { display: unset; }
     }
