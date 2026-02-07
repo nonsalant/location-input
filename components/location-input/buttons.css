@@ -15,6 +15,7 @@ lazy-modal,
             filter: brightness(0.9);
             pointer-events: none;
         }
+        /* max-width: min(19lh, 100dvw - 4lh); */
     }
 
     /* Button */
@@ -83,12 +84,18 @@ lazy-modal,
     }
 
     .button-container {
-        display: inline grid;
+        display: grid;
+        /* display: inline grid; */
         grid-auto-flow: column;
         grid-auto-columns: 1fr;
         justify-content: space-between;
         width: 100%;
         gap: .5lh;
+
+        /* button, .button {
+            margin-inline-end: auto; 
+            margin-block-start: 1lh;
+        } */
     }
 
     /*  */

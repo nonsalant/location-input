@@ -22,23 +22,18 @@ lazy-modal,
         padding-inline: 0.5ch;
         border-radius: 3px;
     }
-
     big {
         font-weight: bold;
         line-height: 1;
         margin-top: 1px;
     }
-
     small {
         font-weight: normal;
         font-size: 75%;
         line-height: 1.25;
     }
-
-    .invert {
-        filter: invert(1) hue-rotate(180deg);
-    }
-
+    .invert { filter: invert(1) hue-rotate(180deg); }
+    .margin-block { margin-block: .75lh .5lh; }
     [hidden] { display: none; }
     @media not print { .print-only { display: none; } }
     @media print { .no-print { display: none; } }
@@ -113,6 +108,7 @@ lazy-modal,
     location-cards {
         display: flex;
         gap: 1lh;
+        margin-block: 1lh .75lh;
 
         @container cards (width < 600px) {
             flex-wrap: wrap;

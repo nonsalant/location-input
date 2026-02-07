@@ -15,14 +15,7 @@
 
     <h2>Input Your Location</h2>
 
-    <div class="button-container" style="display: grid;">
-        <button class="reset-location invert" type="button" style="	margin-inline-end: auto; margin-block-start: 1lh;">
-            <!-- <span aria-hidden="true" class="invert">❌</span> -->
-            <span>Reset Location</span>
-        </button>
-    </div>
-
-    <location-cards style="margin-block-start: 1lh;">
+    <location-cards>
         <location-card class="automatic | clickable-parent">
             <card-content>
                 <big>Auto-detect</big>
@@ -47,6 +40,13 @@
             </card-action>
         </location-card>
     </location-cards>
+
+    <div class="button-container">
+        <button class="reset-location invert margin-block" type="button">
+            <!-- <span aria-hidden="true" class="invert">❌</span> -->
+            <span>Reset Location</span>
+        </button>
+    </div>
 
 </lazy-modal>
 
