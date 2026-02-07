@@ -8,7 +8,9 @@
     id="location-wrapper"
     triggers=".location-trigger"
     close-button="false"
-    inner-styles="../location-input/style.css"
+    inner-styles="../location-input/buttons.css,
+                ../location-input/corner-shape.css,
+                ../location-input/misc.css,"
 >
 
     <h2>Input Your Location</h2>
@@ -55,6 +57,9 @@
     trigger-host="#location-wrapper"
     close-button
     inner-content="../map-picker/map-picker.html"
-    inner-styles="../map-picker/map-picker.css"
+    inner-styles="../map-picker/map-picker.css,
+                ../location-input/buttons.css,
+                ../location-input/corner-shape.css,
+                ../location-input/misc.css,"
     inner-scripts="../map-picker/map-picker.js"
 ></lazy-modal>

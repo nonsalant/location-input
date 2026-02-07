@@ -4,7 +4,7 @@ import { defineElement, processPlaceholders, executeScripts, appendHtml } from '
 import { csvToArray, isRemoteUrl, observeIntersection, unobserveIntersection } from './utils.js';
 
 export default class LazyModal extends Base {
-    // static enableShadowRoot = true;
+    static enableShadowRoot = true;
     static styles = [
         // `h1 { text-decoration: underline; }`,
         // 'lazy-modal.css',

@@ -1,0 +1,48 @@
+location-input,
+lazy-modal,
+:host {
+
+    @supports (corner-shape: squircle) {
+
+        .close-button {
+            margin-block-start: -.75lh;
+            margin-inline-end: -.75lh;
+            corner-shape: unset;
+        }
+
+        &:where(&:not(location-input), location-card, map-picker, button) {
+            corner-shape: squircle;
+        }
+
+        &:not(location-input) {
+            border-radius: 2lh;
+        }
+
+        & :is(location-card, map-picker, button) {
+            border-radius: 1lh;
+        }
+
+        & location-card button {
+            border-radius: .5lh / .75lh;
+            border-radius: .5lh;
+        }
+
+    }
+
+    @supports not (corner-shape: squircle) {
+
+        &:not(location-input) {
+            border-radius: 1lh;
+        }
+
+        & :is(location-card, map-picker, button) {
+            border-radius: .5lh;
+        }
+
+        & location-card button {
+            border-radius: .25lh;
+        }
+
+    }
+
+}

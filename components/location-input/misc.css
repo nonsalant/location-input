@@ -1,11 +1,24 @@
+.reset-location.reset-location.reset-location { display: none; }
+
+location-input[has-location], 
+:host([has-location]) {
+    .reset-location { display: unset; }
+}
+
+lazy-modal, :host  {
+    container: cards / inline-size;
+}
+
 location-input,
+lazy-modal,
 :host {
     /* display: block; */
-    container: location-input / inline-size;
+    /* container: location-input / inline-size; */
+    container-type: inline-size;
     font-family: system-ui, sans-serif;
     -webkit-text-size-adjust: none;
     text-size-adjust: none;
-    background: green; /* for debugging */
+    /* background: green;  */
 
 
     kbd {
@@ -33,99 +46,10 @@ location-input,
         filter: invert(1) hue-rotate(180deg);
     }
 
-    /**/
-
-    :where(lazy-modal) :is(button, .button) {
-        cursor: pointer;
-        touch-action: manipulation;
-        font-size: .9rem;
-        font-size: 90%;
-        transition: scale .2s ease-out;
-        /* &:hover:not(:disabled) { filter: contrast(1.25); } */
-        &:active:not(:disabled) { scale: 0.98; }
-        &:disabled {
-            opacity: .5;
-            filter: brightness(0.9);
-            pointer-events: none;
-        }
-    }
-
-    /* Button */
-    :where(lazy-modal) :is(.button, button) {
-        /* 	width: clamp(1rem, 11lh, 100%); */
-        height: fit-content;
-        display: block;
-        cursor: pointer;
-        display: block;
-        text-decoration: none;
-        font-family: inherit;
-        -webkit-font-smoothing: antialiased;
-        font-weight: normal;
-        font-weight: bold;
-        /* font-size: inherit; */
-        font-size: 85%;
-        line-height: 1.2;
-        appearance: none;
-        color: inherit;
-        background: #efefef;
-        background: light-dark(#efefef, #2a2a2a);
-        border: solid 1px #aaa;
-        border: solid 1px #00000060;
-        border: solid 1px light-dark(#00000060, #ffffff40);
-        /* border-radius: 5px; */
-        box-shadow: var(--surface-inset);
-        padding: 0.5lh 0.75lh;
-        transition: scale 0.3s var(--back-out, ease-in-out), background 0.2s ease-out;
-
-        &:hover:not(:disabled) {
-            background: #fff;
-            background: #fafafa;
-            background: light-dark(#fafafa, #353535);
-        }
-
-        &:active:not(:disabled) {
-            background: #f0f0f0;
-            background: light-dark(#f0f0f0, #2d2d2d);
-            transform: scale(0.98);
-        }
-        &:focus-visible {
-            outline-width: 2px;
-            outline-offset: -5px;
-            outline-style: dotted;
-        }
-
-        &:disabled {
-            opacity: .5;
-            filter: brightness(0.9);
-        }
-
-        /* Button has icon */
-        &:has(> [aria-hidden]:where(:first-child, :last-child)) {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.25lh;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            /* text-align: start; */
-        }
-
-        &[aria-busy=true] [aria-hidden] {
-            display: none;
-        }
-    }
-
-    .button-container {
-        display: inline grid;
-        grid-auto-flow: column;
-        grid-auto-columns: 1fr;
-        justify-content: space-between;
-        width: 100%;
-        gap: .5lh;
-    }
-
     @media not print { .print-only { display: none; } }
     @media print { .no-print { display: none; } }
+    
+    /**/
 
     /* Clickable parent */
     clickable-parent,
@@ -184,9 +108,12 @@ location-input,
     /* Cards */
 
     /* Container of the Cards Wrapper */
-    *:has(> * > location-card) {
+    /* *:has(> * > location-card) { */
+    /* *:has(> location-cards),
+    &:host(> location-cards) {
         container: cards / inline-size;
-    }
+        background: red;
+    } */
 
     /* Cards Wrapper */
     location-cards {
@@ -195,7 +122,6 @@ location-input,
 
         @container cards (width < 600px) {
             flex-wrap: wrap;
-            background: red;
         }
     }
 
@@ -300,78 +226,6 @@ location-input,
     }
 
     /* Last child (location-card) takes up whole space if total items is odd */
-    /* location-card:nth-child(2n + 1):last-child {
-        grid-column: 1 / -1;
-    } */
-
-    .leaflet-attribution {
-        color: light-dark(#666, #aaa);
-        font-size: 66%;
-		line-height: 1.25;
-        margin-block-end: -.25lh;
-        a { color: inherit; text-decoration: none; }
-        a:hover { text-decoration: underline; }
-    }
-
-    lazy-modal button {
-        border-width: .5px;
-        padding-inline: 1lh;
-        padding: 0.5lh 0.75lh;
-        font-weight: bold;
-        font-size: 85%;
-        /* border-radius: 8px; */
-        &.close-button {
-            padding: 0;
-            border: 0;
-            display: grid;
-			place-content: center;
-            border-radius: 50%;
-            &.close-button:hover { background-color: buttonface; }
-            &:active:not(:disabled) { scale: .8; }
-        }
-    }
-
-    @supports (corner-shape: squircle) {
-
-        lazy-modal .close-button {
-            margin-block-start: -.75lh;
-            margin-inline-end: -.75lh;
-            corner-shape: unset;
-        }
-
-        lazy-modal, location-card, map-picker, lazy-modal button {
-            corner-shape: squircle;
-        }
-
-        lazy-modal {
-            border-radius: 2lh;
-        }
-
-        lazy-modal :is(location-card, map-picker, button) {
-            border-radius: 1lh;
-        }
-
-        lazy-modal location-card button {
-            border-radius: .5lh / .75lh;
-			border-radius: .5lh;
-        }
-
-    }
-    
-    @supports not (corner-shape: squircle) {
-
-        lazy-modal {
-            border-radius: 1lh;
-        }
-
-        lazy-modal :is(location-card, map-picker, button) {
-            border-radius: .5lh;
-        }
-
-        lazy-modal location-card button {
-            border-radius: .25lh;
-        }
-
-    }
+    /* location-card:nth-child(2n + 1):last-child { grid-column: 1 / -1; } */
 
 }

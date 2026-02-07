@@ -32,3 +32,12 @@ map-picker {
         }
     }
 }
+
+.leaflet-attribution {
+    color: light-dark(#666, #aaa);
+    font-size: 66%;
+    line-height: 1.25;
+    margin-block-end: -.25lh;
+    a { color: inherit; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+}

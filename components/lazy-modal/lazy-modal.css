@@ -8,7 +8,7 @@ lazy-modal, :host {
         max-width: 90dvw;
         max-height: 90dvh;
         padding: 1lh;
-        border-radius: 8px;
+        /* border-radius: 8px; */
         transition: translate .6s var(--_modal-ease);
         transition-behavior: allow-discrete;
     }

@@ -7,7 +7,12 @@ import { MarkerDataEvent, getAddressFromCoordinates } from '../map-picker/utils.
 
 export default class LocationInput extends Base {
     static enableShadowRoot = true;
-    static styles = ['critical.css',];
+    static styles = [
+        'critical.css',
+        'buttons.css',
+        'corner-shape.css',
+        'misc.css',
+    ];
 
     // handleLocationConfirm(e) { console.log(`[${e.lat}, ${e.lng}]: ${e.address}`); }
     // handleLocationReset() {} 

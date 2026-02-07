@@ -1,0 +1,114 @@
+location-input,
+lazy-modal,
+:host {
+
+    :is(button, .button) {
+        cursor: pointer;
+        touch-action: manipulation;
+        font-size: .9rem;
+        font-size: 90%;
+        transition: scale .2s ease-out;
+        /* &:hover:not(:disabled) { filter: contrast(1.25); } */
+        &:active:not(:disabled) { scale: 0.98; }
+        &:disabled {
+            opacity: .5;
+            filter: brightness(0.9);
+            pointer-events: none;
+        }
+    }
+
+    /* Button */
+    :is(.button, button) {
+        /* 	width: clamp(1rem, 11lh, 100%); */
+        height: fit-content;
+        display: block;
+        cursor: pointer;
+        display: block;
+        text-decoration: none;
+        font-family: inherit;
+        -webkit-font-smoothing: antialiased;
+        font-weight: normal;
+        font-weight: bold;
+        /* font-size: inherit; */
+        font-size: 85%;
+        line-height: 1.2;
+        appearance: none;
+        color: inherit;
+        background: #efefef;
+        background: light-dark(#efefef, #2a2a2a);
+        border: solid 1px #aaa;
+        border: solid 1px #00000060;
+        border: solid 1px light-dark(#00000060, #ffffff40);
+        /* border-radius: 5px; */
+        box-shadow: var(--surface-inset);
+        padding: 0.5lh 0.75lh;
+        transition: scale 0.3s var(--back-out, ease-in-out), background 0.2s ease-out;
+
+        &:hover:not(:disabled) {
+            background: #fff;
+            background: #fafafa;
+            background: light-dark(#fafafa, #353535);
+        }
+
+        &:active:not(:disabled) {
+            background: #f0f0f0;
+            background: light-dark(#f0f0f0, #2d2d2d);
+            transform: scale(0.98);
+        }
+        &:focus-visible {
+            outline-width: 2px;
+            outline-offset: -5px;
+            outline-style: dotted;
+        }
+
+        &:disabled {
+            opacity: .5;
+            filter: brightness(0.9);
+        }
+
+        /* Button has icon */
+        &:has(> [aria-hidden]:where(:first-child, :last-child)) {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.25lh;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            /* text-align: start; */
+        }
+
+        &[aria-busy=true] [aria-hidden] {
+            display: none;
+        }
+    }
+
+    .button-container {
+        display: inline grid;
+        grid-auto-flow: column;
+        grid-auto-columns: 1fr;
+        justify-content: space-between;
+        width: 100%;
+        gap: .5lh;
+    }
+
+    /*  */
+
+    button {
+        border-width: .5px;
+        padding-inline: 1lh;
+        padding: 0.5lh 0.75lh;
+        font-weight: bold;
+        font-size: 85%;
+        /* border-radius: 8px; */
+        &.close-button {
+            padding: 0;
+            border: 0;
+            display: grid;
+			place-content: center;
+            border-radius: 50%;
+            &.close-button:hover { background-color: buttonface; }
+            &:active:not(:disabled) { scale: .8; }
+        }
+    }
+
+}
