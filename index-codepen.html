@@ -24,7 +24,14 @@
         <!-- Demo implementation: location inserted in <output> element -->
         <p><output></output></p>
 
-        <lazy-modal popover id="location-wrapper" triggers=".location-trigger" close-button inner-styles="../location-input/style.css">
+        <lazy-modal popover 
+            id="location-wrapper" 
+            triggers=".location-trigger" 
+            close-button 
+            inner-styles="../../lib/elements/buttons.css,
+                        ../../lib/elements/corner-shape.css,
+                        ../../lib/elements/general.css,"
+        >
             <h2>Input Your Location</h2>
             <div class="button-container" style="display: grid;">
                 <button class="reset-location invert" type="button" style="margin-inline-end: auto; margin-block-start: 1lh;">
@@ -64,7 +71,10 @@
             id="map-wrapper"
             triggers=".map-trigger"
             close-button
-            inner-styles="../map-picker/map-picker.css"
+            inner-styles="../map-picker/map-picker.css,
+                        ../../lib/elements/buttons.css,
+                        ../../lib/elements/corner-shape.css,
+                        ../../lib/elements/general.css,"
             inner-scripts="../map-picker/map-picker.js"
         >
             <h2>Select Your Location</h2>

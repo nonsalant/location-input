@@ -71,7 +71,7 @@ export default class LazyModal extends Base {
     }
 
     #setupTriggerBehavior() {
-        if (!this.#triggers.length) return console.warn('LazyModal: No trigger element found');
+        if (!this.#triggers.length) return console.warn('LazyModal -- no trigger element found:', this.getAttribute('triggers'));
 
         if (this.#loadOn === 'load') this.loadAssets(); // Load assets immediately if 'load' is set
 
