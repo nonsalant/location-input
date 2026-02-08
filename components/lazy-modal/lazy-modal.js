@@ -1,7 +1,7 @@
 const COMPONENT_PATH = import.meta.resolve('./');
-const { Base, getHtml } = await import(`../base/base.js?path=${encodeURIComponent(COMPONENT_PATH)}`);
-import { defineElement, processPlaceholders, executeScripts, appendHtml } from '../base/utils.js';
-import { csvToArray, isRemoteUrl, observeIntersection, unobserveIntersection } from './utils.js';
+const { Base, getHtml } = await import(`../../lib/base.js?path=${encodeURIComponent(COMPONENT_PATH)}`);
+import { defineElement, processPlaceholders, executeScripts, appendHtml } from '../../lib/utils/base.js';
+import { csvToArray, isRemoteUrl, observeIntersection, unobserveIntersection } from '../../lib/utils/lazy-modal.js';
 
 export default class LazyModal extends Base {
     static enableShadowRoot = true;
@@ -10,11 +10,11 @@ export default class LazyModal extends Base {
         // 'lazy-modal.css',
         '* { box-sizing: border-box; }',
         'lazy-modal.scoped.css',
-        'aria-busy.css',
-        'close-button.css',
+        '../../lib/elements/aria-busy.css',
+        '../../lib/elements/close-button.css',
     ];
     static globalStyles = [
-        'aria-busy.css',
+        '../../lib/elements/aria-busy.css',
     ]
 
     #host; #triggers; #assetHost; #styles; #scripts;
@@ -27,7 +27,7 @@ export default class LazyModal extends Base {
         const closeButtonAttr = this.getAttribute('close-button');
         this.closeButton = closeButtonAttr === 'false'
             ? false
-            : (closeButtonAttr !== 'true' && closeButtonAttr) || 'close-button.html';
+            : (closeButtonAttr !== 'true' && closeButtonAttr) || '../../lib/elements/close-button.html';
 
         this.#host = this.getRootNode(); // 'document' or a shadow root
         // console.log(this.#host);

@@ -1,17 +1,15 @@
-import { defineElement, generateRandomId, } from '../base/utils.js';
-
 const COMPONENT_PATH = import.meta.resolve('./');
-const { Base, getHtml, } = await import(`../base/base.js?path=${encodeURIComponent(COMPONENT_PATH)}`);
-
-import { MarkerDataEvent, getAddressFromCoordinates } from '../map-picker/utils.js';
+const { Base, getHtml, } = await import(`../../lib/base.js?path=${encodeURIComponent(COMPONENT_PATH)}`);
+import { defineElement, generateRandomId, } from '../../lib/utils/base.js';
+import { MarkerDataEvent, getAddressFromCoordinates } from '../../lib/utils/map-picker.js';
 
 export default class LocationInput extends Base {
     static enableShadowRoot = true;
     static styles = [
-        'critical.css',
-        'buttons.css',
-        'corner-shape.css',
-        'misc.css',
+        'location-input.css',
+        '../../lib/elements/buttons.css',
+        '../../lib/elements/corner-shape.css',
+        '../../lib/elements/general.css',
     ];
 
     // handleLocationConfirm(e) { console.log(`[${e.lat}, ${e.lng}]: ${e.address}`); }

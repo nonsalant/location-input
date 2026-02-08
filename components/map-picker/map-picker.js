@@ -1,9 +1,10 @@
-import { csvToArray, observeIntersection, setupKeyboardControls, getAddressFromCoordinates, MarkerDataEvent } from "./utils.js";
+const { defineElement, kbdOnly } = await import('../../lib/utils/base.js');
+import { csvToArray, observeIntersection, setupKeyboardControls, getAddressFromCoordinates, MarkerDataEvent } from "../../lib/utils/map-picker.js";
 
 let Leaflet; // Will be imported dynamically in connectedCallback()
 
 /* 🏠 Local version */
-const BASE_URL = import.meta.resolve('./vendor-leaflet/');
+const BASE_URL = import.meta.resolve('../../lib/vendor-leaflet/');
 const LEAFLET_SCRIPT = 'leaflet-src.esm.min.js';
 const LEAFLET_STYLESHEET = 'leaflet.min.css';
 
@@ -11,8 +12,6 @@ const LEAFLET_STYLESHEET = 'leaflet.min.css';
 // const BASE_URL = 'https://unpkg.com/leaflet@1.9.4/dist/';
 // const LEAFLET_SCRIPT = 'leaflet-src.esm.js';
 // const LEAFLET_STYLESHEET = 'leaflet.css';
-
-const { defineElement, kbdOnly } = await import(`../base/utils.js`);
 
 export default class MapPicker extends HTMLElement {
     static get observedAttributes() { return ['marker-coordinates']; }
@@ -296,5 +295,3 @@ export default class MapPicker extends HTMLElement {
         defineElement(tag, this);
     }
 }
-
-
