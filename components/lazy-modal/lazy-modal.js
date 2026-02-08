@@ -33,7 +33,9 @@ export default class LazyModal extends Base {
         // console.log(this.#host);
 
         // this.#triggers = this.#host.querySelectorAll(this.getAttribute('triggers'));
-        const triggerHost = this.#host.querySelector(this.getAttribute('trigger-host'))?.shadowRoot ?? this.#host;
+        const triggerHost = this.#host.querySelector(this.getAttribute('trigger-host'))?.shadowRoot
+            ?? this.#host.querySelector(this.getAttribute('trigger-host'))
+            ?? this.#host; // Fallback to searching the entire host if trigger-host is not found
         this.#triggers = triggerHost.querySelectorAll(this.getAttribute('triggers'));
         // console.log(triggerHost, this.#triggers);
 
