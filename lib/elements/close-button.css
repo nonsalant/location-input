@@ -1,4 +1,5 @@
 .close-button {
+    --surface-inset: none;
     appearance: none;
     width: 1.75lh;
     aspect-ratio: 1;

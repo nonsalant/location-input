@@ -35,6 +35,7 @@ lazy-modal {
 
 location-input[has-location], 
 :host([has-location]) {
+    display: block; /* Needed for the :host([attribute]) selector to work in Safari (9 Feb 2026) */
     .location-trigger {
         span:nth-child(1) { display: none; }
         span:nth-child(3) { display: unset; }

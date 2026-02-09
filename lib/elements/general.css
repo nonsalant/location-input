@@ -123,8 +123,8 @@ lazy-modal,
     @supports (corner-shape: squircle) {
 
         .close-button.close-button {
-            margin-block-start: -.75lh;
-            margin-inline-end: -.75lh;
+            margin-block-start: -.5lh;
+            margin-inline-end: -.5lh;
             corner-shape: unset;
         }
 
