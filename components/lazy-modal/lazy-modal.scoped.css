@@ -42,6 +42,10 @@
         float: right;
         margin-block-start: -1lh;
         margin-inline-end: -1lh;
+        @supports (corner-shape: squircle) {
+            margin-block-start: -.5lh;
+            margin-inline-end: -.5lh;
+        }
     }
 
     h1, h2, h3, h4, h5, h6 {

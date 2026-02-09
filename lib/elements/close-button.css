@@ -6,16 +6,23 @@
     display: grid;
     place-items: center;
     padding: 0;
+    border: 0;
     border-radius: 50%;
+    corner-shape: unset;
     border: none;
     cursor: pointer;
     color: inherit;
+    transition: scale .3s var(--back-out, ease-in-out), background 0.2s ease-out;
     &:not(:hover) {
-        background: transparent;
+        background-color: transparent;
     }
-    &:active {
-        /* background: #f0f0f0; */
-        scale: .9;
+    &:hover { 
+        background-color: buttonface;
+        background-color: light-dark(#eeeeee, #353535);
+    }
+    &:active:not(:disabled) {
+        background-color: light-dark(#dddddd, #2d2d2d);
+        scale: .85;
         transform-origin: center;
     }
     & svg {

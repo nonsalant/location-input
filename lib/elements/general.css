@@ -36,7 +36,7 @@ lazy-modal,
         } */
     }
     
-    :is(button, .button) {
+    :is(button, .button):not(.close-button) {
         cursor: pointer;
         touch-action: manipulation;
         font-size: 90%;
@@ -51,7 +51,7 @@ lazy-modal,
         /* max-width: min(19lh, 100dvw - 4lh); */
     }
 
-    :is(.button, button) {
+    :is(.button, button):not(.close-button) {
         /* 	width: clamp(1rem, 11lh, 100%); */
         height: fit-content;
         display: inline-block;
@@ -102,31 +102,25 @@ lazy-modal,
             justify-content: center;
             text-align: center;
             /* text-align: start; */
-            &[aria-busy=true] [aria-hidden]:where(:first-child, :last-child)) {
+            &[aria-busy=true] [aria-hidden] {
                 display: none; /* Hide icon when busy */
             }
         }
 
-        &.close-button {
+        /* &.close-button {
             padding: 0;
             border: 0;
             display: grid;
             place-content: center;
             border-radius: 50%;
-            &.close-button:hover { background-color: buttonface; }
+            &:hover { background-color: buttonface; }
             &:active:not(:disabled) { scale: .8; }
-        }
+        } */
     }
 
     /* Corner Shape */
 
     @supports (corner-shape: squircle) {
-
-        .close-button.close-button {
-            margin-block-start: -.5lh;
-            margin-inline-end: -.5lh;
-            corner-shape: unset;
-        }
 
         &:where(&:not(location-input), location-card, map-picker, button) {
             corner-shape: squircle;
@@ -141,7 +135,6 @@ lazy-modal,
         }
 
         & location-card button {
-            border-radius: .5lh / .75lh;
             border-radius: .5lh;
         }
 
