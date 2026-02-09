@@ -18,6 +18,7 @@ lazy-modal {
         position-try: flip-block, flip-inline, flip-block flip-inline;
         &::backdrop { backdrop-filter: brightness(.95); }
     }
+
 }
 
 .location-trigger {
