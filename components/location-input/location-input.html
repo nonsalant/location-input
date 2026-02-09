@@ -7,10 +7,7 @@
 <lazy-modal popover
     id="location-wrapper"
     triggers=".location-trigger"
-    inner-styles="../../lib/elements/buttons.css,
-                ../../lib/elements/corner-shape.css,
-                ../../lib/elements/general.css,
-                ../../lib/elements/cards.css,"
+    inner-styles="../../lib/elements/general.css, ../../lib/elements/cards.css,"
     close-button="false"
 >
  
@@ -57,10 +54,7 @@
     triggers=".map-trigger"
     trigger-host="#location-wrapper"
     inner-content="../map-picker/map-picker.html"
-    inner-styles="../map-picker/map-picker.css,
-                ../../lib/elements/buttons.css,
-                ../../lib/elements/corner-shape.css,
-                ../../lib/elements/general.css,"
+    inner-styles="../../lib/elements/general.css, ../map-picker/map-picker.css"
     inner-scripts="../map-picker/map-picker.js"
 ></lazy-modal>
 

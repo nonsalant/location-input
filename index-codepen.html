@@ -27,9 +27,7 @@
             id="location-wrapper" 
             triggers=".location-trigger" 
             close-button 
-            inner-styles="../../lib/elements/buttons.css,
-                        ../../lib/elements/corner-shape.css,
-                        ../../lib/elements/general.css,
+            inner-styles="../../lib/elements/general.css,
                         ../../lib/elements/cards.css,"
             close-button="false"
         >
@@ -46,7 +44,7 @@
                         </button>
                     </card-action>
                 </location-card>
-                <p class="separator">— OR —</p>
+                <p class="separator">OR</p>
                 <location-card class="manual | clickable-parent">
                     <card-content>
                         <big>Manually</big>
@@ -72,10 +70,8 @@
             id="map-wrapper"
             trigger-host="#location-wrapper"
             triggers=".map-trigger"
-            inner-styles="../map-picker/map-picker.css,
-                        ../../lib/elements/buttons.css,
-                        ../../lib/elements/corner-shape.css,
-                        ../../lib/elements/general.css,"
+            inner-styles="../../../lib/elements/general.css,
+                        ../map-picker/map-picker.css,"
             inner-scripts="../map-picker/map-picker.js"
         >
             <h2>Select Your Location</h2>

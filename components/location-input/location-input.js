@@ -7,8 +7,6 @@ export default class LocationInput extends Base {
     static enableShadowRoot = true;
     static styles = [
         'location-input.css',
-        '../../lib/elements/buttons.css',
-        '../../lib/elements/corner-shape.css',
         '../../lib/elements/general.css',
     ];
 
