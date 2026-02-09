@@ -105,7 +105,7 @@ lazy-modal,
         }
     }
 
-    /* Corner Shape */
+    /* Corner Shape & Border Radius */
     @supports (corner-shape: squircle) {
         &:where(&:not(location-input), location-card, map-picker, button) { corner-shape: squircle; }
         /* Deeper nested elements have smaller border radius: */
