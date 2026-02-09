@@ -11,32 +11,15 @@ lazy-modal,
     font-family: system-ui, sans-serif;
     -webkit-text-size-adjust: none;
     text-size-adjust: none;
-    /* background: green;  */
 
-
-    kbd {
-        font-size: 0.9em;
-        font-size: 90%;
-        /* font-weight: bold; */
-        border: solid 1px #88888880;
-        padding-inline: 0.5ch;
-        border-radius: 3px;
-    }
-    big {
-        font-weight: bold;
-        line-height: 1;
-        margin-top: 1px;
-    }
-    small {
-        font-weight: normal;
-        font-size: 75%;
-        line-height: 1.25;
-    }
+    [hidden] { display: none; }
+    .print-only { @media not print { display: none; } }
+    .no-print { @media print { display: none; } }
+    kbd { font-size: 90%; border: solid 1px #88888880; padding-inline: 0.5ch; border-radius: 3px; }
+    big { font-weight: bold; line-height: 1; margin-top: 1px; }
+    small { font-weight: normal; font-size: 75%; line-height: 1.25; }
     .invert { filter: invert(1) hue-rotate(180deg); }
     .margin-block { margin-block: .75lh .5lh; }
-    [hidden] { display: none; }
-    @media not print { .print-only { display: none; } }
-    @media print { .no-print { display: none; } }
     
     /**/
 
@@ -114,9 +97,6 @@ lazy-modal,
     }
 
     location-card {
-        /* min-height: 3.75lh; */
-        background-color: #eaeaea;
-        background-color: #eaeaeaa0;
         background-color: light-dark(#eaeaeaa0, #2a2a2aa0);
         background-color: light-dark(#dadadaf0, #2a2a2aa0);
 
@@ -124,20 +104,12 @@ lazy-modal,
         background-attachment: fixed;
         background-image: radial-gradient(
             circle at var(--x, 0%) var(--y, -100%),
-            #ffffffbf,
-            #ffffff40 5rem
-        );
-        background-image: radial-gradient(
-            circle at var(--x, 0%) var(--y, -100%),
             light-dark(#ffffffbf, #ffffff20),
             light-dark(#ffffff40, #ffffff10) 5rem
         );
         /**/
 
-        border: solid 1px #dadada;
-        border: solid 1px #dadada80;
         border: solid 1px light-dark(#dadada80, #3a3a3a80);
-        /* border-radius: 5px; */
         padding: 0.5lh 0.75lh;
         gap: 0.5lh;
         width: 100%;
@@ -171,34 +143,23 @@ lazy-modal,
         }
 
         & + .separator {
-            display: grid; 
-            align-items: center; 
-            text-wrap: nowrap; 
-            font-weight: bold; 
+            display: flex;
+            gap: .25lh;
             justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-weight: bold; 
             margin-block: 0;
-        }
-
-        &[data-variation=no-card] {
-            background: none;
-            padding: 0;
-            border: 0;
-            display: grid;
-            /* align-content: center; */
-            /* justify-content: end; */
+            &::before, &::after {
+                content: "—";
+                display: inline;
+            }
         }
 
         & > :first-child {
             flex: 1;
             display: grid;
             gap: .1lh;
-        }
-
-        ul {
-            margin: 0;
-            font-size: 80%;
-            font-size: smaller;
-            padding-inline-start: .75lh;
         }
     }
 
