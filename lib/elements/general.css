@@ -64,40 +64,22 @@ lazy-modal,
 
     /**/
 
-    /* Cards */
-
-    /* Container of the Cards Wrapper */
-    /* *:has(> * > location-card) { */
-    /* *:has(> location-cards),
-    &:host(> location-cards) {
-        container: cards / inline-size;
-        background: red;
-    } */
-
-    /* Cards Wrapper */
+    /* Location Cards (Cards Wrapper) */
     location-cards {
         display: flex;
-        gap: 1lh;
+        gap: .5lh;
         margin-block: 1lh .75lh;
+        outline-offset: .25lh; 
+        -webkit-font-smoothing: antialiased;
+        transition: all .3s var(--back-out);
 
         @container cards (width < 600px) {
             flex-wrap: wrap;
         }
     }
 
-    /* Location Cards (specific Cards Wrapper) */
-    location-cards {
-        -webkit-font-smoothing: antialiased;
-        /* padding-inline: .25lh; */
-        transition: all .3s var(--back-out);
-        /* outline: dashed 2px transparent; */
-        outline-offset: .25lh; 
-        gap: .5lh;
-        /* margin-block: 1lh; */
-    }
-
+    /* Cards */
     location-card {
-        background-color: light-dark(#eaeaeaa0, #2a2a2aa0);
         background-color: light-dark(#dadadaf0, #2a2a2aa0);
 
         /* shiny cursor */
@@ -113,9 +95,7 @@ lazy-modal,
         padding: 0.5lh 0.75lh;
         gap: 0.5lh;
         width: 100%;
-        width: 100%;
         max-width: 20em;
-        /* max-width: min(100%, 20em); */
         margin-inline: auto;
         display: flex;
         align-items: center;
