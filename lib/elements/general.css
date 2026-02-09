@@ -36,6 +36,7 @@ lazy-modal,
         } */
     }
     
+    /* Button Reset */
     :is(button, .button):not(.close-button) {
         cursor: pointer;
         touch-action: manipulation;
@@ -48,23 +49,22 @@ lazy-modal,
             filter: brightness(0.9);
             pointer-events: none;
         }
-        /* max-width: min(19lh, 100dvw - 4lh); */
     }
 
+    /* Buttons */
     :is(.button, button):not(.close-button) {
+        appearance: none;
         /* 	width: clamp(1rem, 11lh, 100%); */
         height: fit-content;
         display: inline-block;
-        cursor: pointer;
         text-decoration: none;
         font-family: inherit;
         -webkit-font-smoothing: antialiased;
         font-weight: bold;
         font-size: 85%;
         line-height: 1.2;
-        appearance: none;
         color: inherit;
-        background: light-dark(#efefef, #2a2a2a);
+        background-color: light-dark(#efefef, #2a2a2a);
         border: solid .5px light-dark(#00000060, #ffffff40);
         /* border-radius: 5px; */
         box-shadow: var(--surface-inset);
@@ -72,14 +72,11 @@ lazy-modal,
         transition: scale 0.3s var(--back-out, ease-in-out), background 0.2s ease-out;
 
         &:hover:not(:disabled) {
-            background: #fff;
-            background: #fafafa;
-            background: light-dark(#fafafa, #353535);
+            background-color: light-dark(#fafafa, #353535);
         }
 
         &:active:not(:disabled) {
-            background: #f0f0f0;
-            background: light-dark(#f0f0f0, #2d2d2d);
+            background-color: light-dark(#f0f0f0, #2d2d2d);
             transform: scale(0.98);
         }
         &:focus-visible {
@@ -106,55 +103,21 @@ lazy-modal,
                 display: none; /* Hide icon when busy */
             }
         }
-
-        /* &.close-button {
-            padding: 0;
-            border: 0;
-            display: grid;
-            place-content: center;
-            border-radius: 50%;
-            &:hover { background-color: buttonface; }
-            &:active:not(:disabled) { scale: .8; }
-        } */
     }
 
     /* Corner Shape */
-
     @supports (corner-shape: squircle) {
-
-        &:where(&:not(location-input), location-card, map-picker, button) {
-            corner-shape: squircle;
-        }
-
-        &:not(location-input) {
-            border-radius: 3lh;
-        }
-
-        & :is(location-card, map-picker, button) {
-            border-radius: 1lh;
-        }
-
-        & location-card button {
-            border-radius: .5lh;
-        }
-
+        &:where(&:not(location-input), location-card, map-picker, button) { corner-shape: squircle; }
+        /* Deeper nested elements have smaller border radius: */
+        &:not(location-input)                    { border-radius: 3lh; }
+        & :is(location-card, map-picker, button) { border-radius: 1lh; }
+        & location-card button                   { border-radius: .5lh; }
     }
-
     @supports not (corner-shape: squircle) {
-
-        &:not(location-input) {
-            border-radius: 1lh;
-        }
-
-        & :is(location-card, map-picker, button) {
-            border-radius: .5lh;
-        }
-
-        & location-card button {
-            border-radius: .25lh;
-        }
-
+        /* Deeper nested elements have smaller border radius: */
+        &:not(location-input)                    { border-radius: 1lh; }
+        & :is(location-card, map-picker, button) { border-radius: .5lh; }
+        & location-card button                   { border-radius: .25lh; }
     }
-
 
 }
