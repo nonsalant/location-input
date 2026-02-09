@@ -6,17 +6,14 @@
     display: grid;
     place-items: center;
     padding: 0;
-    border: 0;
+    border: none;
     border-radius: 50%;
     corner-shape: unset;
-    border: none;
     cursor: pointer;
     color: inherit;
+    background-color: transparent;
     transition: scale .3s var(--back-out, ease-in-out), background 0.2s ease-out;
-    &:not(:hover) {
-        background-color: transparent;
-    }
-    &:hover { 
+    &:hover:not(:disabled) { 
         background-color: buttonface;
         background-color: light-dark(#eeeeee, #353535);
     }
