@@ -18,7 +18,14 @@ lazy-modal {
         position-try: flip-block, flip-inline, flip-block flip-inline;
         &::backdrop { backdrop-filter: brightness(.90); }
     }
+}
 
+#map-wrapper {
+    @supports (corner-shape: squircle) {
+        border-radius: 3lh / 4.5lh;
+        border-top-left-radius: 3lh;
+        border-top-right-radius: 3lh;
+    }
 }
 
 .location-trigger {

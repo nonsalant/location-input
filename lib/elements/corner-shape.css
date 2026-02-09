@@ -15,7 +15,7 @@ lazy-modal,
         }
 
         &:not(location-input) {
-            border-radius: 2lh;
+            border-radius: 3lh;
         }
 
         & :is(location-card, map-picker, button) {
