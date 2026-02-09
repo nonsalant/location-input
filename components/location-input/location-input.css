@@ -16,7 +16,7 @@ lazy-modal {
         margin-block: .5lh;
         position-area: block-end span-inline-end;
         position-try: flip-block, flip-inline, flip-block flip-inline;
-        &::backdrop { backdrop-filter: brightness(.95); }
+        &::backdrop { backdrop-filter: brightness(.90); }
     }
 
 }
