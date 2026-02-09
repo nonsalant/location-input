@@ -22,7 +22,7 @@ export default class LocationInput extends Base {
         this.setAttribute('map-host', `#${this.id}`);
 
         if (!this.handleLocationConfirm || !this.handleLocationReset) {
-            import('./defaultLocationHandlers.js').then(module => {
+            import('./default-handlers.js').then(module => {
                 Object.assign(this, module.defaultLocationHandlers);
             });
         }
