@@ -1,6 +1,8 @@
 .close-button {
     --surface-inset: none;
     appearance: none;
+    cursor: pointer;
+    touch-action: manipulation;
     width: 1.75lh;
     aspect-ratio: 1;
     display: grid;
@@ -9,7 +11,6 @@
     border: none;
     border-radius: 50%;
     corner-shape: unset;
-    cursor: pointer;
     color: inherit;
     background-color: transparent;
     transition: scale .3s var(--back-out, ease-in-out), background 0.2s ease-out;
