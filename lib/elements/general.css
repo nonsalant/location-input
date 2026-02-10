@@ -102,7 +102,7 @@ lazy-modal,
         }
 
         &[data-variant="primary"] {
-            --surface-inset: inset 0 2px 0 0 light-dark(#666666, #ffffff);
+            --surface-inset: inset 0 1px 0 0 light-dark(#aaaaaa, #ffffff);
             border-color: light-dark(#aaaaaa40, #ffffff60);
             color: light-dark(#efefef, #2a2a2a);
             background-color: light-dark(#000000, #dddddd);
