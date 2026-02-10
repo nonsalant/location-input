@@ -84,7 +84,7 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        box-shadow: var(--surface-inset-200);
+        box-shadow: var(--surface-inset-500);
 
         @container cards (650px < width) {
             text-align: right;
