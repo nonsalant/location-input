@@ -6,7 +6,7 @@
     1.0512 42.81%,1.0792 47.75%,1.0953 52.97%,
     1.1 58.55%,1.0956 63.36%,1.0838 68.73%,
     1.0119 90.98%,1.0029 95.69%,1 100%);
-    --surface-inset-500: inset 0 var(--inset-offset, 1px) 0 0 light-dark(#ffffffc0, #aaaaaa40);
+    --surface-inset-400: inset 0 var(--inset-offset, 1px) 0 0 light-dark(#ffffffc0, #aaaaaa40);
     --surface-inset-200: inset 0 var(--inset-offset, 1px) 0 0 light-dark(#ffffff60, #aaaaaa20);
 	--surface-inset: inset 0 var(--inset-offset, 1px) 0 0 light-dark(#ffffff, #aaaaaa);
     --inset-offset: 2px;
