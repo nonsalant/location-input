@@ -18,19 +18,23 @@ map-picker {
         margin: .5lh 1lh;
     }
 	
-    .leaflet-control-zoom {
+    .leaflet-control-zoom.leaflet-control-zoom {
+        --_bg: light-dark(rgba(0, 0, 0, 0.2), rgba(122, 122, 122, 0.4));
         display: grid;
+        gap: 2px;
         border-radius: .75lh;
         @supports (corner-shape: squircle) { 
             corner-shape: squircle;
             border-radius: 2lh;
         }
         overflow: clip;
-        background-color: rgba(0, 0, 0, 0.2);
+        background-color: var(--_bg);
+        border: 2px solid var(--_bg);
         .button.button {
             box-shadow: none;
             font-size: 1rem;
             padding: .25lh 1lh .5lh 1lh;
+            border: none;
         }
     }
 }
