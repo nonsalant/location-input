@@ -103,7 +103,11 @@ export default class MapPicker extends HTMLElement {
             attributionControl: false,
         }).setView(this.initialCoords, this.initialZoom);
         // Add zoom control to the right side
-        new Leaflet.Control.Zoom({ position: 'topright' }).addTo(this.map);
+        new Leaflet.Control.Zoom({position: 'topright'}).addTo(this.map);
+        
+        // Add 'button' class to zoom in and out buttons
+        const zoomButtons = this.map.getContainer().querySelectorAll('.leaflet-control-zoom a');
+        zoomButtons.forEach(btn => btn.classList.add('button'));
 
         const tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
         const attribution = MapPicker.#mapAttribution();

@@ -1,4 +1,5 @@
 /* Map styles */
+
 map-picker {
     background: #eee;
     outline-offset: 1px;
@@ -17,18 +18,19 @@ map-picker {
         margin: .5lh 1lh;
     }
 	
-    /* Deprecated (moved to .leaflet-attribution outside of the map):
-    .leaflet-bottom {
-        left: 0px; right: auto;
-        color: #666; font-size: 90%;
-        a { color: inherit; text-decoration: none; }
-        a:hover { text-decoration: underline; }
-    } */
-	
-    a:has(> .leaflet-attribution-flag):first-child { 
-        display: none;
-        & + [aria-hidden="true"] {
-            display: none;
+    .leaflet-control-zoom {
+        display: grid;
+        border-radius: .75lh;
+        @supports (corner-shape: squircle) { 
+            corner-shape: squircle;
+            border-radius: 2lh;
+        }
+        overflow: clip;
+        background-color: rgba(0, 0, 0, 0.2);
+        .button.button {
+            box-shadow: none;
+            font-size: 1rem;
+            padding: .25lh 1lh .5lh 1lh;
         }
     }
 }
